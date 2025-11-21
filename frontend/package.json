@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,13 +9,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.2.37"
+    "@tailwindcss/vite": "^4.1.13",
+    "vue": "^3.2.37",
+    "vue-router": "4"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^3.0.3",
-    "typescript": "^4.6.4",
-    "vite": "^3.0.7",
+    "@babel/types": "^7.18.10",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.2",
+    "vite": "^7",
     "vue-tsc": "^1.8.27",
-    "@babel/types": "^7.18.10"
-  }
+    "@types/bun": "latest"
+  },
+  "main": "index.js",
+  "license": "MIT"
 }
