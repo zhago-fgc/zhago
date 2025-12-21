@@ -2,5 +2,8 @@ build/bin
 node_modules
 frontend/dist
 
+# Database files
+*.db
+
 # MacOS Specific
 .DS_Store

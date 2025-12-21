@@ -1,4 +1,4 @@
-package base
+package model
 
 import (
 	"time"
@@ -6,7 +6,7 @@ import (
 )
 
 type BaseModel struct {
-	Id 				string 					`json:"id" gorm:"primaryKey"`
+	ID 				string 					`json:"id"`
 	Status    constant.Status `json:"status"`
 	CreatedAt time.Time 			`json:"created_at"`
 	UpdatedAt time.Time 			`json:"updated_at"`

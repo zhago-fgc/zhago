@@ -21,6 +21,9 @@
 			<span class="name" id="player2-name">Player 2 Name</span>
 			<span class="score" id="player2-score">0</span>
 		</div>
+    <div>
+      <span class="round">Round</span>
+    </div>
 		<script type="text/javascript">
 			const eventSource = new EventSource("/stream");
 
@@ -32,9 +35,13 @@
 			const player2Team = document.getElementById("player2-team");
 			const player2Score = document.getElementById("player2-score");
 
+      const round = document.getElementById("round");
+
 
 			eventSource.addEventListener("update", (event) =>{
 				const data = JSON.parse(event.data);
+
+        console.log(data)
 
 				player1Name.textContent = data.player1Name;
 				player1Team.textContent = data.player1Team;
@@ -43,6 +50,8 @@
 				player2Name.textContent = data.player2Name;
 				player2Team.textContent = data.player2Team;
 				player2Score.textContent = data.player2Score;
+
+        round.textContent = data.round;
 			});
 
 			eventSource.onerror = (err) => {

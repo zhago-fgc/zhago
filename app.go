@@ -5,6 +5,9 @@ import (
 	"log"
 	"net/http"
 	"sync"
+	"zhago/internal/database"
+	"zhago/internal/repository"
+	"zhago/internal/service"
 	"zhago/internal/sse"
 	"zhago/internal/static"
 
@@ -17,15 +20,19 @@ type App struct {
 	server 			*http.Server
 	serverMu 		sync.Mutex
 	SSEService 	*sse.Service
+	EventService *service.EventService
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
 	broadcaster := sse.NewBroadcaster()
-	service := sse.NewService(broadcaster)
+	sseService := sse.NewService(broadcaster)
+	repository := repository.NewEventRepository(database.Connection)
+	eventService := service.NewEventService(*repository)
 
 	return &App{
-		SSEService: service,
+		SSEService: sseService,
+		EventService: eventService,
 	}
 }
 
