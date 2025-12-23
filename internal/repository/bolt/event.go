@@ -1,11 +1,11 @@
-package repository
+package bolt
 
 import (
 	"encoding/json"
 	"time"
 	"zhago/internal/constant"
+	"zhago/internal/domain/model"
 	"zhago/internal/dto"
-	"zhago/internal/model"
 
 	"github.com/google/uuid"
 	bolt "go.etcd.io/bbolt"
@@ -16,25 +16,28 @@ type EventRepository struct {
 }
 
 func NewEventRepository(db *bolt.DB) *EventRepository {
+	db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists([]byte("events"))
+		return err
+	})
+
 	return &EventRepository{
 		db: db,
 	}
 }
 
-func (r *EventRepository) Save(event *dto.EventCreateDTO) (*model.Event, error) {
+func (r *EventRepository) Create(request *dto.EventCreateDTO) error {
 	newEvent := model.Event{
-		BaseModel: model.BaseModel{
-			ID:        uuid.NewString(),
-			Status:    constant.StatusNew,
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
-		},
-		Name: event.Name,
+		ID:        uuid.NewString(),
+		Status:    constant.StatusNew,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		Name:      request.Name,
 	}
 
 	data, err := json.Marshal(newEvent)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	err = r.db.Update(func(tx *bolt.Tx) error {
@@ -42,7 +45,7 @@ func (r *EventRepository) Save(event *dto.EventCreateDTO) (*model.Event, error) 
 		return b.Put([]byte(newEvent.ID), data)
 	})
 
-	return &newEvent, err
+	return nil
 }
 
 func (r *EventRepository) GetAll() ([]*model.Event, error) {
