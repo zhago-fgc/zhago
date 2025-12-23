@@ -1,10 +1,15 @@
 package main
 
 import (
+	"context"
 	"embed"
+	"log"
+	"zhago/internal/handler/system"
+
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"go.etcd.io/bbolt"
 )
 
 //go:embed all:frontend/dist
@@ -12,11 +17,15 @@ var assets embed.FS
 
 func main() {
 
-	// Create an instance of the app structure
-	app := NewApp()
+	db, err := bbolt.Open("zhago.db", 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// Create application with options
-	err := wails.Run(&options.App{
+	serverHandler := system.NewServerHandler()
+	eventHandler := system.NewEventHandler(db)
+
+	err = wails.Run(&options.App{
 		Title:  "zhago",
 		Width:  1024,
 		Height: 768,
@@ -24,14 +33,18 @@ func main() {
 			Assets: assets,
 		},
 		BackgroundColour: &options.RGBA{
-			R: 27,
-			G: 38,
-			B: 54,
-			A: 1,
+			R: 255,
+			G: 255,
+			B: 255,
+			A: 0,
 		},
-		OnStartup:        app.startup,
+		OnStartup: func(ctx context.Context) {},
+		OnShutdown: func(ctx context.Context) {
+			serverHandler.StopServer()
+		},
 		Bind: []interface{}{
-			app,
+			serverHandler,
+			eventHandler,
 		},
 	})
 
