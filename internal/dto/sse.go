@@ -1,4 +1,4 @@
-package sse
+package dto
 
 type MatchDataUpdateDTO struct {
 	Player1Name 	string 	`json:"player1Name"`
