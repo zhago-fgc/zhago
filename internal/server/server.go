@@ -21,7 +21,9 @@ func NewServer(port int) *Server {
 	go h.Run()
 
 	router := mux.NewRouter()
+
 	api.NewSSEHandler(h).RegisterSSERoutes(router)
+
 	api.NewStaticHandler().RegisterStaticRoutes(router)
 
 	return &Server{

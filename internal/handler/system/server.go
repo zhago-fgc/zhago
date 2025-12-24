@@ -28,7 +28,11 @@ func (h *ServerHandler) StartServer(port int) error {
 
 	go func() {
 		if err := h.srv.Start(); err != nil {
-			log.Fatalln("could not start HTTP server")
+			log.Printf("HTTP server error: %v", err)
+
+			h.mu.Lock()
+			h.srv = nil
+			h.mu.Unlock()
 		}
 	}()
 
@@ -54,7 +58,7 @@ func (h *ServerHandler) IsRunning() bool {
 	return h.srv != nil
 }
 
-func (h *ServerHandler) PushUpdate(data dto.MatchDataUpdateDTO) {
+func (h *ServerHandler) Broadcast(data dto.MessageRequest) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 

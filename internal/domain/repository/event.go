@@ -6,6 +6,6 @@ import (
 )
 
 type EventRepository interface {
-	Create(request *dto.EventCreateDTO) error
+	Create(request *dto.CreateEventRequest) error
 	GetAll() ([]*model.Event, error)
 }

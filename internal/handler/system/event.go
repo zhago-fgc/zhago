@@ -21,7 +21,7 @@ func NewEventHandler(db *bbolt.DB) *EventHandler {
 	}
 }
 
-func (h *EventHandler) CreateEvent(req dto.EventCreateDTO) error {
+func (h *EventHandler) CreateEvent(req dto.CreateEventRequest) error {
 	if err := h.service.CreateEvent(req); err != nil {
 		return err
 	}

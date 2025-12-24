@@ -26,7 +26,7 @@ func (h *SSEHandler) HandleSSE(w http.ResponseWriter, r *http.Request) {
 
 	client := &hub.SSEClient{
 		ID:      uuid.New().String(),
-		Channel: make(chan *dto.MatchDataUpdateDTO, 10),
+		Channel: make(chan *dto.MessageRequest, 10),
 	}
 
 	h.hub.RegisterClient(client)
