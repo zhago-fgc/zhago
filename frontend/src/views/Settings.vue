@@ -1,3 +1,21 @@
+<template>
+  <div>
+    <h1>SETTINGS</h1>
+    <div>
+      <b>HTTP Server</b>
+    </div>
+    <div>
+      <span>
+        <input v-model="state.httpPort" autocomplete="off" type="text" />
+        <button class="btn" :class="{ 'btn-stop': state.isRunning, 'btn-start': !state.isRunning }"
+          @click="toggleServer" :disabled="state.isLoading">
+          {{ state.isLoading ? 'Loading...' : (state.isRunning ? 'Stop Server' : 'Start Server') }}
+        </button>
+      </span>
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { onMounted, reactive } from "vue";
 import { StartServer, StopServer, IsRunning } from "../../wailsjs/go/system/ServerHandler"
@@ -35,21 +53,3 @@ async function toggleServer() {
   }
 }
 </script>
-
-<template>
-  <div>
-    <h1>SETTINGS</h1>
-    <div>
-      <b>HTTP Server</b>
-    </div>
-    <div>
-      <span>
-        <input v-model="state.httpPort" autocomplete="off" type="text" />
-        <button class="btn" :class="{ 'btn-stop': state.isRunning, 'btn-start': !state.isRunning }"
-          @click="toggleServer" :disabled="state.isLoading">
-          {{ state.isLoading ? 'Loading...' : (state.isRunning ? 'Stop Server' : 'Start Server') }}
-        </button>
-      </span>
-    </div>
-  </div>
-</template>

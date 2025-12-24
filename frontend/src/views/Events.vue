@@ -1,12 +1,12 @@
 <template>
   <div>
     <h1>EVENTS</h1>
+    <h2>Available Events</h2>
     <ul>
       <li v-for="event in events" :key="event.id">
         {{ event.name }} - {{ event.status }} - {{ event.createdAt }} - {{ event.updatedAt }}
       </li>
     </ul>
-
   </div>
 </template>
 

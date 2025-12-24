@@ -1,37 +1,3 @@
-<script setup lang="ts">
-import { reactive } from 'vue';
-import { PushUpdate } from "../../wailsjs/go/system/ServerHandler";
-
-interface MatchData {
-  player1Name: string
-  player1Team: string
-  player1Score: number
-  player2Name: string
-  player2Team: string
-  player2Score: number
-  round: string
-}
-
-const matchData: MatchData = reactive({
-  player1Name: "",
-  player1Team: "",
-  player1Score: 0,
-  player2Name: "",
-  player2Team: "",
-  player2Score: 0,
-  round: "",
-});
-
-function save() {
-  try {
-    PushUpdate(matchData);
-  } catch(err) {
-    console.error('could not send message')
-  }
-}
-
-</script>
-
 <template>
   <div>
     <main>
@@ -74,3 +40,37 @@ function save() {
     </main>
   </div>
 </template>
+
+<script setup lang="ts">
+import { reactive } from 'vue';
+import { Update } from "../../wailsjs/go/system/ScoreboardHandler";
+
+interface MatchData {
+  player1Name: string
+  player1Team: string
+  player1Score: number
+  player2Name: string
+  player2Team: string
+  player2Score: number
+  round: string
+}
+
+const matchData: MatchData = reactive({
+  player1Name: "",
+  player1Team: "",
+  player1Score: 0,
+  player2Name: "",
+  player2Team: "",
+  player2Score: 0,
+  round: "",
+});
+
+function save() {
+  try {
+    Update(matchData);
+  } catch (err) {
+    console.error('could not send message')
+  }
+}
+
+</script>
