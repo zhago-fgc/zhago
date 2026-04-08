@@ -42,3 +42,47 @@ func (r *PlayerRepository) GetByID(id string) (*model.Player, error) {
 func (r *PlayerRepository) Delete(id string) error {
 	return r.db.Where("id = ?", id).Delete(&model.Player{}).Error
 }
+
+func (r *PlayerRepository) GetAllStats() ([]*dto.PlayerStats, error) {
+	type row struct {
+		PlayerID   string
+		SetsPlayed int
+		SetsWon    int
+		GamesWon   int
+		GamesLost  int
+	}
+	var rows []row
+	err := r.db.Raw(`
+		SELECT
+			p.id AS player_id,
+			COUNT(s.id) AS sets_played,
+			SUM(CASE WHEN s.winner_id = p.id THEN 1 ELSE 0 END) AS sets_won,
+			SUM(CASE WHEN s.player1_id = p.id THEN s.player1_score ELSE s.player2_score END) AS games_won,
+			SUM(CASE WHEN s.player1_id = p.id THEN s.player2_score ELSE s.player1_score END) AS games_lost
+		FROM players p
+		LEFT JOIN sets s ON (s.player1_id = p.id OR s.player2_id = p.id) AND s.status = 'COMPLETED'
+		GROUP BY p.id
+	`).Scan(&rows).Error
+	if err != nil {
+		return nil, err
+	}
+
+	stats := make([]*dto.PlayerStats, len(rows))
+	for i, r := range rows {
+		setsLost := r.SetsPlayed - r.SetsWon
+		winRate := 0.0
+		if r.SetsPlayed > 0 {
+			winRate = float64(r.SetsWon) / float64(r.SetsPlayed) * 100
+		}
+		stats[i] = &dto.PlayerStats{
+			PlayerID:   r.PlayerID,
+			SetsPlayed: r.SetsPlayed,
+			SetsWon:    r.SetsWon,
+			SetsLost:   setsLost,
+			WinRate:    winRate,
+			GamesWon:   r.GamesWon,
+			GamesLost:  r.GamesLost,
+		}
+	}
+	return stats, nil
+}

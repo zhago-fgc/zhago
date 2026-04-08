@@ -13,3 +13,7 @@ export function DeletePlayer(arg1) {
 export function GetAll() {
   return window['go']['system']['PlayerHandler']['GetAll']();
 }
+
+export function GetAllStats() {
+  return window['go']['system']['PlayerHandler']['GetAllStats']();
+}

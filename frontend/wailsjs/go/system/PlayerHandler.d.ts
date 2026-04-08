@@ -8,3 +8,5 @@ export function CreatePlayer(arg1:dto.CreatePlayerRequest):Promise<model.Player>
 export function DeletePlayer(arg1:string):Promise<void>;
 
 export function GetAll():Promise<Array<model.Player>>;
+
+export function GetAllStats():Promise<Array<dto.PlayerStats>>;
