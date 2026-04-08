@@ -34,6 +34,10 @@
             <th class="px-5 py-3 font-medium">Tag</th>
             <th class="px-5 py-3 font-medium">Team</th>
             <th class="px-5 py-3 font-medium">Region</th>
+            <th class="px-5 py-3 font-medium text-right">W</th>
+            <th class="px-5 py-3 font-medium text-right">L</th>
+            <th class="px-5 py-3 font-medium text-right">Win %</th>
+            <th class="px-5 py-3 font-medium text-right">Games</th>
             <th class="px-5 py-3"></th>
           </tr>
         </thead>
@@ -43,6 +47,19 @@
             <td class="px-5 py-3 text-white font-medium">{{ p.tag }}</td>
             <td class="px-5 py-3 text-zinc-400">{{ p.team || '—' }}</td>
             <td class="px-5 py-3 text-zinc-400">{{ p.region || '—' }}</td>
+            <template v-if="statsMap[p.id]">
+              <td class="px-5 py-3 text-right text-green-400 font-medium">{{ statsMap[p.id].sets_won }}</td>
+              <td class="px-5 py-3 text-right text-red-400 font-medium">{{ statsMap[p.id].sets_lost }}</td>
+              <td class="px-5 py-3 text-right text-zinc-300">
+                {{ statsMap[p.id].sets_played === 0 ? '—' : statsMap[p.id].win_rate.toFixed(0) + '%' }}
+              </td>
+              <td class="px-5 py-3 text-right text-zinc-500 text-xs">
+                {{ statsMap[p.id].sets_played === 0 ? '—' : `${statsMap[p.id].games_won}–${statsMap[p.id].games_lost}` }}
+              </td>
+            </template>
+            <template v-else>
+              <td colspan="4" class="px-5 py-3 text-right text-zinc-600 text-xs">no data</td>
+            </template>
             <td class="px-5 py-3 text-right">
               <button class="opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-red-400 transition-all text-xs px-2 py-1 rounded hover:bg-zinc-700"
                 @click.stop="deletePlayer(p.id)">Delete</button>
@@ -55,18 +72,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue';
-import { GetAll, CreatePlayer, DeletePlayer } from '../../wailsjs/go/system/PlayerHandler';
+import { ref, onMounted, reactive, computed } from 'vue';
+import { GetAll, CreatePlayer, DeletePlayer, GetAllStats } from '../../wailsjs/go/system/PlayerHandler';
 import { dto, model } from '../../wailsjs/go/models';
 
 const players = ref<model.Player[]>([]);
+const stats   = ref<dto.PlayerStats[]>([]);
 const showCreate = ref(false);
 const creating = ref(false);
 const form = reactive({ tag: '', team: '', region: '' });
 
+const statsMap = computed(() =>
+  Object.fromEntries(stats.value.map(s => [s.player_id, s]))
+);
+
 async function load() {
   try {
-    players.value = (await GetAll()) ?? [];
+    const [pl, st] = await Promise.all([GetAll(), GetAllStats()]);
+    players.value = pl ?? [];
+    stats.value   = st ?? [];
   } catch (err) {
     console.error('Failed to load players:', err);
   }

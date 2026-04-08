@@ -134,9 +134,12 @@
         </div>
 
         <div class="flex items-center justify-between">
-          <div class="flex gap-2">
+          <div class="flex gap-2 items-center">
             <button class="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-white text-sm rounded transition-colors" @click="swapPlayers">Swap</button>
             <button class="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-white text-sm rounded transition-colors" @click="resetScores">Reset</button>
+            <span class="text-xs text-zinc-600 ml-2 hidden lg:inline">
+              ← P1+1 &nbsp;→ P2+1 &nbsp;↓ P1−1 &nbsp;↑ P2−1 &nbsp;S send &nbsp;R reset
+            </span>
           </div>
           <div class="flex items-center gap-3">
             <span v-if="sent" class="text-xs text-green-400">Sent!</span>
@@ -154,7 +157,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import CustomSelect from '../components/CustomSelect.vue';
 import PlayerAutocomplete from '../components/PlayerAutocomplete.vue';
 import { scoreboardStore as store } from '../stores/scoreboard';
@@ -322,7 +325,42 @@ async function deleteSet(id: string) {
   } catch (err) { console.error(err); }
 }
 
+function onKeydown(e: KeyboardEvent) {
+  // Ignore when focus is inside an input/textarea/select
+  const tag = (e.target as HTMLElement)?.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+  switch (e.key) {
+    case 'ArrowLeft':
+      e.preventDefault();
+      store.player1Score++;
+      break;
+    case 'ArrowRight':
+      e.preventDefault();
+      store.player2Score++;
+      break;
+    case 'ArrowDown':
+      e.preventDefault();
+      store.player1Score = Math.max(0, store.player1Score - 1);
+      break;
+    case 'ArrowUp':
+      e.preventDefault();
+      store.player2Score = Math.max(0, store.player2Score - 1);
+      break;
+    case 'r':
+    case 'R':
+      resetScores();
+      break;
+    case 's':
+    case 'S':
+      sendOverlay();
+      break;
+  }
+}
+
 onMounted(async () => {
+  window.addEventListener('keydown', onKeydown);
+
   try {
     const [trns, plrs] = await Promise.all([GetAllTournaments(), GetAllPlayers()]);
     tournaments.value = trns ?? [];
@@ -333,5 +371,9 @@ onMounted(async () => {
       await onTournamentSelect(saved);
     }
   } catch (err) { console.error(err); }
+});
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', onKeydown);
 });
 </script>

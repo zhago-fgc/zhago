@@ -142,6 +142,30 @@ export namespace dto {
 	        this.bestOf = source["bestOf"];
 	    }
 	}
+	export class PlayerStats {
+	    player_id: string;
+	    sets_played: number;
+	    sets_won: number;
+	    sets_lost: number;
+	    win_rate: number;
+	    games_won: number;
+	    games_lost: number;
+
+	    static createFrom(source: any = {}) {
+	        return new PlayerStats(source);
+	    }
+
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.player_id = source["player_id"];
+	        this.sets_played = source["sets_played"];
+	        this.sets_won = source["sets_won"];
+	        this.sets_lost = source["sets_lost"];
+	        this.win_rate = source["win_rate"];
+	        this.games_won = source["games_won"];
+	        this.games_lost = source["games_lost"];
+	    }
+	}
 	export class UpdateSetScoreRequest {
 	    set_id: string;
 	    player1_score: number;

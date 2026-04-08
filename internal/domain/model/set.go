@@ -17,6 +17,7 @@ type Set struct {
 	BestOf       int             `gorm:"default:3" json:"best_of"`
 	Status       constant.Status `json:"status"`
 	ExternalID   string          `json:"external_id"`
+	RoundOrder   int             `gorm:"default:0" json:"round_order"`
 	Player1      *Player         `gorm:"foreignKey:Player1ID;references:ID" json:"player1,omitempty"`
 	Player2      *Player         `gorm:"foreignKey:Player2ID;references:ID" json:"player2,omitempty"`
 	Winner       *Player         `gorm:"foreignKey:WinnerID;references:ID" json:"winner,omitempty"`

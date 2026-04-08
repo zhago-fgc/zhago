@@ -29,3 +29,7 @@ func (h *PlayerHandler) GetAll() ([]*model.Player, error) {
 func (h *PlayerHandler) DeletePlayer(id string) error {
 	return h.service.DeletePlayer(id)
 }
+
+func (h *PlayerHandler) GetAllStats() ([]*dto.PlayerStats, error) {
+	return h.service.GetAllStats()
+}

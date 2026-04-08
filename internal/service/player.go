@@ -25,3 +25,7 @@ func (s *PlayerService) GetAll() ([]*model.Player, error) {
 func (s *PlayerService) DeletePlayer(id string) error {
 	return s.repo.Delete(id)
 }
+
+func (s *PlayerService) GetAllStats() ([]*dto.PlayerStats, error) {
+	return s.repo.GetAllStats()
+}
