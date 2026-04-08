@@ -24,7 +24,7 @@ func NewServer(port int) *Server {
 
 	api.NewSSEHandler(h).RegisterSSERoutes(router)
 
-	api.NewStaticHandler().RegisterStaticRoutes(router)
+	api.NewTemplateHandler().RegisterRoutes(router)
 
 	return &Server{
 		port: port,
@@ -47,4 +47,12 @@ func (s *Server) Stop() error {
 
 func (s *Server) GetHub() *hub.SSEHub {
 	return s.hub
+}
+
+func (s *Server) GetPort() int {
+	return s.port
+}
+
+func (s *Server) ClientCount() int {
+	return s.hub.ClientCount()
 }

@@ -3,35 +3,32 @@ package system
 import (
 	"zhago/internal/domain/model"
 	"zhago/internal/dto"
-	"zhago/internal/repository/bolt"
+	"zhago/internal/repository/sqlite"
 	"zhago/internal/service"
 
-	"go.etcd.io/bbolt"
+	"gorm.io/gorm"
 )
 
 type EventHandler struct {
 	service service.EventService
 }
 
-func NewEventHandler(db *bbolt.DB) *EventHandler {
-	repo := bolt.NewEventRepository(db)
-	service := service.NewEventService(repo)
-	return &EventHandler{
-		service: *service,
-	}
+func NewEventHandler(db *gorm.DB) *EventHandler {
+	repo := sqlite.NewEventRepository(db)
+	tournRepo := sqlite.NewTournamentRepository(db)
+	setRepo := sqlite.NewSetRepository(db)
+	svc := service.NewEventService(repo, tournRepo, setRepo)
+	return &EventHandler{service: *svc}
 }
 
 func (h *EventHandler) CreateEvent(req dto.CreateEventRequest) error {
-	if err := h.service.CreateEvent(req); err != nil {
-		return err
-	}
-	return nil
+	return h.service.CreateEvent(req)
 }
 
 func (h *EventHandler) GetAllEvents() ([]*model.Event, error) {
-	res, err := h.service.GetAllEvents()
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
+	return h.service.GetAllEvents()
+}
+
+func (h *EventHandler) DeleteEvent(id string) error {
+	return h.service.DeleteEvent(id)
 }

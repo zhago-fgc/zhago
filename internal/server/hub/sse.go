@@ -74,6 +74,12 @@ func (h *SSEHub) BroadcastEvent(event *dto.MessageRequest) {
 	h.broadcast <- event
 }
 
+func (h *SSEHub) ClientCount() int {
+	h.mu.RLock()
+	defer h.mu.RUnlock()
+	return len(h.clients)
+}
+
 func (h *SSEHub) RegisterClient(client *SSEClient) {
 	h.register <- client
 }
