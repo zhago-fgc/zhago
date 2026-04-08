@@ -127,8 +127,10 @@ func (s *StartGGImportService) importSet(tournID string, sggSet startgg.Set, ent
 		Player1ID:    p1ID,
 		Player2ID:    p2ID,
 		Round:        sggSet.FullRoundText,
-		BestOf:    3,
-		CreatedAt: time.Now(),
+		RoundOrder:   sggSet.Round,
+		ExternalID:   fmt.Sprintf("%d", sggSet.ID),
+		BestOf:       3,
+		CreatedAt:    time.Now(),
 	}
 
 	// Populate scores from displayScore if the set is completed
