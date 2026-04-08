@@ -43,6 +43,7 @@ func (r *SetRepository) GetByTournament(tournamentID string) ([]*model.Set, erro
 		Preload("Player2").
 		Preload("Winner").
 		Where("tournament_id = ?", tournamentID).
+		Order("CASE WHEN round_order > 0 THEN round_order WHEN round_order < 0 THEN 10000 + ABS(round_order) ELSE 99999 END ASC, created_at ASC").
 		Find(&sets).Error
 }
 
