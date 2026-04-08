@@ -1,0 +1,109 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  width: 1920px;
+  height: 1080px;
+  background: transparent;
+  overflow: hidden;
+  font-family: 'Arial Narrow', Arial, sans-serif;
+}
+
+#scoreboard {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 130px;
+  display: flex;
+  align-items: stretch;
+  background: rgba(18, 22, 26, 0.96);
+  border-top: 3px solid #A6C8D4;
+}
+
+.player-block {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 0 36px;
+  gap: 16px;
+  overflow: hidden;
+}
+
+.player-block.left {
+  flex-direction: row;
+  background: linear-gradient(90deg, rgba(62,90,111,0.35) 0%, transparent 100%);
+}
+
+.player-block.right {
+  flex-direction: row-reverse;
+  background: linear-gradient(270deg, rgba(62,90,111,0.35) 0%, transparent 100%);
+}
+
+.team {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #A6C8D4;
+  background: rgba(62,90,111,0.5);
+  border: 1px solid rgba(166,200,212,0.3);
+  padding: 4px 10px;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.name {
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.score-block {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(62,90,111,0.25);
+  border-left: 1px solid rgba(166,200,212,0.15);
+  border-right: 1px solid rgba(166,200,212,0.15);
+}
+
+.score {
+  width: 88px;
+  text-align: center;
+  font-size: 68px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 36px;
+}
+
+.round {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #A6C8D4;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.dash {
+  color: rgba(166,200,212,0.4);
+  font-size: 28px;
+  margin-top: 2px;
+}

@@ -1,0 +1,13 @@
+{
+  "name": "Scoreboard",
+  "subscribes": ["scoreboard.update"],
+  "fields": [
+    { "key": "player1Name",  "label": "Player 1 Tag",   "type": "text" },
+    { "key": "player1Team",  "label": "Player 1 Team",  "type": "text" },
+    { "key": "player1Score", "label": "Player 1 Score", "type": "number" },
+    { "key": "player2Name",  "label": "Player 2 Tag",   "type": "text" },
+    { "key": "player2Team",  "label": "Player 2 Team",  "type": "text" },
+    { "key": "player2Score", "label": "Player 2 Score", "type": "number" },
+    { "key": "round",        "label": "Round",          "type": "text" }
+  ]
+}

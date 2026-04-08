@@ -1,0 +1,8 @@
+{
+  "name": "Break / BRB",
+  "subscribes": ["timer.start"],
+  "fields": [
+    { "key": "minutes", "label": "Duration (minutes)", "type": "number" },
+    { "key": "message", "label": "Message",            "type": "text" }
+  ]
+}
