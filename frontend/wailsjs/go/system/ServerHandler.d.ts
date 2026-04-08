@@ -4,6 +4,14 @@ import {dto} from '../models';
 
 export function Broadcast(arg1:dto.MessageRequest):Promise<void>;
 
+export function BroadcastMessage(arg1:string,arg2:Record<string, any>):Promise<void>;
+
+export function ClientCount():Promise<number>;
+
+export function GetConfigPort():Promise<number>;
+
+export function GetPort():Promise<number>;
+
 export function IsRunning():Promise<boolean>;
 
 export function StartServer(arg1:number):Promise<void>;

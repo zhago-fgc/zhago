@@ -6,6 +6,22 @@ export function Broadcast(arg1) {
   return window['go']['system']['ServerHandler']['Broadcast'](arg1);
 }
 
+export function BroadcastMessage(arg1, arg2) {
+  return window['go']['system']['ServerHandler']['BroadcastMessage'](arg1, arg2);
+}
+
+export function ClientCount() {
+  return window['go']['system']['ServerHandler']['ClientCount']();
+}
+
+export function GetConfigPort() {
+  return window['go']['system']['ServerHandler']['GetConfigPort']();
+}
+
+export function GetPort() {
+  return window['go']['system']['ServerHandler']['GetPort']();
+}
+
 export function IsRunning() {
   return window['go']['system']['ServerHandler']['IsRunning']();
 }

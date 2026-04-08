@@ -6,6 +6,10 @@ export function CreateEvent(arg1) {
   return window['go']['system']['EventHandler']['CreateEvent'](arg1);
 }
 
+export function DeleteEvent(arg1) {
+  return window['go']['system']['EventHandler']['DeleteEvent'](arg1);
+}
+
 export function GetAllEvents() {
   return window['go']['system']['EventHandler']['GetAllEvents']();
 }

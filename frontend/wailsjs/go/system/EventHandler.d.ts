@@ -5,4 +5,6 @@ import {model} from '../models';
 
 export function CreateEvent(arg1:dto.CreateEventRequest):Promise<void>;
 
+export function DeleteEvent(arg1:string):Promise<void>;
+
 export function GetAllEvents():Promise<Array<model.Event>>;
