@@ -7,11 +7,13 @@ import (
 )
 
 type EventService struct {
-	repo repository.EventRepository
+	repo        repository.EventRepository
+	tournRepo   repository.TournamentRepository
+	setRepo     repository.SetRepository
 }
 
-func NewEventService(repo repository.EventRepository) *EventService {
-	return &EventService{repo}
+func NewEventService(repo repository.EventRepository, tournRepo repository.TournamentRepository, setRepo repository.SetRepository) *EventService {
+	return &EventService{repo: repo, tournRepo: tournRepo, setRepo: setRepo}
 }
 
 func (s *EventService) CreateEvent(req dto.CreateEventRequest) error {
@@ -19,10 +21,21 @@ func (s *EventService) CreateEvent(req dto.CreateEventRequest) error {
 }
 
 func (s *EventService) GetAllEvents() ([]*model.Event, error) {
-	events, err := s.repo.GetAll()
-	if err != nil {
-		return nil, err
-	}
+	return s.repo.GetAll()
+}
 
-	return events, nil
+func (s *EventService) DeleteEvent(id string) error {
+	tournaments, err := s.tournRepo.GetByEvent(id)
+	if err != nil {
+		return err
+	}
+	for _, t := range tournaments {
+		if err := s.setRepo.DeleteByTournament(t.ID); err != nil {
+			return err
+		}
+		if err := s.tournRepo.Delete(t.ID); err != nil {
+			return err
+		}
+	}
+	return s.repo.Delete(id)
 }

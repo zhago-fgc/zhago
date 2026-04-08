@@ -6,8 +6,8 @@ import (
 )
 
 type Event struct {
-	ID        string          `json:"id"`
-	Name      string          `json:"name"`
+	ID        string          `gorm:"primaryKey" json:"id"`
+	Name      string          `gorm:"not null" json:"name"`
 	Status    constant.Status `json:"status"`
 	CreatedAt time.Time       `json:"created_at"`
 	UpdatedAt time.Time       `json:"updated_at"`
