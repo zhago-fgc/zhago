@@ -31,6 +31,7 @@ func main() {
 	templateHandler    := system.NewTemplateHandler()
 	assetHandler       := system.NewAssetHandler()
 	commentatorHandler := system.NewCommentatorHandler(db)
+	startggHandler     := system.NewStartGGHandler(db)
 
 	err := wails.Run(&options.App{
 		Title:  "zhago",
@@ -66,6 +67,7 @@ func main() {
 			templateHandler,
 			assetHandler,
 			commentatorHandler,
+			startggHandler,
 		},
 	})
 

@@ -7,10 +7,11 @@ import logo from '../assets/zhago-logo-white.svg';
 
 const route = useRoute();
 
-const serverRunning = ref(false);
-const serverPort    = ref(0);
-const clientCount   = ref(0);
-const packs         = ref<any[]>([]);
+const serverRunning   = ref(false);
+const serverPort      = ref(0);
+const clientCount     = ref(0);
+const packs           = ref<any[]>([]);
+const startggLinked   = ref(false);
 
 // Overlay types with dedicated built-in views — excluded from dynamic nav.
 const BUILTIN_TYPES = new Set(['scoreboard', 'commentary', 'brb', 'top8']);
@@ -49,6 +50,7 @@ let interval: ReturnType<typeof setInterval>;
 onMounted(() => {
   refreshStatus();
   refreshPacks();
+  startggLinked.value = !!localStorage.getItem('zhago:startgg_token');
   interval = setInterval(refreshStatus, 5000);
 });
 onUnmounted(() => clearInterval(interval));
@@ -100,8 +102,8 @@ const navLinkClass = (to: string, exact = false) =>
       <RouterLink to="/settings" :class="navLinkClass('/settings')">Settings</RouterLink>
 
       <div class="mt-3 mb-1 px-3 text-[10px] text-zinc-600 uppercase tracking-widest font-medium">Connected</div>
-      <div class="px-3 py-1.5 flex items-center gap-2 text-sm text-zinc-600">
-        <span class="w-1.5 h-1.5 rounded-full bg-zinc-700 shrink-0"></span>start.gg
+      <div :class="startggLinked ? 'text-zinc-300' : 'text-zinc-600'" class="px-3 py-1.5 flex items-center gap-2 text-sm">
+        <span :class="startggLinked ? 'bg-green-500' : 'bg-zinc-700'" class="w-1.5 h-1.5 rounded-full shrink-0"></span>start.gg
       </div>
       <div class="px-3 py-1.5 flex items-center gap-2 text-sm text-zinc-600">
         <span class="w-1.5 h-1.5 rounded-full bg-zinc-700 shrink-0"></span>challonge
