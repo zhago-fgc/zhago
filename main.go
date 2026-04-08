@@ -24,6 +24,7 @@ func main() {
 
 	serverHandler := system.NewServerHandler()
 	eventHandler := system.NewEventHandler(db)
+	scoreboardHandler := system.NewScoreboardHandler(serverHandler)
 
 	err = wails.Run(&options.App{
 		Title:  "zhago",
@@ -42,9 +43,10 @@ func main() {
 		OnShutdown: func(ctx context.Context) {
 			serverHandler.StopServer()
 		},
-		Bind: []interface{}{
+		Bind: []any{
 			serverHandler,
 			eventHandler,
+			scoreboardHandler,
 		},
 	})
 

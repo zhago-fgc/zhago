@@ -8,25 +8,25 @@ import (
 	"zhago/internal/dto"
 
 	"github.com/google/uuid"
-	bolt "go.etcd.io/bbolt"
+	"go.etcd.io/bbolt"
 )
 
 type EventRepository struct {
-	db *bolt.DB
+	db *bbolt.DB
 }
 
-func NewEventRepository(db *bolt.DB) *EventRepository {
-	db.Update(func(tx *bolt.Tx) error {
+func NewEventRepository(db *bbolt.DB) *EventRepository {
+	db.Update(func(tx *bbolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists([]byte("events"))
 		return err
 	})
-
+ 
 	return &EventRepository{
 		db: db,
 	}
 }
 
-func (r *EventRepository) Create(request *dto.EventCreateDTO) error {
+func (r *EventRepository) Create(request *dto.CreateEventRequest) error {
 	newEvent := model.Event{
 		ID:        uuid.NewString(),
 		Status:    constant.StatusNew,
@@ -40,7 +40,7 @@ func (r *EventRepository) Create(request *dto.EventCreateDTO) error {
 		return err
 	}
 
-	err = r.db.Update(func(tx *bolt.Tx) error {
+	err = r.db.Update(func(tx *bbolt.Tx) error {
 		b := tx.Bucket([]byte("events"))
 		return b.Put([]byte(newEvent.ID), data)
 	})
@@ -51,7 +51,7 @@ func (r *EventRepository) Create(request *dto.EventCreateDTO) error {
 func (r *EventRepository) GetAll() ([]*model.Event, error) {
 	var events []*model.Event
 
-	err := r.db.View(func(tx *bolt.Tx) error {
+	err := r.db.View(func(tx *bbolt.Tx) error {
 		b := tx.Bucket([]byte("events"))
 		return b.ForEach(func(k, v []byte) error {
 			var event model.Event

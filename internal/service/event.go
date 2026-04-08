@@ -14,7 +14,7 @@ func NewEventService(repo repository.EventRepository) *EventService {
 	return &EventService{repo}
 }
 
-func (s *EventService) CreateEvent(req dto.EventCreateDTO) error {
+func (s *EventService) CreateEvent(req dto.CreateEventRequest) error {
 	return s.repo.Create(&req)
 }
 

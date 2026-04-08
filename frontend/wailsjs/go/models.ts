@@ -1,10 +1,10 @@
 export namespace dto {
 	
-	export class EventCreateDTO {
+	export class CreateEventRequest {
 	    name: string;
 	
 	    static createFrom(source: any = {}) {
-	        return new EventCreateDTO(source);
+	        return new CreateEventRequest(source);
 	    }
 	
 	    constructor(source: any = {}) {
@@ -12,7 +12,21 @@ export namespace dto {
 	        this.name = source["name"];
 	    }
 	}
-	export class MatchDataUpdateDTO {
+	export class MessageRequest {
+	    type: string;
+	    payload: any;
+	
+	    static createFrom(source: any = {}) {
+	        return new MessageRequest(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.type = source["type"];
+	        this.payload = source["payload"];
+	    }
+	}
+	export class UpdateMatchRequest {
 	    player1Name: string;
 	    player1Team: string;
 	    player1Score: number;
@@ -22,7 +36,7 @@ export namespace dto {
 	    round: string;
 	
 	    static createFrom(source: any = {}) {
-	        return new MatchDataUpdateDTO(source);
+	        return new UpdateMatchRequest(source);
 	    }
 	
 	    constructor(source: any = {}) {
