@@ -161,7 +161,23 @@ func (s *StartGGImportService) resolvePlayer(p startgg.Participant) (string, err
 		return alias.PlayerID, nil
 	}
 
-	// Create new player
+	// 2. Fall back to case-insensitive tag match against existing players.
+	// Handles manually-added players who registered on start.gg under the same tag.
+	var existing model.Player
+	if err := s.db.Where("LOWER(tag) = LOWER(?)", p.GamerTag).First(&existing).Error; err == nil {
+		// Link this start.gg player ID to the existing player for future imports.
+		linkAlias := &model.PlayerAlias{
+			ID:         uuid.NewString(),
+			PlayerID:   existing.ID,
+			Alias:      p.GamerTag,
+			Source:     constant.SourceStartGG,
+			ExternalID: externalID,
+		}
+		s.db.Create(linkAlias)
+		return existing.ID, nil
+	}
+
+	// 3. Create new player
 	player := &model.Player{
 		ID:        uuid.NewString(),
 		Tag:       p.GamerTag,
