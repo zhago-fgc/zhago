@@ -33,9 +33,16 @@
         <h2 class="text-sm font-semibold text-zinc-300 mb-4">API Keys</h2>
         <div class="flex flex-col gap-3">
           <div>
-            <label class="text-xs text-zinc-500 mb-1 block">start.gg API key</label>
-            <input type="password" placeholder="Coming soon" disabled
-              class="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-sm text-zinc-500 cursor-not-allowed" />
+            <label class="text-xs text-zinc-500 mb-1 block">start.gg API token</label>
+            <div class="flex gap-2">
+              <input v-model="startggToken" type="password" placeholder="Paste your token from start.gg Developer Settings" autocomplete="off"
+                class="flex-1 bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500" />
+              <button class="px-3 py-2 bg-brand-800 hover:bg-brand-700 text-white text-sm rounded transition-colors disabled:opacity-50"
+                :disabled="!startggToken.trim()" @click="saveStartggToken">
+                Save
+              </button>
+            </div>
+            <p v-if="startggTokenSaved" class="text-xs text-green-400 mt-1">Token saved.</p>
           </div>
           <div>
             <label class="text-xs text-zinc-500 mb-1 block">Challonge API key</label>
@@ -59,10 +66,18 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { StartServer, StopServer, IsRunning, GetConfigPort } from '../../wailsjs/go/system/ServerHandler';
 
 const state = reactive({ httpPort: 3000, isRunning: false, isLoading: false });
+
+const STARTGG_TOKEN_KEY = 'zhago:startgg_token';
+const startggToken = ref('');
+const startggTokenSaved = ref(false);
+
+onMounted(async () => {
+  startggToken.value = localStorage.getItem(STARTGG_TOKEN_KEY) ?? '';
+});
 
 onMounted(async () => {
   try {
@@ -71,6 +86,12 @@ onMounted(async () => {
     state.httpPort  = port;
   } catch {}
 });
+
+function saveStartggToken() {
+  localStorage.setItem(STARTGG_TOKEN_KEY, startggToken.value.trim());
+  startggTokenSaved.value = true;
+  setTimeout(() => { startggTokenSaved.value = false; }, 3000);
+}
 
 async function toggleServer() {
   state.isLoading = true;

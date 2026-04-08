@@ -15,16 +15,45 @@
       </RouterLink>
     </div>
 
-    <div class="flex gap-3 mb-8">
+    <div class="flex gap-3 mb-6">
       <button class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-sm text-white rounded transition-colors" @click="showCreateEvent = true">
         + New Event
       </button>
-      <button class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-sm text-zinc-400 rounded transition-colors cursor-not-allowed" disabled title="Coming soon">
+      <button class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-sm text-white rounded transition-colors"
+        @click="toggleStartggImport">
         Import start.gg
       </button>
       <button class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-sm text-zinc-400 rounded transition-colors cursor-not-allowed" disabled title="Coming soon">
         Import Challonge
       </button>
+    </div>
+
+    <!-- start.gg import form -->
+    <div v-if="showStartggImport" class="bg-zinc-800 border border-zinc-700 rounded-lg p-5 mb-6">
+      <h2 class="text-sm font-semibold text-zinc-300 mb-3">Import from start.gg</h2>
+      <div class="flex flex-col gap-3">
+        <div class="flex gap-3">
+          <input v-model="startggUrl" type="text" placeholder="https://start.gg/tournament/your-tournament"
+            autocomplete="off"
+            class="flex-1 bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500" />
+        </div>
+        <div v-if="!startggToken" class="text-xs text-yellow-400">
+          No start.gg token found. Add one in <RouterLink to="/settings" class="underline hover:text-yellow-300">Settings → API Keys</RouterLink>.
+        </div>
+        <div v-if="importError" class="text-xs text-red-400">{{ importError }}</div>
+        <div v-if="importSuccess" class="text-xs text-green-400">Import complete. Events and brackets have been created.</div>
+        <div class="flex gap-2">
+          <button class="px-4 py-2 bg-brand-800 hover:bg-brand-700 text-white text-sm rounded transition-colors disabled:opacity-50"
+            :disabled="!startggUrl.trim() || !startggToken || importing"
+            @click="runStartggImport">
+            {{ importing ? 'Importing...' : 'Import' }}
+          </button>
+          <button class="px-3 py-2 bg-zinc-700 hover:bg-zinc-600 text-white text-sm rounded transition-colors"
+            @click="showStartggImport = false">
+            Cancel
+          </button>
+        </div>
+      </div>
     </div>
 
     <div v-if="showCreateEvent" class="bg-zinc-800 border border-zinc-700 rounded-lg p-5 mb-6">
@@ -170,7 +199,39 @@ import CustomSelect from '../components/CustomSelect.vue';
 import { GetAllEvents, CreateEvent, DeleteEvent } from '../../wailsjs/go/system/EventHandler';
 import { GetAll as GetAllTournaments, CreateTournament, UpdateTournament, DeleteTournament, ActivateTournament } from '../../wailsjs/go/system/TournamentHandler';
 import { ListInstalledAssets } from '../../wailsjs/go/system/AssetHandler';
+import { ImportTournament } from '../../wailsjs/go/system/StartGGHandler';
 import { dto, model } from '../../wailsjs/go/models';
+
+const STARTGG_TOKEN_KEY = 'zhago:startgg_token';
+const startggToken       = ref('');
+const showStartggImport  = ref(false);
+const startggUrl         = ref('');
+const importing          = ref(false);
+const importError        = ref('');
+const importSuccess      = ref(false);
+
+function toggleStartggImport() {
+  showStartggImport.value = !showStartggImport.value;
+  importError.value = '';
+  importSuccess.value = false;
+}
+
+async function runStartggImport() {
+  if (!startggUrl.value.trim() || !startggToken.value || importing.value) return;
+  importing.value = true;
+  importError.value = '';
+  importSuccess.value = false;
+  try {
+    await ImportTournament(startggUrl.value.trim(), startggToken.value);
+    importSuccess.value = true;
+    startggUrl.value = '';
+    await load();
+  } catch (err: any) {
+    importError.value = err?.message ?? String(err);
+  } finally {
+    importing.value = false;
+  }
+}
 
 const events           = ref<model.Event[]>([]);
 const tournaments      = ref<model.Tournament[]>([]);
@@ -307,5 +368,8 @@ async function deleteTournament(id: string) {
   } catch (err) { console.error(err); }
 }
 
-onMounted(load);
+onMounted(() => {
+  startggToken.value = localStorage.getItem(STARTGG_TOKEN_KEY) ?? '';
+  load();
+});
 </script>
