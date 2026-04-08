@@ -1,0 +1,83 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  width: 1920px;
+  height: 1080px;
+  background: transparent;
+  overflow: hidden;
+  font-family: 'Arial Narrow', Arial, sans-serif;
+}
+
+#commentary {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  height: 110px;
+  gap: 0;
+}
+
+.commentator {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 36px;
+  background: rgba(18, 22, 26, 0.96);
+  border-top: 3px solid #A6C8D4;
+  position: relative;
+  overflow: hidden;
+}
+
+.commentator::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, rgba(62,90,111,0.2) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.commentator + .commentator {
+  border-left: 1px solid rgba(166,200,212,0.2);
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #A6C8D4;
+  margin-bottom: 4px;
+}
+
+.name {
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 5px;
+}
+
+.handle {
+  font-size: 16px;
+  color: #BDCFD3;
+  letter-spacing: 0.03em;
+}
+
+.pronouns {
+  font-size: 14px;
+  color: rgba(189,207,211,0.55);
+  letter-spacing: 0.04em;
+}
