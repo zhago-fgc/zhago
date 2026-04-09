@@ -48,7 +48,7 @@ query EventSets($eventId: ID!, $page: Int!, $perPage: Int!) {
         slots {
           entrant {
             id
-            participants { gamerTag prefix }
+            participants { gamerTag prefix player { id } }
           }
         }
         games {

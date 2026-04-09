@@ -94,6 +94,30 @@ export namespace dto {
 	        this.payload = source["payload"];
 	    }
 	}
+	export class PlayerStats {
+	    player_id: string;
+	    sets_played: number;
+	    sets_won: number;
+	    sets_lost: number;
+	    win_rate: number;
+	    games_won: number;
+	    games_lost: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new PlayerStats(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.player_id = source["player_id"];
+	        this.sets_played = source["sets_played"];
+	        this.sets_won = source["sets_won"];
+	        this.sets_lost = source["sets_lost"];
+	        this.win_rate = source["win_rate"];
+	        this.games_won = source["games_won"];
+	        this.games_lost = source["games_lost"];
+	    }
+	}
 	export class ReportSetRequest {
 	    set_id: string;
 	    winner_id: string;
@@ -140,30 +164,6 @@ export namespace dto {
 	        this.player2Character = source["player2Character"];
 	        this.round = source["round"];
 	        this.bestOf = source["bestOf"];
-	    }
-	}
-	export class PlayerStats {
-	    player_id: string;
-	    sets_played: number;
-	    sets_won: number;
-	    sets_lost: number;
-	    win_rate: number;
-	    games_won: number;
-	    games_lost: number;
-
-	    static createFrom(source: any = {}) {
-	        return new PlayerStats(source);
-	    }
-
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.player_id = source["player_id"];
-	        this.sets_played = source["sets_played"];
-	        this.sets_won = source["sets_won"];
-	        this.sets_lost = source["sets_lost"];
-	        this.win_rate = source["win_rate"];
-	        this.games_won = source["games_won"];
-	        this.games_lost = source["games_lost"];
 	    }
 	}
 	export class UpdateSetScoreRequest {
@@ -339,6 +339,7 @@ export namespace model {
 	    best_of: number;
 	    status: string;
 	    external_id: string;
+	    round_order: number;
 	    player1?: Player;
 	    player2?: Player;
 	    winner?: Player;
@@ -362,6 +363,7 @@ export namespace model {
 	        this.best_of = source["best_of"];
 	        this.status = source["status"];
 	        this.external_id = source["external_id"];
+	        this.round_order = source["round_order"];
 	        this.player1 = this.convertValues(source["player1"], Player);
 	        this.player2 = this.convertValues(source["player2"], Player);
 	        this.winner = this.convertValues(source["winner"], Player);
