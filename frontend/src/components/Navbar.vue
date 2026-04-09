@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, useRoute } from 'vue-router';
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { IsRunning, GetPort, ClientCount } from '../../wailsjs/go/system/ServerHandler';
 import { ListPacks } from '../../wailsjs/go/system/TemplateHandler';
 import logo from '../assets/zhago-logo-white.svg';
@@ -46,14 +46,20 @@ async function refreshPacks() {
   try { packs.value = (await ListPacks()) ?? []; } catch {}
 }
 
+function refreshStartggLinked() {
+  startggLinked.value = !!localStorage.getItem('zhago:startgg_token');
+}
+
 let interval: ReturnType<typeof setInterval>;
 onMounted(() => {
   refreshStatus();
   refreshPacks();
-  startggLinked.value = !!localStorage.getItem('zhago:startgg_token');
+  refreshStartggLinked();
   interval = setInterval(refreshStatus, 5000);
 });
 onUnmounted(() => clearInterval(interval));
+
+watch(() => route.path, refreshStartggLinked);
 
 function isActive(to: string, exact = false): boolean {
   return exact ? route.path === to : route.path.startsWith(to);

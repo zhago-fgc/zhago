@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"log"
 	"net/url"
 	"strings"
 	"time"
@@ -80,6 +81,8 @@ func (s *StartGGImportService) importEvent(client *startgg.Client, eventID strin
 		return fmt.Errorf("fetch entrants: %w", err)
 	}
 
+	log.Printf("[startgg] event %d %q: %d entrants fetched", sggEvent.ID, sggEvent.Name, len(entrants))
+
 	// entrantID → zhago player ID
 	entrantMap := make(map[int]string, len(entrants))
 	for _, entrant := range entrants {
@@ -92,6 +95,7 @@ func (s *StartGGImportService) importEvent(client *startgg.Client, eventID strin
 			return fmt.Errorf("resolve player %q: %w", p.GamerTag, err)
 		}
 		entrantMap[entrant.ID] = playerID
+		log.Printf("[startgg]   entrant %d → player %q (id %s)", entrant.ID, p.GamerTag, playerID)
 	}
 
 	// Fetch sets and create Zhago Sets
@@ -100,14 +104,38 @@ func (s *StartGGImportService) importEvent(client *startgg.Client, eventID strin
 		return fmt.Errorf("fetch sets: %w", err)
 	}
 
+	log.Printf("[startgg] event %d: %d sets fetched", sggEvent.ID, len(sets))
+
+	imported := 0
 	for _, sggSet := range sets {
 		if err := s.importSet(tourn.ID, sggSet, entrantMap); err != nil {
-			// Non-fatal: log and continue (incomplete sets are common mid-tournament)
+			log.Printf("[startgg] skipping set %d: %v", sggSet.ID, err)
 			continue
 		}
+		imported++
 	}
+	log.Printf("[startgg] event %d: %d/%d sets imported", sggEvent.ID, imported, len(sets))
 
 	return nil
+}
+
+func (s *StartGGImportService) resolveEntrant(entrantMap map[int]string, slot startgg.Slot) (string, error) {
+	if id, ok := entrantMap[slot.Entrant.ID]; ok {
+		return id, nil
+	}
+	// Entrant ID not in map (can happen when set IDs differ from entrant query IDs).
+	// Fall back to resolving the player from the slot's participant data directly.
+	if len(slot.Entrant.Participants) == 0 {
+		return "", fmt.Errorf("entrant %d: no participants", slot.Entrant.ID)
+	}
+	p := slot.Entrant.Participants[0]
+	playerID, err := s.resolvePlayer(p)
+	if err != nil {
+		return "", fmt.Errorf("entrant %d: resolve player: %w", slot.Entrant.ID, err)
+	}
+	// Cache for the rest of this import pass.
+	entrantMap[slot.Entrant.ID] = playerID
+	return playerID, nil
 }
 
 func (s *StartGGImportService) importSet(tournID string, sggSet startgg.Set, entrantMap map[int]string) error {
@@ -115,10 +143,13 @@ func (s *StartGGImportService) importSet(tournID string, sggSet startgg.Set, ent
 		return fmt.Errorf("set %d: incomplete slots", sggSet.ID)
 	}
 
-	p1ID, ok1 := entrantMap[sggSet.Slots[0].Entrant.ID]
-	p2ID, ok2 := entrantMap[sggSet.Slots[1].Entrant.ID]
-	if !ok1 || !ok2 {
-		return fmt.Errorf("set %d: unknown entrant", sggSet.ID)
+	p1ID, err := s.resolveEntrant(entrantMap, sggSet.Slots[0])
+	if err != nil {
+		return fmt.Errorf("set %d: player1: %w", sggSet.ID, err)
+	}
+	p2ID, err := s.resolveEntrant(entrantMap, sggSet.Slots[1])
+	if err != nil {
+		return fmt.Errorf("set %d: player2: %w", sggSet.ID, err)
 	}
 
 	set := &model.Set{
@@ -140,9 +171,10 @@ func (s *StartGGImportService) importSet(tournID string, sggSet startgg.Set, ent
 		set.Player1Score = p1Score
 		set.Player2Score = p2Score
 
-		if entrantMap[sggSet.WinnerID] == p1ID {
+		switch entrantMap[sggSet.WinnerID] {
+		case p1ID:
 			set.WinnerID = p1ID
-		} else {
+		case p2ID:
 			set.WinnerID = p2ID
 		}
 	}
@@ -160,7 +192,12 @@ func (s *StartGGImportService) resolvePlayer(p startgg.Participant) (string, err
 		First(&alias).Error
 
 	if err == nil {
-		return alias.PlayerID, nil
+		// Verify the player still exists (may have been deleted after the alias was created)
+		var exists model.Player
+		if s.db.First(&exists, "id = ?", alias.PlayerID).Error == nil {
+			return alias.PlayerID, nil
+		}
+		// Player is gone — fall through and recreate, reusing the same alias record
 	}
 
 	// 2. Fall back to case-insensitive tag match against existing players.
