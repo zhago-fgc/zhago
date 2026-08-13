@@ -1,6 +1,10 @@
-build/bin
 node_modules
-frontend/dist
+app/dist
+build
+.gen
+.dev-data
+.env
+.env.*
 
 # Database files
 *.db

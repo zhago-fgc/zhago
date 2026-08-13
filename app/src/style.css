@@ -1,0 +1,19 @@
+@import 'tailwindcss';
+
+/* Same brand palette as the real Wails app (frontend/src/style.css) — keeping
+   the two visually consistent since this replaces it. */
+@theme {
+  --color-brand-900: #2b3f4e;
+  --color-brand-800: #3E5A6F;
+  --color-brand-700: #4d6f87;
+  --color-brand-400: #A6C8D4;
+  --color-brand-300: #BDCFD3;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  @apply bg-zinc-900 text-white;
+}
