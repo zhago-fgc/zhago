@@ -1,0 +1,49 @@
+# Changelog
+
+All notable changes to this project are documented here. The format follows
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
+uses [Gitmoji](https://gitmoji.dev/) in commit messages.
+
+History prior to this file was not itemized commit-by-commit — the entries
+below summarize the full development history into two retrospective blocks:
+the original Wails v2 desktop app, and the Bun rewrite that replaced it.
+From here on, new changes should be added under `[Unreleased]` as they land.
+
+## [Unreleased]
+
+### Changed
+
+- 🏗️ Replaced the Wails v2 desktop app with a Bun server and a module/plugin
+  architecture: each feature (match state, casters, caster directory) is a
+  module with its own backend logic and its own cockpit/overlay UI, loaded
+  from a `modules/` directory next to the binary rather than baked into it.
+- ✨ Added app theming, a cockpit skin system, and a Settings view.
+- 📝 Rewrote the README to match the project's current early/prototype state.
+- 🎨 Restored the logo asset the Bun rewrite had dropped.
+
+## [Wails v2] - 2025-09-07 to 2026-04-09
+
+Retrospective summary of the original desktop app, before the Bun rewrite.
+
+### Added
+
+- 🎉 Initial Wails v2 + Go + Vue desktop app.
+- ✨ HTTP server for static files and SSE-driven overlays.
+- 🗃️ Storage migrated BoltDB → SQLite (GORM).
+- 🏗️ Domain models, repository interfaces, and DTOs (clean architecture).
+- ✨ SSE hub with fan-out and server lifecycle bindings.
+- ✨ Player, commentator, tournament, and set management, each with CRUD
+  and a bracket view.
+- ✨ Pack-based template system replacing the static overlay handler.
+- ✨ Asset management handler and view.
+- 🎨 Frontend redesign: new nav, views, and Pinia stores.
+- ✨ Start.gg tournament import, with a token-management UI and player
+  stats aggregation.
+
+### Fixed
+
+- 🐛 Bracket set ordering by round number.
+- 🐛 Player deduplication by tag match on Start.gg import.
+- 🐛 Round order and external ID stored on import for correct bracket
+  ordering.
+- 🐛 Start.gg import reliability and navbar token sync.
