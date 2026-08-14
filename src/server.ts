@@ -24,7 +24,7 @@ const BUILTIN_MODULES_DIR =
 // "installed later" vs "shipped with the app."
 const INSTALLED_MODULES_DIR = zhagoPath('modules')
 
-const modules = new Map<string, string>() // name -> frontend dir
+const modules = new Map<string, string>() // name -> module root dir
 const manifests = new Map<string, ModuleManifest>() // name -> manifest, for /api/modules
 
 async function loadModulesFrom(baseDir: string) {
@@ -33,7 +33,7 @@ async function loadModulesFrom(baseDir: string) {
     const dir = join(baseDir, name)
     try {
       const manifest = await loadModule(dir)
-      modules.set(manifest.name, join(dir, 'frontend'))
+      modules.set(manifest.name, dir)
       manifests.set(manifest.name, manifest)
       console.log(`[core] loaded module "${manifest.name}" (${manifest.type}) from ${baseDir}`)
     } catch (err) {
@@ -49,7 +49,7 @@ async function loadAllModules() {
 
 await loadAllModules()
 
-Bun.serve({
+const server = Bun.serve({
   port: Number(process.env.PORT ?? 3210),
   async fetch(req, server) {
     const url = new URL(req.url)
@@ -102,13 +102,16 @@ Bun.serve({
       })
     }
 
-    // 3. Static module frontends — GET /modules/:name/*
+    // 3. Static module files — GET /modules/:name/* — frontend/ (cockpit) and
+    // overlay/ are sibling folders inside the module, not one shared folder;
+    // the requested path picks which one. Bare /modules/:name/ defaults to
+    // the cockpit, same convention as any static host defaulting to index.html.
     const staticMatch = url.pathname.match(/^\/modules\/([^/]+)\/(.*)$/)
     if (staticMatch && req.method === 'GET') {
       const [, name, rest] = staticMatch
-      const frontendDir = modules.get(name)
-      if (!frontendDir) return new Response('module not found', { status: 404 })
-      const file = Bun.file(join(frontendDir, rest || 'index.html'))
+      const moduleDir = modules.get(name)
+      if (!moduleDir) return new Response('module not found', { status: 404 })
+      const file = Bun.file(join(moduleDir, rest || 'frontend/index.html'))
       if (await file.exists()) return new Response(file)
       return new Response('not found', { status: 404 })
     }
@@ -119,10 +122,16 @@ Bun.serve({
       if (assetPath) return new Response(Bun.file(assetPath))
     }
 
-    return new Response('zhago-core-bun: see /modules/casters/cockpit.html and /modules/casters/overlay.html', {
-      status: 200,
-    })
+    // Reached only in dev without the console running (no uiAssets, no Vite
+    // proxy in front of this) — list whatever's actually installed instead of
+    // a name hardcoded from whichever module existed first.
+    const withCockpit = [...manifests.values()].filter((m) => m.ui?.cockpit)
+    const body = withCockpit.length
+      ? 'zhago: no admin console built — module cockpits:\n' +
+        withCockpit.map((m) => `  /modules/${m.name}/${m.ui!.cockpit}`).join('\n')
+      : 'zhago: no admin console built, and no installed modules have a cockpit'
+    return new Response(body, { status: 200 })
   },
 })
 
-console.log('zhago-core-bun listening on http://localhost:3210')
+console.log(`zhago listening on http://localhost:${server.port}`)

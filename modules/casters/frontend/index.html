@@ -11,6 +11,8 @@
   fieldset { border: 1px solid #ddd; border-radius: 6px; margin-bottom: 1rem; padding: 1rem; }
   legend { font-weight: 600; padding: 0 0.4rem; }
   select { width: 100%; padding: 0.5rem; }
+  .sides { display: flex; gap: 1rem; margin-bottom: 1rem; }
+  .sides fieldset { flex: 1; margin-bottom: 0; }
   button { padding: 0.6rem 1.2rem; cursor: pointer; }
   .preview-frame { width: 384px; height: 216px; overflow: hidden; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 0.5rem; }
   .preview-frame iframe { width: 1920px; height: 1080px; border: none; transform: scale(0.2); transform-origin: 0 0; }
@@ -22,25 +24,27 @@
 
   <h2>Preview</h2>
   <div class="preview-frame">
-    <iframe id="overlay-preview" src="overlay.html"></iframe>
+    <iframe id="overlay-preview" src="../overlay/index.html"></iframe>
   </div>
   <h3>Embed</h3>
   <input id="embed-url" readonly onclick="this.select()">
 
   <h2>On commentary now</h2>
   <form id="form">
-    <fieldset>
-      <legend>Commentator 1</legend>
-      <select id="c1-select">
-        <option value="">— none —</option>
-      </select>
-    </fieldset>
-    <fieldset>
-      <legend>Commentator 2</legend>
-      <select id="c2-select">
-        <option value="">— none —</option>
-      </select>
-    </fieldset>
+    <div class="sides">
+      <fieldset>
+        <legend>Commentator 1</legend>
+        <select id="c1-select">
+          <option value="">— none —</option>
+        </select>
+      </fieldset>
+      <fieldset>
+        <legend>Commentator 2</legend>
+        <select id="c2-select">
+          <option value="">— none —</option>
+        </select>
+      </fieldset>
+    </div>
     <button type="submit">Update overlay</button>
   </form>
   <p id="empty-roster-hint" style="display: none">
@@ -50,7 +54,7 @@
 <script>
   // Full absolute URL, since this is what gets pasted into OBS's browser
   // source — a relative path means nothing outside this page.
-  document.getElementById('embed-url').value = new URL('overlay.html', location.href).href
+  document.getElementById('embed-url').value = new URL('../overlay/index.html', location.href).href
 
   let roster = []
 

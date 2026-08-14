@@ -77,6 +77,12 @@ body {
   color: var(--muted);
 }
 
+.characters {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
 .round-chip {
   display: flex;
   align-items: center;

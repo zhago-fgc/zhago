@@ -1,6 +1,13 @@
 import { Database } from 'bun:sqlite'
-import type { ModuleStorage } from '../types'
+import type { ModuleStorage, ModuleStorageQueryOptions } from '../types'
 import { zhagoPath } from './paths'
+
+// json_extract's field path is interpolated into the SQL string itself (SQLite
+// has no way to parameterize a json_extract path) — only the *value* being
+// compared against goes through a bound parameter. This guards the one part
+// that isn't parameterized: a field name outside this shape could otherwise
+// break out of the '$.<field>' path expression.
+const SAFE_FIELD = /^[a-zA-Z0-9_]+$/
 
 const db = new Database(zhagoPath('zhago.db'))
 
@@ -33,10 +40,21 @@ export function scopedStorage(namespace: string): ModuleStorage {
         .get(scope(collection), id) as { data: string } | null
       return row ? JSON.parse(row.data) : null
     },
-    query(collection: string, limit = 100) {
+    query(collection: string, options: ModuleStorageQueryOptions = {}) {
+      const { where = {}, limit = 100 } = options
+      const conditions = ['collection = ?']
+      const params: (string | number)[] = [scope(collection)]
+
+      for (const [field, value] of Object.entries(where)) {
+        if (!SAFE_FIELD.test(field)) throw new Error(`storage.query: invalid field name "${field}"`)
+        conditions.push(`json_extract(data, '$.${field}') = ?`)
+        params.push(value)
+      }
+
+      params.push(limit)
       const rows = db
-        .query('SELECT data FROM records WHERE collection = ? LIMIT ?')
-        .all(scope(collection), limit) as { data: string }[]
+        .query(`SELECT data FROM records WHERE ${conditions.join(' AND ')} LIMIT ?`)
+        .all(...params) as { data: string }[]
       return rows.map((r) => JSON.parse(r.data))
     },
     remove(collection: string, id: string) {
