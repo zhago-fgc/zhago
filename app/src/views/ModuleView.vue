@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { inject, computed, ref, watch, type Ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { COCKPIT_SKIN } from '../cockpit-skin';
+import { COCKPIT_SKIN } from '../constants/cockpit-skin';
 
 interface ModuleManifest {
   name: string;
