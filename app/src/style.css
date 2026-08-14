@@ -9,10 +9,10 @@
    the two visually consistent since this replaces it. */
 @theme {
   --color-brand-900: #2b3f4e;
-  --color-brand-800: #3E5A6F;
+  --color-brand-800: #3e5a6f;
   --color-brand-700: #4d6f87;
-  --color-brand-400: #A6C8D4;
-  --color-brand-300: #BDCFD3;
+  --color-brand-400: #a6c8d4;
+  --color-brand-300: #bdcfd3;
 }
 
 html,

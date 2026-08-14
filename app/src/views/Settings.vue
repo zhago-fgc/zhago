@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { theme, type Theme } from '../theme'
+import { theme, type Theme } from '../theme';
 
 const options: { value: Theme; label: string }[] = [
   { value: 'light', label: 'Light' },
   { value: 'dark', label: 'Dark' },
   { value: 'system', label: 'System' },
-]
+];
 </script>
 
 <template>

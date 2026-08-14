@@ -1,66 +1,94 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Caster Directory — Cockpit</title>
-<style>
-  body { max-width: 560px; margin: 3rem auto; padding: 0 1rem; }
-  .row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
-  input { flex: 1; padding: 0.5rem; }
-  button { padding: 0.5rem 1rem; cursor: pointer; }
-  ul { list-style: none; padding: 0; }
-  li { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; }
-  li button { margin-left: auto; }
-  .meta { opacity: 0.7; font-size: 0.85em; }
-</style>
-</head>
-<body>
-  <h1>Caster Directory</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Caster Directory — Cockpit</title>
+    <style>
+      body {
+        max-width: 560px;
+        margin: 3rem auto;
+        padding: 0 1rem;
+      }
+      .row {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+      input {
+        flex: 1;
+        padding: 0.5rem;
+      }
+      button {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+      li {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.4rem 0;
+      }
+      li button {
+        margin-left: auto;
+      }
+      .meta {
+        opacity: 0.7;
+        font-size: 0.85em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Caster Directory</h1>
 
-  <form id="form" class="row">
-    <input id="name" placeholder="Name" required>
-    <input id="handle" placeholder="Handle (optional)">
-    <input id="pronouns" placeholder="Pronouns (optional)">
-    <button type="submit">Add</button>
-  </form>
-  <ul id="list"></ul>
+    <form id="form" class="row">
+      <input id="name" placeholder="Name" required />
+      <input id="handle" placeholder="Handle (optional)" />
+      <input id="pronouns" placeholder="Pronouns (optional)" />
+      <button type="submit">Add</button>
+    </form>
+    <ul id="list"></ul>
 
-<script>
-  async function send(type, payload) {
-    await fetch('/api/bus/caster-directory/' + type, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
-  }
+    <script>
+      async function send(type, payload) {
+        await fetch('/api/bus/caster-directory/' + type, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      }
 
-  document.getElementById('form').addEventListener('submit', (e) => {
-    e.preventDefault()
-    send('create', {
-      name: document.getElementById('name').value,
-      handle: document.getElementById('handle').value || undefined,
-      pronouns: document.getElementById('pronouns').value || undefined,
-    })
-    e.target.reset()
-  })
+      document.getElementById('form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        send('create', {
+          name: document.getElementById('name').value,
+          handle: document.getElementById('handle').value || undefined,
+          pronouns: document.getElementById('pronouns').value || undefined,
+        });
+        e.target.reset();
+      });
 
-  function render(casters) {
-    const ul = document.getElementById('list')
-    ul.innerHTML = ''
-    for (const c of casters) {
-      const li = document.createElement('li')
-      const meta = [c.handle, c.pronouns].filter(Boolean).join(' · ')
-      li.innerHTML = '<span>' + c.name + '</span>' + (meta ? '<span class="meta">' + meta + '</span>' : '')
-      const btn = document.createElement('button')
-      btn.textContent = 'Remove'
-      btn.onclick = () => send('delete', { id: c.id })
-      li.appendChild(btn)
-      ul.appendChild(li)
-    }
-  }
+      function render(casters) {
+        const ul = document.getElementById('list');
+        ul.innerHTML = '';
+        for (const c of casters) {
+          const li = document.createElement('li');
+          const meta = [c.handle, c.pronouns].filter(Boolean).join(' · ');
+          li.innerHTML =
+            '<span>' + c.name + '</span>' + (meta ? '<span class="meta">' + meta + '</span>' : '');
+          const btn = document.createElement('button');
+          btn.textContent = 'Remove';
+          btn.onclick = () => send('delete', { id: c.id });
+          li.appendChild(btn);
+          ul.appendChild(li);
+        }
+      }
 
-  const source = new EventSource('/api/bus/caster-directory/stream')
-  source.onmessage = (e) => render(JSON.parse(e.data))
-</script>
-</body>
+      const source = new EventSource('/api/bus/caster-directory/stream');
+      source.onmessage = (e) => render(JSON.parse(e.data));
+    </script>
+  </body>
 </html>

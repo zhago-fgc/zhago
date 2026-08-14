@@ -48,7 +48,9 @@ body {
   min-width: 220px;
   height: 56px;
   padding: 0 22px;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 
 .caster .panel-bg {
@@ -59,7 +61,10 @@ body {
   z-index: -1;
 }
 
-.info { display: flex; flex-direction: column; }
+.info {
+  display: flex;
+  flex-direction: column;
+}
 
 .name {
   font-size: 18px;

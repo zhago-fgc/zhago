@@ -1,30 +1,32 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, provide } from 'vue'
-import logo from './assets/zhago-logo-white.svg'
+import { ref, onMounted, computed, provide } from 'vue';
+import logo from './assets/zhago-logo-white.svg';
 
 interface ModuleManifest {
-  name: string
-  version: string
-  type: 'plugin' | 'module' | 'theme'
-  ui?: { cockpit?: string; overlay?: string[] }
+  name: string;
+  version: string;
+  type: 'plugin' | 'module' | 'theme';
+  ui?: { cockpit?: string; overlay?: string[] };
 }
 
-const modules = ref<ModuleManifest[]>([])
-provide('modules', modules)
+const modules = ref<ModuleManifest[]>([]);
+provide('modules', modules);
 
 // Only modules with a cockpit page show up in the nav — a plugin with no UI
 // (e.g. a bracket-source integration) has nothing to click into here.
-const withCockpit = computed(() => modules.value.filter((m) => m.ui?.cockpit))
+const withCockpit = computed(() => modules.value.filter((m) => m.ui?.cockpit));
 
 onMounted(async () => {
-  const res = await fetch('/api/modules')
-  modules.value = await res.json()
-})
+  const res = await fetch('/api/modules');
+  modules.value = await res.json();
+});
 </script>
 
 <template>
   <div class="flex h-screen">
-    <aside class="w-52 shrink-0 bg-white dark:bg-zinc-950 flex flex-col border-r border-zinc-200 dark:border-zinc-800 select-none">
+    <aside
+      class="w-52 shrink-0 bg-white dark:bg-zinc-950 flex flex-col border-r border-zinc-200 dark:border-zinc-800 select-none"
+    >
       <div class="px-4 pt-5 pb-4 border-b border-zinc-200 dark:border-zinc-800 flex justify-center">
         <img :src="logo" alt="Zhago" class="h-8 w-auto invert dark:invert-0" />
       </div>
@@ -38,7 +40,11 @@ onMounted(async () => {
           Home
         </RouterLink>
 
-        <div class="mt-3 mb-1 px-3 text-[10px] text-zinc-400 dark:text-zinc-600 uppercase tracking-widest font-medium">Modules</div>
+        <div
+          class="mt-3 mb-1 px-3 text-[10px] text-zinc-400 dark:text-zinc-600 uppercase tracking-widest font-medium"
+        >
+          Modules
+        </div>
         <RouterLink
           v-for="m in withCockpit"
           :key="m.name"
@@ -49,7 +55,9 @@ onMounted(async () => {
           <span class="capitalize">{{ m.name }}</span>
           <span class="text-[10px] text-zinc-400 dark:text-zinc-600 uppercase">{{ m.type }}</span>
         </RouterLink>
-        <p v-if="!withCockpit.length" class="px-3 text-sm text-zinc-400 dark:text-zinc-600">No modules with a UI yet.</p>
+        <p v-if="!withCockpit.length" class="px-3 text-sm text-zinc-400 dark:text-zinc-600">
+          No modules with a UI yet.
+        </p>
       </nav>
 
       <div class="p-3 border-t border-zinc-200 dark:border-zinc-800">
@@ -60,7 +68,9 @@ onMounted(async () => {
         >
           Settings
         </RouterLink>
-        <div class="px-3 pt-2 text-[10px] text-zinc-400 dark:text-zinc-600">zhago-bun experiment</div>
+        <div class="px-3 pt-2 text-[10px] text-zinc-400 dark:text-zinc-600">
+          zhago-bun experiment
+        </div>
       </div>
     </aside>
 

@@ -34,4 +34,4 @@ export const COCKPIT_SKIN = `
   button:hover { background: #4f46e5; }
   #embed-url { background: #18181b; border: 1px solid #3f3f46; color: #a1a1aa; }
   .preview-frame { border-color: #27272a; }
-`
+`;

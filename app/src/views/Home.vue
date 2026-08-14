@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { inject, computed, type Ref } from 'vue'
+import { inject, computed, type Ref } from 'vue';
 
 interface ModuleManifest {
-  name: string
-  version: string
-  type: 'plugin' | 'module' | 'theme'
-  ui?: { cockpit?: string }
+  name: string;
+  version: string;
+  type: 'plugin' | 'module' | 'theme';
+  ui?: { cockpit?: string };
 }
 
-const modules = inject<Ref<ModuleManifest[]>>('modules')!
+const modules = inject<Ref<ModuleManifest[]>>('modules')!;
 
 // Same filter as the sidebar's Modules section — a plugin with no cockpit
 // has nothing to click into here either.
-const withCockpit = computed(() => modules.value.filter((m) => m.ui?.cockpit))
+const withCockpit = computed(() => modules.value.filter((m) => m.ui?.cockpit));
 </script>
 
 <template>
@@ -32,6 +32,8 @@ const withCockpit = computed(() => modules.value.filter((m) => m.ui?.cockpit))
       </RouterLink>
     </div>
 
-    <p v-if="!withCockpit.length" class="text-sm text-zinc-500 dark:text-zinc-600">No modules with a UI yet.</p>
+    <p v-if="!withCockpit.length" class="text-sm text-zinc-500 dark:text-zinc-600">
+      No modules with a UI yet.
+    </p>
   </div>
 </template>
