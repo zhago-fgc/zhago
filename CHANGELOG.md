@@ -20,6 +20,13 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 - ✨ Added app theming, a cockpit skin system, and a Settings view.
 - 📝 Rewrote the README to match the project's current early/prototype state.
 - 🎨 Restored the logo asset the Bun rewrite had dropped.
+- 🎨 Added ESLint, Prettier, and EditorConfig, and reformatted the existing
+  codebase to match.
+- 🐳 Added a Containerfile (Alpine-based) and a musl build target
+  (`just build-linux-musl <x64|arm64>`) for it.
+- 📦 Added a devcontainer (bun + just on a bookworm base).
+- 🔥 Removed leftover Wails build output (`bin/`) and empty pre-rewrite
+  directories (`internal/`, `templates/`).
 
 ## [Wails v2] - 2025-09-07 to 2026-04-09
 
