@@ -124,3 +124,23 @@ export function createLogger(scope: string): ModuleLog {
     error: (...a) => write('error', scope, a),
   };
 }
+
+const BOLD = '\x1b[1m';
+const GREEN = '\x1b[32m';
+const CYAN = '\x1b[36m';
+
+// One-time decorative banner on boot, Vite-style ("ready in Xms" / "➜ Local:") —
+// deliberately not routed through write(): it's for the human at the terminal,
+// not the log history, so it never touches the ring buffer, the JSONL file, or
+// the bus. Plain (no color codes) when stdout isn't a TTY, same rule as write().
+export function printBanner(port: number, startedAtMs: number) {
+  const elapsed = Math.round(performance.now() - startedAtMs);
+  if (!process.stdout.isTTY) {
+    console.log(`zhago ready in ${elapsed}ms, listening on http://localhost:${port}`);
+    return;
+  }
+  console.log(
+    `\n  ${BOLD}${GREEN}⚡ zhago${RESET} ${DIM}ready in${RESET} ${BOLD}${elapsed}ms${RESET}\n\n` +
+      `  ${GREEN}➜${RESET}  ${BOLD}Local:${RESET}   ${CYAN}http://localhost:${port}${RESET}\n`,
+  );
+}

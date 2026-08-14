@@ -1,11 +1,13 @@
 import { bus } from './core/bus';
 import { loadModule } from './core/loader';
-import { createLogger } from './core/logger';
+import { createLogger, printBanner } from './core/logger';
 import { zhagoPath } from './core/paths';
 import type { ModuleManifest } from './types';
 import { uiAssets } from '../.gen/ui-assets';
 import { mkdir, readdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
+
+const startedAt = performance.now();
 
 // Modules — built-in or hot-loaded later — always go through the same dynamic
 // import() the loader uses, and dynamic imports can't be embedded by --compile
@@ -144,3 +146,4 @@ Bun.serve({
 });
 
 log.info(`listening on http://localhost:${port}`);
+printBanner(port, startedAt);
