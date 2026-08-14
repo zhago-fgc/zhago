@@ -1,0 +1,31 @@
+{
+  "name": "zhago",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  },
+  "forwardPorts": [3210, 5173],
+  "portsAttributes": {
+    "3210": { "label": "zhago (backend)" },
+    "5173": { "label": "frontend (vite dev)" }
+  },
+  "postCreateCommand": "just install",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Vue.volar",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "EditorConfig.EditorConfig",
+        "oven.bun-vscode"
+      ],
+      "settings": {
+        "editor.formatOnSave": true
+      }
+    }
+  },
+  "remoteUser": "vscode"
+}

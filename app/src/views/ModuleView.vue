@@ -1,29 +1,31 @@
 <script setup lang="ts">
-import { inject, computed, ref, watch, type Ref } from 'vue'
-import { useRoute } from 'vue-router'
-import { COCKPIT_SKIN } from '../cockpit-skin'
+import { inject, computed, ref, watch, type Ref } from 'vue';
+import { useRoute } from 'vue-router';
+import { COCKPIT_SKIN } from '../cockpit-skin';
 
 interface ModuleManifest {
-  name: string
-  ui?: { cockpit?: string }
+  name: string;
+  ui?: { cockpit?: string };
 }
 
-const route = useRoute()
-const modules = inject<Ref<ModuleManifest[]>>('modules')!
+const route = useRoute();
+const modules = inject<Ref<ModuleManifest[]>>('modules')!;
 
 const cockpitUrl = computed(() => {
-  const name = route.params.name as string
-  const m = modules.value.find((mod) => mod.name === name)
-  return m?.ui?.cockpit ? `/modules/${m.name}/${m.ui.cockpit}` : null
-})
+  const name = route.params.name as string;
+  const m = modules.value.find((mod) => mod.name === name);
+  return m?.ui?.cockpit ? `/modules/${m.name}/${m.ui.cockpit}` : null;
+});
 
 // `load` fires only after the browser has already parsed and painted the
 // module's own (unstyled/white) page — injecting the skin there is correct
 // but too late to prevent a visible flash. So the iframe stays invisible
 // (see `ready` below) until the skin is actually in place, instead of
 // racing to inject before first paint.
-const ready = ref(false)
-watch(cockpitUrl, () => { ready.value = false })
+const ready = ref(false);
+watch(cockpitUrl, () => {
+  ready.value = false;
+});
 
 // Modules ship plain HTML/CSS/JS (no Vue, no build step — that's what lets a
 // module get picked up at runtime without rebuilding the console), so they
@@ -35,15 +37,15 @@ watch(cockpitUrl, () => { ready.value = false })
 // once it's loaded, so plain <input>/<select>/<button> elements pick up the
 // console's look without any module author touching CSS.
 function skin(e: Event) {
-  const doc = (e.target as HTMLIFrameElement).contentDocument
+  const doc = (e.target as HTMLIFrameElement).contentDocument;
   if (doc) {
-    const style = doc.createElement('style')
-    style.textContent = COCKPIT_SKIN
-    doc.head.appendChild(style)
+    const style = doc.createElement('style');
+    style.textContent = COCKPIT_SKIN;
+    doc.head.appendChild(style);
   }
   // Reveal even if contentDocument was unreachable (cross-origin) — an
   // unskinned module beats one stuck invisible forever.
-  ready.value = true
+  ready.value = true;
 }
 </script>
 

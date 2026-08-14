@@ -1,4 +1,4 @@
-import type { ModuleContext } from '@zhago/types'
+import type { ModuleContext } from '@zhago/types';
 
 // Live match state — same pattern as the casters module: the cockpit form
 // sets it, the overlay renders it, nothing persists (it's "what's happening
@@ -17,22 +17,22 @@ import type { ModuleContext } from '@zhago/types'
 // exactly the same with `game` left empty (no players/characters, team
 // stays free text either way).
 interface Side {
-  id: string
-  team: string
-  score: number
-  players: string[]
-  characters: string[]
+  id: string;
+  team: string;
+  score: number;
+  players: string[];
+  characters: string[];
 }
 
 interface MatchState {
-  game: string
-  round: string
-  bestOf: number
-  sides: [Side, Side]
+  game: string;
+  round: string;
+  bestOf: number;
+  sides: [Side, Side];
 }
 
 function emptySide(id: string): Side {
-  return { id, team: '', score: 0, players: [], characters: [] }
+  return { id, team: '', score: 0, players: [], characters: [] };
 }
 
 const empty: MatchState = {
@@ -40,20 +40,20 @@ const empty: MatchState = {
   round: '',
   bestOf: 3,
   sides: [emptySide('side-1'), emptySide('side-2')],
-}
+};
 
 export default function init(ctx: ModuleContext) {
-  let current: MatchState = empty
+  let current: MatchState = empty;
 
   ctx.on('match', 'set', (payload: Partial<MatchState>) => {
-    current = { ...empty, ...payload }
-    ctx.emit('match', 'update', current)
-  })
+    current = { ...empty, ...payload };
+    ctx.emit('match', 'update', current);
+  });
 
   // Answered by the SSE route on connect, before it subscribes to live 'update's.
   ctx.on('match', 'get-current', ({ replyTopic }: { replyTopic: string }) => {
-    ctx.emit('reply', replyTopic, current)
-  })
+    ctx.emit('reply', replyTopic, current);
+  });
 
-  ctx.log.info('ready')
+  ctx.log.info('ready');
 }

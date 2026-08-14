@@ -1,61 +1,69 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Match — Cockpit</title>
-<link rel="stylesheet" href="index.css">
-</head>
-<body>
-  <h1>Match</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Match — Cockpit</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <h1>Match</h1>
 
-  <h2>Preview</h2>
-  <div class="preview-frame">
-    <iframe id="overlay-preview" src="../overlay/index.html"></iframe>
-  </div>
-  <h3>Embed</h3>
-  <input id="embed-url" readonly onclick="this.select()">
+    <h2>Preview</h2>
+    <div class="preview-frame">
+      <iframe id="overlay-preview" src="../overlay/index.html"></iframe>
+    </div>
+    <h3>Embed</h3>
+    <input id="embed-url" readonly onclick="this.select()" />
 
-  <h2>Edit</h2>
-  <form id="form">
-    <div class="row">
-      <select id="game-select">
-        <option value="">— no game (free-text team) —</option>
-      </select>
-    </div>
-    <div class="sides">
-      <fieldset>
-        <legend>Side 1</legend>
-        <div class="row">
-          <input id="side-0-team" placeholder="Team (optional, e.g. FlyQuest)">
-          <input id="side-0-score" type="number" min="0" value="0">
-        </div>
-        <div class="field-label">Players</div>
-        <div class="char-list" id="side-0-players"></div>
-        <button type="button" class="add-character hidden" id="side-0-add-player">+ Player</button>
-        <div class="field-label">Characters</div>
-        <div class="char-list" id="side-0-characters"></div>
-        <button type="button" class="add-character hidden" id="side-0-add-character">+ Character</button>
-      </fieldset>
-      <fieldset>
-        <legend>Side 2</legend>
-        <div class="row">
-          <input id="side-1-team" placeholder="Team (optional, e.g. M80)">
-          <input id="side-1-score" type="number" min="0" value="0">
-        </div>
-        <div class="field-label">Players</div>
-        <div class="char-list" id="side-1-players"></div>
-        <button type="button" class="add-character hidden" id="side-1-add-player">+ Player</button>
-        <div class="field-label">Characters</div>
-        <div class="char-list" id="side-1-characters"></div>
-        <button type="button" class="add-character hidden" id="side-1-add-character">+ Character</button>
-      </fieldset>
-    </div>
-    <div class="row">
-      <input id="round" placeholder="Round (e.g. Grand Finals)">
-      <input id="best-of" type="number" min="1" value="3" placeholder="Bo">
-    </div>
-    <button type="submit">Update overlay</button>
-  </form>
-  <script src="index.js"></script>
-</body>
+    <h2>Edit</h2>
+    <form id="form">
+      <div class="row">
+        <select id="game-select">
+          <option value="">— no game (free-text team) —</option>
+        </select>
+      </div>
+      <div class="sides">
+        <fieldset>
+          <legend>Side 1</legend>
+          <div class="row">
+            <input id="side-0-team" placeholder="Team (optional, e.g. FlyQuest)" />
+            <input id="side-0-score" type="number" min="0" value="0" />
+          </div>
+          <div class="field-label">Players</div>
+          <div class="char-list" id="side-0-players"></div>
+          <button type="button" class="add-character hidden" id="side-0-add-player">
+            + Player
+          </button>
+          <div class="field-label">Characters</div>
+          <div class="char-list" id="side-0-characters"></div>
+          <button type="button" class="add-character hidden" id="side-0-add-character">
+            + Character
+          </button>
+        </fieldset>
+        <fieldset>
+          <legend>Side 2</legend>
+          <div class="row">
+            <input id="side-1-team" placeholder="Team (optional, e.g. M80)" />
+            <input id="side-1-score" type="number" min="0" value="0" />
+          </div>
+          <div class="field-label">Players</div>
+          <div class="char-list" id="side-1-players"></div>
+          <button type="button" class="add-character hidden" id="side-1-add-player">
+            + Player
+          </button>
+          <div class="field-label">Characters</div>
+          <div class="char-list" id="side-1-characters"></div>
+          <button type="button" class="add-character hidden" id="side-1-add-character">
+            + Character
+          </button>
+        </fieldset>
+      </div>
+      <div class="row">
+        <input id="round" placeholder="Round (e.g. Grand Finals)" />
+        <input id="best-of" type="number" min="1" value="3" placeholder="Bo" />
+      </div>
+      <button type="submit">Update overlay</button>
+    </form>
+    <script src="index.js"></script>
+  </body>
 </html>

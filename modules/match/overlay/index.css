@@ -34,7 +34,9 @@ body {
   min-width: 320px;
   height: 56px;
   padding: 0 22px;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 
 .side .panel-bg {
@@ -44,9 +46,15 @@ body {
   z-index: -1;
 }
 
-.side.p1 .panel-bg { transform: skewX(-10deg); }
-.side.p2 { flex-direction: row-reverse; }
-.side.p2 .panel-bg { transform: skewX(10deg); }
+.side.p1 .panel-bg {
+  transform: skewX(-10deg);
+}
+.side.p2 {
+  flex-direction: row-reverse;
+}
+.side.p2 .panel-bg {
+  transform: skewX(10deg);
+}
 
 .score-chip {
   background: var(--accent);
@@ -60,8 +68,13 @@ body {
   font-weight: 800;
 }
 
-.info { display: flex; flex-direction: column; }
-.side.p2 .info { align-items: flex-end; }
+.info {
+  display: flex;
+  flex-direction: column;
+}
+.side.p2 .info {
+  align-items: flex-end;
+}
 
 .name {
   font-size: 18px;

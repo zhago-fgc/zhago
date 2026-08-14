@@ -34,6 +34,12 @@ build-backend:
     # can't embed — they ship as a real directory next to the binary instead.
     cp -r modules build/modules
 
+# musl target so the binary runs on Alpine (the container's base image) without
+# dragging in glibc. arch is a Bun --compile target suffix: x64 or arm64.
+build-linux-musl arch:
+    bun build --compile --target=bun-linux-{{arch}}-musl src/server.ts --outfile build/zhago-linux-{{arch}}-musl
+    cp -r modules build/modules
+
 build-frontend:
     cd {{app}} && bun run vue-tsc -b && bun run vite build
 

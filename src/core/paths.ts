@@ -1,6 +1,6 @@
-import { mkdirSync } from 'node:fs'
-import { homedir } from 'node:os'
-import { join } from 'node:path'
+import { mkdirSync } from 'node:fs';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
 
 // Same convention as the Wails app (internal/database/connection.go,
 // internal/config/config.go, internal/bootstrap/bootstrap.go): everything
@@ -12,10 +12,10 @@ import { join } from 'node:path'
 // core never touch the real Wails app's ~/.zhago (its config.json/zhago.db/
 // templates predate this rewrite). Unset in a real install, so production
 // still defaults to the same ~/.zhago the old app used.
-export const ZHAGO_DIR = process.env.ZHAGO_DIR ?? join(homedir(), '.zhago')
+export const ZHAGO_DIR = process.env.ZHAGO_DIR ?? join(homedir(), '.zhago');
 
 export function zhagoPath(...segments: string[]): string {
-  return join(ZHAGO_DIR, ...segments)
+  return join(ZHAGO_DIR, ...segments);
 }
 
-mkdirSync(ZHAGO_DIR, { recursive: true })
+mkdirSync(ZHAGO_DIR, { recursive: true });
