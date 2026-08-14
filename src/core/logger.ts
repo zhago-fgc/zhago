@@ -1,0 +1,126 @@
+import { mkdirSync, existsSync, readFileSync } from 'node:fs';
+import { dirname, basename } from 'node:path';
+import { createStream, type RotatingFileStream } from 'rotating-file-stream';
+import { bus } from './bus';
+import { zhagoPath } from './paths';
+import type { ModuleLog } from '../types';
+
+type Level = 'info' | 'warn' | 'error';
+
+interface LogEntry {
+  time: number;
+  level: Level;
+  scope: string;
+  message: string;
+}
+
+const LEVELS: Level[] = ['info', 'warn', 'error'];
+
+// Quiet by default: a TO running the compiled binary directly gets the
+// startup banner and anything that actually needs attention, not a wall of
+// "loaded module x" on every launch. The Containerfile overrides this to
+// "info", since stdout via `docker logs` is the normal way anyone observes
+// a container — there's no terminal to flood.
+const configuredLevel = process.env.ZHAGO_LOG_LEVEL as Level | undefined;
+const MIN_LEVEL = LEVELS.includes(configuredLevel!) ? configuredLevel! : 'warn';
+
+// "pretty" is the colored/human line used everywhere in this file; "json"
+// prints the same structured entry that already goes to the file, so a
+// container's stdout can be fed straight into a log aggregator instead of
+// parsing the pretty-printed text.
+const LOG_FORMAT = process.env.ZHAGO_LOG_FORMAT === 'json' ? 'json' : 'pretty';
+
+const LOG_FILE_PATH = process.env.ZHAGO_LOG_FILE ?? zhagoPath('logs', 'log.jsonl');
+const LOG_DIR = dirname(LOG_FILE_PATH);
+const LOG_FILE = basename(LOG_FILE_PATH);
+
+const RESET = '\x1b[0m';
+const DIM = '\x1b[2m';
+const COLOR: Record<Level, string> = {
+  info: '\x1b[36m',
+  warn: '\x1b[33m',
+  error: '\x1b[31m',
+};
+
+// Kept small — this is "what just happened," not a queryable archive. Full
+// history lives in the rotated JSONL files on disk; a future Logs page reads
+// those directly for anything older than what fits here.
+const RING_SIZE = 200;
+const ring: LogEntry[] = [];
+
+// Seeds the ring buffer from whatever's already on disk, so a page opened
+// right after a restart still shows what happened at boot instead of
+// starting empty — the ring buffer alone can't survive a process restart,
+// the file is what makes that possible.
+function seedRing() {
+  if (!existsSync(LOG_FILE_PATH)) return;
+  const lines = readFileSync(LOG_FILE_PATH, 'utf-8').trim().split('\n').filter(Boolean);
+  for (const line of lines.slice(-RING_SIZE)) {
+    try {
+      ring.push(JSON.parse(line));
+    } catch {
+      // Partial/corrupt trailing line (e.g. process killed mid-write) — skip it.
+    }
+  }
+}
+seedRing();
+
+// Answered the same way every module answers its own `get-current` — see
+// modules/match/index.ts — so the existing generic GET /api/bus/:ns/stream
+// route works for `log` with no server.ts changes.
+bus.on('log', 'get-current', ({ replyTopic }: { replyTopic: string }) => {
+  bus.emit('reply', replyTopic, ring);
+});
+
+let stream: RotatingFileStream | undefined;
+function fileStream(): RotatingFileStream {
+  if (!stream) {
+    mkdirSync(LOG_DIR, { recursive: true });
+    stream = createStream(LOG_FILE, { size: '5M', maxFiles: 3, path: LOG_DIR });
+  }
+  return stream;
+}
+
+function formatArgs(args: unknown[]): string {
+  return args.map((a) => (typeof a === 'string' ? a : Bun.inspect(a))).join(' ');
+}
+
+function pad(n: number): string {
+  return n.toString().padStart(2, '0');
+}
+
+function timestamp(d: Date): string {
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
+function write(level: Level, scope: string, args: unknown[]) {
+  // The file/ring/bus stay in sync with what's visible — a level filtered out
+  // here never existed anywhere, not just hidden from the console.
+  if (LEVELS.indexOf(level) < LEVELS.indexOf(MIN_LEVEL)) return;
+
+  const time = Date.now();
+  const message = formatArgs(args);
+  const entry: LogEntry = { time, level, scope, message };
+
+  const line =
+    LOG_FORMAT === 'json'
+      ? JSON.stringify(entry)
+      : process.stdout.isTTY
+        ? `${DIM}${timestamp(new Date(time))}${RESET} ${COLOR[level]}${level.toUpperCase().padEnd(5)}${RESET} ${DIM}[${scope}]${RESET} ${message}`
+        : `${timestamp(new Date(time))} ${level.toUpperCase().padEnd(5)} [${scope}] ${message}`;
+  (level === 'error' ? console.error : console.log)(line);
+
+  ring.push(entry);
+  if (ring.length > RING_SIZE) ring.shift();
+  fileStream().write(JSON.stringify(entry) + '\n');
+
+  bus.emit('log', 'update', entry);
+}
+
+export function createLogger(scope: string): ModuleLog {
+  return {
+    info: (...a) => write('info', scope, a),
+    warn: (...a) => write('warn', scope, a),
+    error: (...a) => write('error', scope, a),
+  };
+}

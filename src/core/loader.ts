@@ -1,5 +1,6 @@
 import type { ModuleContext, ModuleManifest } from '../types';
 import { bus } from './bus';
+import { createLogger } from './logger';
 import { scopedStorage } from './storage';
 
 const loaded = new Map<string, { dispose?: () => void; unsubs: Array<() => void> }>();
@@ -22,11 +23,7 @@ export async function loadModule(dir: string): Promise<ModuleManifest> {
     emit: bus.emit,
     request: bus.request,
     storage: scopedStorage(manifest.name),
-    log: {
-      info: (...a) => console.log(`[${manifest.name}]`, ...a),
-      warn: (...a) => console.warn(`[${manifest.name}]`, ...a),
-      error: (...a) => console.error(`[${manifest.name}]`, ...a),
-    },
+    log: createLogger(manifest.name),
   };
 
   const mod = await import(`${dir}/${manifest.entry}?t=${Date.now()}`); // cache-bust for hot reload

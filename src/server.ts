@@ -1,5 +1,6 @@
 import { bus } from './core/bus';
 import { loadModule } from './core/loader';
+import { createLogger } from './core/logger';
 import { zhagoPath } from './core/paths';
 import type { ModuleManifest } from './types';
 import { uiAssets } from '../.gen/ui-assets';
@@ -24,6 +25,8 @@ const BUILTIN_MODULES_DIR =
 // "installed later" vs "shipped with the app."
 const INSTALLED_MODULES_DIR = zhagoPath('modules');
 
+const log = createLogger('core');
+
 const modules = new Map<string, string>(); // name -> module root dir
 const manifests = new Map<string, ModuleManifest>(); // name -> manifest, for /api/modules
 
@@ -35,9 +38,9 @@ async function loadModulesFrom(baseDir: string) {
       const manifest = await loadModule(dir);
       modules.set(manifest.name, dir);
       manifests.set(manifest.name, manifest);
-      console.log(`[core] loaded module "${manifest.name}" (${manifest.type}) from ${baseDir}`);
+      log.info(`loaded module "${manifest.name}" (${manifest.type}) from ${baseDir}`);
     } catch (err) {
-      console.error(`[core] failed to load module in ${dir}:`, err);
+      log.error(`failed to load module in ${dir}:`, err);
     }
   }
 }
@@ -49,8 +52,9 @@ async function loadAllModules() {
 
 await loadAllModules();
 
-const server = Bun.serve({
-  port: Number(process.env.PORT ?? 3210),
+const port = Number(process.env.PORT ?? 3210);
+Bun.serve({
+  port,
   async fetch(req, server) {
     const url = new URL(req.url);
 
@@ -139,4 +143,4 @@ const server = Bun.serve({
   },
 });
 
-console.log(`zhago listening on http://localhost:${server.port}`);
+log.info(`listening on http://localhost:${port}`);
