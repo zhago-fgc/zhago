@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
+    "build:dev": "vue-tsc --noEmit && vite build --minify false --mode development",
     "preview": "vite preview"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.13",
+    "@wailsio/runtime": "^3.0.0-beta.8",
     "vue": "^3.2.37",
     "vue-router": "4"
   },
@@ -19,7 +21,7 @@
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2",
     "vite": "^7",
-    "vue-tsc": "^1.8.27",
+    "vue-tsc": "^3.3.9",
     "@types/bun": "latest"
   },
   "main": "index.js",

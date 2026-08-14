@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=zhago
+Comment=Tournament stream overlay control
+# The Exec line includes %u to pass the URL to the application
+Exec=/usr/local/bin/zhago %u
+Terminal=false
+Type=Application
+Icon=zhago
+Categories=Utility;
+StartupWMClass=zhago
+
+ 

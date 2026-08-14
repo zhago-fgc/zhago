@@ -1,9 +1,14 @@
 build/bin
+/bin
+.task
 node_modules
 frontend/dist
 
 # Database files
 *.db
+
+# Graphify
+graphify-out/*
 
 # MacOS Specific
 .DS_Store

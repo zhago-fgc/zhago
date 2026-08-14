@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onUnmounted } from 'vue';
-import { Broadcast } from '../../wailsjs/go/system/ServerHandler';
+import { Broadcast } from '../../bindings/zhago/internal/handler/system/serverhandler';
 
 const presets = [
   { label: '3m', seconds: 180 },

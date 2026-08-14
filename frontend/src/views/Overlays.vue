@@ -82,8 +82,8 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { GetPort, IsRunning } from '../../wailsjs/go/system/ServerHandler';
-import { ListPacks, GetActivePack, SetActivePack, GetActiveTemplate, SetActiveTemplate } from '../../wailsjs/go/system/TemplateHandler';
+import { GetPort, IsRunning } from '../../bindings/zhago/internal/handler/system/serverhandler';
+import { ListPacks, GetActivePack, SetActivePack, GetActiveTemplate, SetActiveTemplate } from '../../bindings/zhago/internal/handler/system/templatehandler';
 import CustomSelect from '../components/CustomSelect.vue';
 
 const port = ref(3000);

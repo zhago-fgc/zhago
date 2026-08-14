@@ -56,10 +56,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted, reactive } from 'vue';
-import { GetAll, CreateCommentator, DeleteCommentator } from '../../wailsjs/go/system/CommentatorHandler';
-import { dto, model } from '../../wailsjs/go/models';
+import { GetAll, CreateCommentator, DeleteCommentator } from '../../bindings/zhago/internal/handler/system/commentatorhandler';
+import { Commentator } from '../../bindings/zhago/internal/domain/model/models';
+import { CreateCommentatorRequest } from '../../bindings/zhago/internal/dto/models';
 
-const commentators = ref<model.Commentator[]>([]);
+const commentators = ref<Commentator[]>([]);
 const creating     = ref(false);
 const showCreate   = ref(false);
 const form         = reactive({ name: '', handle: '', pronouns: '' });
@@ -72,7 +73,7 @@ async function createCommentator() {
   if (!form.name.trim() || creating.value) return;
   creating.value = true;
   try {
-    await CreateCommentator(dto.CreateCommentatorRequest.createFrom({
+    await CreateCommentator(CreateCommentatorRequest.createFrom({
       name: form.name.trim(),
       handle: form.handle.trim(),
       pronouns: form.pronouns.trim(),

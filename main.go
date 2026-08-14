@@ -1,16 +1,13 @@
 package main
 
 import (
-	"context"
 	"embed"
 	"log"
 	"zhago/internal/bootstrap"
 	"zhago/internal/database"
 	"zhago/internal/handler/system"
 
-	"github.com/wailsapp/wails/v2"
-	"github.com/wailsapp/wails/v2/pkg/options"
-	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
 //go:embed all:frontend/dist
@@ -33,45 +30,44 @@ func main() {
 	commentatorHandler := system.NewCommentatorHandler(db)
 	startggHandler     := system.NewStartGGHandler(db)
 
-	err := wails.Run(&options.App{
-		Title:  "zhago",
-		Width:  1024,
-		Height: 768,
-		AssetServer: &assetserver.Options{
-			Assets: assets,
+	app := application.New(application.Options{
+		Name: "zhago",
+		Services: []application.Service{
+			application.NewService(serverHandler),
+			application.NewService(eventHandler),
+			application.NewService(tournamentHandler),
+			application.NewService(playerHandler),
+			application.NewService(setHandler),
+			application.NewService(scoreboardHandler),
+			application.NewService(templateHandler),
+			application.NewService(assetHandler),
+			application.NewService(commentatorHandler),
+			application.NewService(startggHandler),
 		},
-		BackgroundColour: &options.RGBA{
-			R: 9,
-			G: 9,
-			B: 11,
-			A: 255,
+		Assets: application.AssetOptions{
+			Handler: application.BundledAssetFileServer(assets),
 		},
-		OnStartup: func(ctx context.Context) {
-			if err := bootstrap.EnsureDefaultTemplates(defaultTemplates); err != nil {
-				log.Printf("bootstrap: failed to extract default templates: %v", err)
-			}
-			if err := serverHandler.StartServer(serverHandler.GetConfigPort()); err != nil {
-				log.Printf("server: failed to auto-start: %v", err)
-			}
-		},
-		OnShutdown: func(ctx context.Context) {
+		OnShutdown: func() {
 			serverHandler.StopServer()
-		},
-		Bind: []any{
-			serverHandler,
-			eventHandler,
-			tournamentHandler,
-			playerHandler,
-			setHandler,
-			scoreboardHandler,
-			templateHandler,
-			assetHandler,
-			commentatorHandler,
-			startggHandler,
 		},
 	})
 
-	if err != nil {
-		println("Error:", err.Error())
+	if err := bootstrap.EnsureDefaultTemplates(defaultTemplates); err != nil {
+		log.Printf("bootstrap: failed to extract default templates: %v", err)
+	}
+	if err := serverHandler.StartServer(serverHandler.GetConfigPort()); err != nil {
+		log.Printf("server: failed to auto-start: %v", err)
+	}
+
+	app.Window.NewWithOptions(application.WebviewWindowOptions{
+		Title:  "zhago",
+		Width:  1024,
+		Height: 768,
+		URL:    "/",
+		BackgroundColour: application.NewRGBA(9, 9, 11, 255),
+	})
+
+	if err := app.Run(); err != nil {
+		log.Fatal("Error:", err)
 	}
 }

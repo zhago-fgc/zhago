@@ -42,11 +42,11 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue';
 import PlayerAutocomplete from '../components/PlayerAutocomplete.vue';
-import { GetAll as GetAllPlayers } from '../../wailsjs/go/system/PlayerHandler';
-import { BroadcastMessage } from '../../wailsjs/go/system/ServerHandler';
-import { model } from '../../wailsjs/go/models';
+import { GetAll as GetAllPlayers } from '../../bindings/zhago/internal/handler/system/playerhandler';
+import { BroadcastMessage } from '../../bindings/zhago/internal/handler/system/serverhandler';
+import { Player } from '../../bindings/zhago/internal/domain/model/models';
 
-const players = ref<model.Player[]>([]);
+const players = ref<Player[]>([]);
 const sent    = ref(false);
 
 const slots = [

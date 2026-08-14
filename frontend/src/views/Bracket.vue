@@ -159,18 +159,19 @@ import CustomSelect from '../components/CustomSelect.vue';
 import PlayerAutocomplete from '../components/PlayerAutocomplete.vue';
 import { scoreboardStore as store } from '../stores/scoreboard';
 import { bracketStore, type CachedSetData } from '../stores/bracket';
-import { GetAll as GetAllTournaments } from '../../wailsjs/go/system/TournamentHandler';
-import { GetByTournament, CreateSet, UpdateScore, ReportResult, DeleteSet } from '../../wailsjs/go/system/SetHandler';
-import { GetAll as GetAllPlayers } from '../../wailsjs/go/system/PlayerHandler';
-import { GetGameManifest } from '../../wailsjs/go/system/AssetHandler';
-import { BroadcastMessage } from '../../wailsjs/go/system/ServerHandler';
-import { dto, model } from '../../wailsjs/go/models';
+import { GetAll as GetAllTournaments } from '../../bindings/zhago/internal/handler/system/tournamenthandler';
+import { GetByTournament, CreateSet, UpdateScore, ReportResult, DeleteSet } from '../../bindings/zhago/internal/handler/system/sethandler';
+import { GetAll as GetAllPlayers } from '../../bindings/zhago/internal/handler/system/playerhandler';
+import { GetGameManifest } from '../../bindings/zhago/internal/handler/system/assethandler';
+import { BroadcastMessage } from '../../bindings/zhago/internal/handler/system/serverhandler';
+import { Tournament, Set as MatchSet, Player } from '../../bindings/zhago/internal/domain/model/models';
+import { CreateSetRequest, UpdateSetScoreRequest, ReportSetRequest } from '../../bindings/zhago/internal/dto/models';
 
-const tournaments      = ref<model.Tournament[]>([]);
-const sets             = ref<model.Set[]>([]);
-const players          = ref<model.Player[]>([]);
+const tournaments      = ref<Tournament[]>([]);
+const sets             = ref<MatchSet[]>([]);
+const players          = ref<Player[]>([]);
 const selectedTournamentId = ref('');
-const selectedSet      = ref<model.Set | null>(null);
+const selectedSet      = ref<MatchSet | null>(null);
 const gameManifest     = ref<any>(null);
 const sent             = ref(false);
 const displayNames = bracketStore.displayNames;
@@ -204,7 +205,7 @@ function cacheSet(id: string) {
   };
 }
 
-function setLabel(s: model.Set): string {
+function setLabel(s: MatchSet): string {
   const isSelected = selectedSet.value?.id === s.id;
   const cached = displayNames[s.id];
   const p1 = s.player1?.tag || s.player1_id || (isSelected ? store.player1Name : cached?.p1Name) || '?';
@@ -229,7 +230,7 @@ async function onTournamentSelect(id: string) {
   } catch (err) { console.error(err); }
 }
 
-function loadSet(s: model.Set) {
+function loadSet(s: MatchSet) {
   selectedSet.value  = s;
   const cached       = displayNames[s.id];
   store.player1Name       = s.player1?.tag  || cached?.p1Name || '';
@@ -253,7 +254,7 @@ async function loadSets() {
 async function quickMatch() {
   if (!selectedTournamentId.value) return;
   try {
-    const newSet = await CreateSet(dto.CreateSetRequest.createFrom({
+    const newSet = await CreateSet(CreateSetRequest.createFrom({
       tournament_id: selectedTournamentId.value,
       player1_id: '', player2_id: '',
       round: 'Quick Match', best_of: 3,
@@ -273,7 +274,7 @@ async function sendOverlay() {
     round: store.round, bestOf: store.bestOf,
   });
   if (selectedSet.value) {
-    UpdateScore(dto.UpdateSetScoreRequest.createFrom({
+    UpdateScore(UpdateSetScoreRequest.createFrom({
       set_id: selectedSet.value.id,
       player1_score: store.player1Score,
       player2_score: store.player2Score,
@@ -291,7 +292,7 @@ async function reportSet() {
     ? selectedSet.value.player1_id
     : selectedSet.value.player2_id;
   try {
-    await ReportResult(dto.ReportSetRequest.createFrom({
+    await ReportResult(ReportSetRequest.createFrom({
       set_id: selectedSet.value.id,
       winner_id: winnerId,
       player1_score: store.player1Score,

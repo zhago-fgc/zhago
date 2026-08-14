@@ -27,17 +27,17 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { model } from '../../wailsjs/go/models';
+import { Commentator } from '../../bindings/zhago/internal/domain/model/models';
 
 const props = defineProps<{
   modelValue: string;
-  commentators: model.Commentator[];
+  commentators: Commentator[];
   placeholder?: string;
 }>();
 
 const emit = defineEmits<{
   'update:modelValue': [value: string];
-  'select': [commentator: model.Commentator];
+  'select': [commentator: Commentator];
 }>();
 
 const open        = ref(false);
@@ -58,7 +58,7 @@ function onInput(e: Event) {
   open.value = true;
 }
 
-function select(c: model.Commentator) {
+function select(c: Commentator) {
   emit('update:modelValue', c.name);
   emit('select', c);
   open.value = false;

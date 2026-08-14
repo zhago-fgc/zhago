@@ -66,8 +66,8 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { GetOverlayManifest } from '../../wailsjs/go/system/TemplateHandler';
-import { BroadcastMessage } from '../../wailsjs/go/system/ServerHandler';
+import { GetOverlayManifest } from '../../bindings/zhago/internal/handler/system/templatehandler';
+import { BroadcastMessage } from '../../bindings/zhago/internal/handler/system/serverhandler';
 import CustomSelect from '../components/CustomSelect.vue';
 
 const route    = useRoute();

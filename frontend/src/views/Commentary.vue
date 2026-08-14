@@ -42,16 +42,16 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue';
 import CommentatorAutocomplete from '../components/CommentatorAutocomplete.vue';
-import { Broadcast } from '../../wailsjs/go/system/ServerHandler';
-import { GetAll } from '../../wailsjs/go/system/CommentatorHandler';
-import { model } from '../../wailsjs/go/models';
+import { Broadcast } from '../../bindings/zhago/internal/handler/system/serverhandler';
+import { GetAll } from '../../bindings/zhago/internal/handler/system/commentatorhandler';
+import { Commentator } from '../../bindings/zhago/internal/domain/model/models';
 
 const commentators = reactive([
   { name: '', handle: '', pronouns: '' },
   { name: '', handle: '', pronouns: '' },
 ]);
 
-const library = ref<model.Commentator[]>([]);
+const library = ref<Commentator[]>([]);
 
 onMounted(async () => {
   try { library.value = (await GetAll()) ?? []; } catch {}

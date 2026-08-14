@@ -196,11 +196,12 @@
 import { ref, onMounted, computed } from 'vue';
 import { RouterLink } from 'vue-router';
 import CustomSelect from '../components/CustomSelect.vue';
-import { GetAllEvents, CreateEvent, DeleteEvent } from '../../wailsjs/go/system/EventHandler';
-import { GetAll as GetAllTournaments, CreateTournament, UpdateTournament, DeleteTournament, ActivateTournament } from '../../wailsjs/go/system/TournamentHandler';
-import { ListInstalledAssets } from '../../wailsjs/go/system/AssetHandler';
-import { ImportTournament } from '../../wailsjs/go/system/StartGGHandler';
-import { dto, model } from '../../wailsjs/go/models';
+import { GetAllEvents, CreateEvent, DeleteEvent } from '../../bindings/zhago/internal/handler/system/eventhandler';
+import { GetAll as GetAllTournaments, CreateTournament, UpdateTournament, DeleteTournament, ActivateTournament } from '../../bindings/zhago/internal/handler/system/tournamenthandler';
+import { ListInstalledAssets } from '../../bindings/zhago/internal/handler/system/assethandler';
+import { ImportTournament } from '../../bindings/zhago/internal/handler/system/startgghandler';
+import { Event as ZhagoEvent, Tournament } from '../../bindings/zhago/internal/domain/model/models';
+import { UpdateTournamentRequest, CreateEventRequest, CreateTournamentRequest } from '../../bindings/zhago/internal/dto/models';
 
 const STARTGG_TOKEN_KEY = 'zhago:startgg_token';
 const startggToken       = ref('');
@@ -233,8 +234,8 @@ async function runStartggImport() {
   }
 }
 
-const events           = ref<model.Event[]>([]);
-const tournaments      = ref<model.Tournament[]>([]);
+const events           = ref<ZhagoEvent[]>([]);
+const tournaments      = ref<Tournament[]>([]);
 const installedAssets  = ref<any[]>([]);
 const loading          = ref(true);
 
@@ -274,7 +275,7 @@ function tournamentsForEvent(eventId: string) {
   return tournaments.value.filter(t => t.event_id === eventId);
 }
 
-function openEdit(t: model.Tournament) {
+function openEdit(t: Tournament) {
   editingTournament.value = t.id;
   editName.value = t.name;
   editGame.value = t.game ?? '';
@@ -284,7 +285,7 @@ function openEdit(t: model.Tournament) {
 async function saveEdit(id: string) {
   if (!editName.value.trim()) return;
   try {
-    await UpdateTournament(dto.UpdateTournamentRequest.createFrom({
+    await UpdateTournament(UpdateTournamentRequest.createFrom({
       id,
       name: editName.value.trim(),
       game: editGame.value.trim(),
@@ -312,7 +313,7 @@ async function createEvent() {
   if (!newEventName.value.trim() || creating.value) return;
   creating.value = true;
   try {
-    await CreateEvent(dto.CreateEventRequest.createFrom({ name: newEventName.value.trim() }));
+    await CreateEvent(CreateEventRequest.createFrom({ name: newEventName.value.trim() }));
     newEventName.value = '';
     showCreateEvent.value = false;
     await load();
@@ -331,7 +332,7 @@ async function createTournament(eventId: string) {
   if (!newTournamentName.value.trim() || creatingTournament.value) return;
   creatingTournament.value = true;
   try {
-    await CreateTournament(dto.CreateTournamentRequest.createFrom({
+    await CreateTournament(CreateTournamentRequest.createFrom({
       event_id: eventId,
       name: newTournamentName.value.trim(),
       game: newTournamentGame.value.trim(),

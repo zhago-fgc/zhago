@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { RouterLink, useRoute } from 'vue-router';
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
-import { IsRunning, GetPort, ClientCount } from '../../wailsjs/go/system/ServerHandler';
-import { ListPacks } from '../../wailsjs/go/system/TemplateHandler';
+import { IsRunning, GetPort, ClientCount } from '../../bindings/zhago/internal/handler/system/serverhandler';
+import { ListPacks } from '../../bindings/zhago/internal/handler/system/templatehandler';
 import logo from '../assets/zhago-logo-white.svg';
 
 const route = useRoute();

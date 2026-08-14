@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { ListInstalledAssets } from '../../wailsjs/go/system/AssetHandler';
+import { ListInstalledAssets } from '../../bindings/zhago/internal/handler/system/assethandler';
 
 const assets  = ref<any[]>([]);
 const loading = ref(true);

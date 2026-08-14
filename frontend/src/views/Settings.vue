@@ -67,7 +67,7 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue';
-import { StartServer, StopServer, IsRunning, GetConfigPort } from '../../wailsjs/go/system/ServerHandler';
+import { StartServer, StopServer, IsRunning, GetConfigPort } from '../../bindings/zhago/internal/handler/system/serverhandler';
 
 const state = reactive({ httpPort: 3000, isRunning: false, isLoading: false });
 

@@ -73,11 +73,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted, reactive, computed } from 'vue';
-import { GetAll, CreatePlayer, DeletePlayer, GetAllStats } from '../../wailsjs/go/system/PlayerHandler';
-import { dto, model } from '../../wailsjs/go/models';
+import { GetAll, CreatePlayer, DeletePlayer, GetAllStats } from '../../bindings/zhago/internal/handler/system/playerhandler';
+import { Player } from '../../bindings/zhago/internal/domain/model/models';
+import { PlayerStats, CreatePlayerRequest } from '../../bindings/zhago/internal/dto/models';
 
-const players = ref<model.Player[]>([]);
-const stats   = ref<dto.PlayerStats[]>([]);
+const players = ref<Player[]>([]);
+const stats   = ref<PlayerStats[]>([]);
 const showCreate = ref(false);
 const creating = ref(false);
 const form = reactive({ tag: '', team: '', region: '' });
@@ -100,7 +101,7 @@ async function createPlayer() {
   if (!form.tag.trim() || creating.value) return;
   creating.value = true;
   try {
-    await CreatePlayer(dto.CreatePlayerRequest.createFrom({ tag: form.tag.trim(), team: form.team.trim(), region: form.region.trim() }));
+    await CreatePlayer(CreatePlayerRequest.createFrom({ tag: form.tag.trim(), team: form.team.trim(), region: form.region.trim() }));
     form.tag = ''; form.team = ''; form.region = '';
     showCreate.value = false;
     await load();
