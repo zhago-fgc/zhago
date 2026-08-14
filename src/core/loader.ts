@@ -2,7 +2,7 @@ import type { ModuleContext, ModuleManifest } from '../types'
 import { bus } from './bus'
 import { scopedStorage } from './storage'
 
-const loaded = new Map<string, { dispose?: () => void; unsubs: (() => void)[] }>()
+const loaded = new Map<string, { dispose?: () => void; unsubs: Array<() => void> }>()
 
 export async function loadModule(dir: string): Promise<ModuleManifest> {
   const manifestFile = Bun.file(`${dir}/module.json`)
@@ -12,7 +12,7 @@ export async function loadModule(dir: string): Promise<ModuleManifest> {
   // plugin spec doesn't support (no dispose lifecycle), which is why we're adding one.
   unloadModule(manifest.name)
 
-  const unsubs: (() => void)[] = []
+  const unsubs: Array<() => void> = []
   const ctx: ModuleContext = {
     on: (ns, type, fn) => {
       const off = bus.on(ns, type, fn)

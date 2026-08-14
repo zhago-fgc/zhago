@@ -10,6 +10,11 @@ export interface ModuleManifest {
   version: string
   type: 'plugin' | 'module' | 'theme'
   entry: string
+  // Lets other modules discover this one by role without hardcoding its name —
+  // e.g. Match finds every installed game module by filtering tags.includes('game')
+  // instead of knowing "2xko" and "sf6" exist. Not RPC or a dependency graph,
+  // just a self-declared label surfaced through /api/modules.
+  tags?: string[]
   ui?: {
     cockpit?: string
     overlay?: string[]
@@ -22,10 +27,21 @@ export interface ModuleManifest {
 // named alias in the other.
 export type BusHandler = (payload: any) => any
 
+export interface ModuleStorageQueryOptions {
+  // Exact-match filter on top-level fields of the stored JSON, e.g.
+  // { eventId: 'evo2026' } to find every tournament under one event — an
+  // id-reference, not a foreign key, resolved by a filtered lookup rather
+  // than a SQL JOIN. Still scoped to the calling module's own collection,
+  // same as every other ModuleStorage method — this widens what a module
+  // can ask of its *own* data, not what it can reach into.
+  where?: Record<string, string | number>
+  limit?: number
+}
+
 export interface ModuleStorage {
   insert(collection: string, data: any, id?: string): string
   get(collection: string, id: string): any
-  query(collection: string, limit?: number): any[]
+  query(collection: string, options?: ModuleStorageQueryOptions): any[]
   remove(collection: string, id: string): void
 }
 
