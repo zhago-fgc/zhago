@@ -12,6 +12,9 @@ COPY build/zhago-linux-${ARCH}-musl /app/zhago
 COPY build/modules /app/modules
 
 ENV ZHAGO_DIR=/data
+# Verbose by default here — stdout via `docker logs` is the normal way anyone
+# observes a container, unlike the compiled binary's quiet ("warn") default.
+ENV ZHAGO_LOG_LEVEL=info
 VOLUME /data
 EXPOSE 3210
 
