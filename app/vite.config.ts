@@ -13,6 +13,9 @@ export default defineConfig({
       // duplicates that, it just proxies through in dev.
       '/api': 'http://localhost:3210',
       '/modules': 'http://localhost:3210',
+      '/overlays': 'http://localhost:3210',
+      '/overlay': 'http://localhost:3210',
+      '/assets': 'http://localhost:3210',
     },
   },
 });
