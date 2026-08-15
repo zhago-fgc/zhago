@@ -4,7 +4,6 @@
   "type": "module",
   "entry": "index.ts",
   "ui": {
-    "cockpit": "frontend/index.html",
-    "overlay": ["overlay/index.html"]
+    "cockpit": "frontend/index.html"
   }
 }
