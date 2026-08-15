@@ -1,0 +1,92 @@
+/* Shared cockpit conventions, linked after bootstrap.min.css — covers
+   structure Bootstrap doesn't own (fieldset borders, its own reboot strips
+   them) and the combobox/typeahead widget used by any cockpit that needs
+   type-to-filter suggestions. Colors reference Bootstrap's own CSS
+   variables so this still works under data-bs-theme="dark". */
+fieldset {
+  border: 1px solid var(--bs-border-color);
+  border-radius: 6px;
+  padding: 1rem;
+}
+legend {
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0 0.4rem;
+}
+.sides {
+  display: flex;
+  gap: 1rem;
+}
+.sides fieldset {
+  flex: 1;
+  min-width: 0;
+}
+.field-row {
+  display: flex;
+  gap: 0.5rem;
+}
+.field-row input[type='number'] {
+  flex: 0 0 80px;
+}
+.field-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--bs-secondary-color);
+  margin-bottom: 0.35rem;
+}
+.hidden {
+  display: none;
+}
+.preview-frame {
+  width: 384px;
+  height: 216px;
+  overflow: hidden;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 6px;
+}
+.preview-frame iframe {
+  width: 1920px;
+  height: 1080px;
+  border: none;
+  transform: scale(0.2);
+  transform-origin: 0 0;
+}
+
+/* Combobox: a positioned wrapper around one input, with a type-to-filter
+   suggestions list. Used as-is for a single-value field (pick one, fill the
+   input); a multi-value picker (match's character chips) wraps its own
+   chip-box inside the same .combobox and layers chip-specific styling on
+   top — see modules/match/frontend/index.css. */
+.combobox {
+  position: relative;
+}
+.combobox-suggestions {
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.25rem;
+  background: var(--bs-body-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 6px;
+  max-height: 12rem;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0.25rem;
+}
+.combobox-suggestions li {
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.combobox-suggestions li:hover,
+.combobox-suggestions li.active {
+  background: var(--bs-secondary-bg);
+}
+.combobox-suggestions .meta {
+  color: var(--bs-secondary-color);
+  font-size: 0.85em;
+  margin-left: 0.4em;
+}

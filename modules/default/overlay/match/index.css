@@ -74,13 +74,7 @@ body {
 }
 .side.p2 .info {
   align-items: flex-end;
-}
-
-.name {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  text-align: right;
 }
 
 .team {
@@ -90,10 +84,23 @@ body {
   color: var(--muted);
 }
 
-.characters {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--accent);
+/* One line per participant — collapses to a single line in the common
+   single-player case, stacks when a side has more than one (duo/squad). */
+.participants {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.participant-line {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.participant-line:not(:only-child) {
+  font-size: 15px;
 }
 
 .round-chip {

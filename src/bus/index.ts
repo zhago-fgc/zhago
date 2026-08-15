@@ -41,4 +41,14 @@ function request(ns: string, type: string, payload: any, timeoutMs = 5000): Prom
   });
 }
 
-export const bus = { on, emit, request };
+// request(), but resolves to `fallback` instead of rejecting on timeout —
+// for callers that treat "nobody answered" as a normal case, not an error.
+async function requestOr<T>(ns: string, type: string, fallback: T, timeoutMs = 1500): Promise<T> {
+  try {
+    return (await request(ns, type, {}, timeoutMs)) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+export const bus = { on, emit, request, requestOr };

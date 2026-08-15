@@ -12,6 +12,12 @@ function render(state) {
   fill('c2', state.commentator2Name, state.commentator2Handle, state.commentator2Pronouns);
 }
 
-// Read-only: snapshot on connect, then live updates — never sends anything back.
-const source = new EventSource('/api/bus/casters/stream');
-source.onmessage = (e) => render(JSON.parse(e.data));
+// One connection for both this page's data and its own skin-watch — see
+// /overlay/:module in src/routes/overlays.ts, which skips injecting a
+// second watcher for this pack specifically because of this.
+const source = new EventSource('/api/bus/stream?ns=casters,casters-overlay');
+source.onmessage = (e) => {
+  const msg = JSON.parse(e.data);
+  if (msg.ns === 'casters') render(msg.data);
+  else if ((msg.data.skin || '') !== '') location.reload();
+};
