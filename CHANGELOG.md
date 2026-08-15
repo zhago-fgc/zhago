@@ -11,8 +11,20 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 
 ## [Unreleased]
 
+### Added
+
+- ✨ Live-swappable overlay pack system with a shipped default pack.
+- ✨ start.gg module for tournament and event lookup.
+- ✨ Reworked match — overlay packs, per-player teams, cockpit fixes.
+- ✨ Reworked casters — overlay packs, full commentator profiles, directory
+  sync.
+- ✨ Inline editing in the caster directory cockpit.
+- 💄 Shared Bootstrap-based cockpit design system.
+
 ### Changed
 
+- 🏗️ Split core into `bus`/`loader`/`logger`/`paths`/`storage`, plus a
+  typed `config` and `registry`.
 - 🏗️ Replaced the Wails v2 desktop app with a Bun server and a module/plugin
   architecture: each feature (match state, casters, caster directory) is a
   module with its own backend logic and its own cockpit/overlay UI, loaded
