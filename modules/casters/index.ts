@@ -21,8 +21,19 @@ const empty: CommentaryState = {
   commentator2Pronouns: '',
 };
 
+// Which overlay pack is live right now — its own namespace, not a field on
+// CommentaryState, for the same reason match keeps it separate: `set`'s
+// `{ ...empty, ...payload }` reset would snap the live overlay back to
+// default on every unrelated commentator update otherwise.
+interface OverlayState {
+  skin: string;
+}
+
+const emptyOverlay: OverlayState = { skin: '' };
+
 export default function init(ctx: ModuleContext) {
   let current: CommentaryState = empty;
+  let overlay: OverlayState = emptyOverlay;
 
   ctx.on('casters', 'set', (payload: Partial<CommentaryState>) => {
     current = { ...empty, ...payload };
@@ -32,6 +43,17 @@ export default function init(ctx: ModuleContext) {
   // Answered by the SSE route on connect, before it subscribes to live 'update's.
   ctx.on('casters', 'get-current', ({ replyTopic }: { replyTopic: string }) => {
     ctx.emit('reply', replyTopic, current);
+  });
+
+  // The overlay (modules/casters/overlay/index.js) watches this to know
+  // which skin to load live — `skin: ''` means the shipped default.
+  ctx.on('casters-overlay', 'set', (payload: Partial<OverlayState>) => {
+    overlay = { ...emptyOverlay, ...payload };
+    ctx.emit('casters-overlay', 'update', overlay);
+  });
+
+  ctx.on('casters-overlay', 'get-current', ({ replyTopic }: { replyTopic: string }) => {
+    ctx.emit('reply', replyTopic, overlay);
   });
 
   ctx.log.info('ready');
