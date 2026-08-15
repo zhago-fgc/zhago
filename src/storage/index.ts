@@ -1,6 +1,6 @@
 import { Database } from 'bun:sqlite';
 import type { ModuleStorage, ModuleStorageQueryOptions } from '../types';
-import { zhagoPath } from './paths';
+import { zhagoPath } from '../paths';
 
 // json_extract's field path is interpolated into the SQL string itself (SQLite
 // has no way to parameterize a json_extract path) — only the *value* being

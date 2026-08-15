@@ -8,8 +8,13 @@
 export interface ModuleManifest {
   name: string;
   version: string;
-  type: 'plugin' | 'module' | 'theme';
-  entry: string;
+  // 'overlay' is a presentation-only pack (e.g. an event's Cluster Fight
+  // skin) — no entry, no bus logic. It ships `overlay/<target-module>/`
+  // subfolders instead and is never import()'d by the loader; see
+  // loadModule() and the /api/overlays routes in server.ts.
+  type: 'plugin' | 'module' | 'overlay';
+  // Required for 'plugin'/'module' (the loader import()s it); absent for 'overlay'.
+  entry?: string;
   // Lets other modules discover this one by role without hardcoding its name —
   // e.g. Match finds every installed game module by filtering tags.includes('game')
   // instead of knowing "2xko" and "sf6" exist. Not RPC or a dependency graph,

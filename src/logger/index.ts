@@ -1,8 +1,9 @@
 import { mkdirSync, existsSync, readFileSync } from 'node:fs';
 import { dirname, basename } from 'node:path';
 import { createStream, type RotatingFileStream } from 'rotating-file-stream';
-import { bus } from './bus';
-import { zhagoPath } from './paths';
+import { bus } from '../bus';
+import { config } from '../config';
+import { zhagoPath } from '../paths';
 import type { ModuleLog } from '../types';
 
 type Level = 'info' | 'warn' | 'error';
@@ -21,16 +22,16 @@ const LEVELS: Level[] = ['info', 'warn', 'error'];
 // "loaded module x" on every launch. The Containerfile overrides this to
 // "info", since stdout via `docker logs` is the normal way anyone observes
 // a container — there's no terminal to flood.
-const configuredLevel = process.env.ZHAGO_LOG_LEVEL as Level | undefined;
+const configuredLevel = config.logging.level as Level | undefined;
 const MIN_LEVEL = LEVELS.includes(configuredLevel!) ? configuredLevel! : 'warn';
 
 // "pretty" is the colored/human line used everywhere in this file; "json"
 // prints the same structured entry that already goes to the file, so a
 // container's stdout can be fed straight into a log aggregator instead of
 // parsing the pretty-printed text.
-const LOG_FORMAT = process.env.ZHAGO_LOG_FORMAT === 'json' ? 'json' : 'pretty';
+const LOG_FORMAT = config.logging.format;
 
-const LOG_FILE_PATH = process.env.ZHAGO_LOG_FILE ?? zhagoPath('logs', 'log.jsonl');
+const LOG_FILE_PATH = config.logging.file ?? zhagoPath('logs', 'log.jsonl');
 const LOG_DIR = dirname(LOG_FILE_PATH);
 const LOG_FILE = basename(LOG_FILE_PATH);
 
