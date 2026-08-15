@@ -26,6 +26,22 @@ export default function init(ctx: ModuleContext) {
     },
   );
 
+  ctx.on(
+    'caster-directory',
+    'edit',
+    (payload: { id: string; name: string; handle?: string; pronouns?: string }) => {
+      if (!payload.id || !payload.name) return ctx.log.warn('caster edit missing id/name');
+      // insert() upserts by id (INSERT OR REPLACE) — passing the existing id
+      // replaces that row in place instead of creating a new one.
+      ctx.storage.insert(
+        'casters',
+        { name: payload.name, handle: payload.handle ?? null, pronouns: payload.pronouns ?? null },
+        payload.id,
+      );
+      broadcast();
+    },
+  );
+
   ctx.on('caster-directory', 'delete', ({ id }: { id: string }) => {
     ctx.storage.remove('casters', id);
     broadcast();
