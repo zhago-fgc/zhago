@@ -1,13 +1,18 @@
 import type { ModuleContext, ModuleManifest } from '../types';
-import { bus } from './bus';
-import { createLogger } from './logger';
-import { scopedStorage } from './storage';
+import { bus } from '../bus';
+import { createLogger } from '../logger';
+import { scopedStorage } from '../storage';
 
 const loaded = new Map<string, { dispose?: () => void; unsubs: Array<() => void> }>();
 
 export async function loadModule(dir: string): Promise<ModuleManifest> {
   const manifestFile = Bun.file(`${dir}/module.json`);
   const manifest = (await manifestFile.json()) as ModuleManifest;
+
+  // 'overlay' packs are presentation only — no entry to import, no bus
+  // lifecycle to run. Registering the manifest is enough for /api/modules;
+  // the /overlay and /api/overlays routes serve their files directly off disk.
+  if (manifest.type === 'overlay') return manifest;
 
   // Unload any previous instance first — clean hot-reload, the thing RCVolus's own
   // plugin spec doesn't support (no dispose lifecycle), which is why we're adding one.
