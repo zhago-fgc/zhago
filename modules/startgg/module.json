@@ -1,0 +1,9 @@
+{
+  "name": "startgg",
+  "version": "0.1.0",
+  "type": "plugin",
+  "entry": "index.ts",
+  "ui": {
+    "cockpit": "frontend/index.html"
+  }
+}
