@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Start.gg — Cockpit</title>
+    <link rel="stylesheet" href="/assets/bootstrap.min.css" />
+    <link rel="stylesheet" href="/assets/cockpit.css" />
+    <link rel="stylesheet" href="index.css" />
+    <script src="/assets/theme.js"></script>
+  </head>
+  <body>
+    <div class="container py-4">
+      <h1>Start.gg</h1>
+
+      <h2 class="h5 mt-4">API token</h2>
+      <fieldset>
+        <div class="field-row mb-2">
+          <input
+            type="password"
+            id="token-input"
+            class="form-control"
+            placeholder="Paste your start.gg API token"
+            autocomplete="off"
+          />
+          <button id="save-token" class="btn btn-primary text-nowrap">Save</button>
+          <button id="clear-token" type="button" class="btn btn-outline-secondary text-nowrap">
+            Clear
+          </button>
+        </div>
+        <p id="token-status" class="status disconnected mb-2">Not connected</p>
+        <p class="muted mb-0">
+          Generate one at start.gg → Settings → Developer, then paste it here. Stored locally, never
+          shown back in this form.
+        </p>
+      </fieldset>
+
+      <h2 class="h5 mt-4">Tournament</h2>
+      <fieldset>
+        <div class="field-row mb-2">
+          <input id="slug-input" class="form-control" placeholder="Tournament slug or start.gg URL" />
+          <button id="fetch-tournament" class="btn btn-primary text-nowrap">Fetch</button>
+        </div>
+        <div id="result"></div>
+      </fieldset>
+    </div>
+
+    <script src="index.js"></script>
+  </body>
+</html>
