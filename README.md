@@ -15,9 +15,9 @@ browser-source hacks and spreadsheets.
 
 Zhago started as a Wails desktop app. This rewrite drops the desktop shell for a Bun
 server with a plugin architecture: each piece of functionality (match state, casters,
-caster directory) is a module with its own backend logic and its own UI, loaded from a
-`modules/` directory next to the binary. Nothing about the module system is baked into
-the executable, so modules can be added or swapped without rebuilding it.
+caster directory) is an add-on with its own backend logic and UI, loaded from the local
+Zhago data directory. Nothing about the module system is baked into the executable, so
+add-ons can be installed or swapped without rebuilding it.
 
 This is early and still taking shape. Treat it as a prototype, not a finished product.
 
@@ -34,6 +34,24 @@ This is early and still taking shape. Treat it as a prototype, not a finished pr
 
 ## Getting started
 
+Download the latest Zhago binary for your OS from the releases page, then run it.
+Zhago starts a local server and prints the admin URL, usually:
+
+```text
+http://localhost:3210
+```
+
+Open that URL, go to **Add-ons**, and install the pieces you need for your event.
+Installed add-ons are loaded from your Zhago data directory:
+
+```text
+~/.zhago/modules
+```
+
+During alpha, installing add-ons requires restarting Zhago before they are loaded.
+
+## Development
+
 Requires [Bun](https://bun.sh) and [just](https://github.com/casey/just).
 
 ```bash
@@ -41,23 +59,23 @@ just install
 just watch
 ```
 
-This runs the backend (`src/server.ts`) and the frontend dev server together. To build
-a standalone binary:
+This runs the backend (`src/server.ts`) and the frontend dev server together. Development
+uses repo-local data so it never touches your real `~/.zhago`:
 
-```bash
-just build
-./build/zhago
+```text
+.zhago/
+.zhago/modules/
 ```
 
-## Development
+Useful checks:
 
 ```bash
 just typecheck   # typecheck backend and frontend
-just clean       # remove build output
+just test        # run tests
+just clean       # remove build output and dev data
 ```
 
-Each module lives under `modules/<name>/` with a `module.json` manifest declaring its
-entry point and UI paths. See `modules/match` for a working example.
+Each add-on has a `module.json` manifest declaring its entry point and UI paths.
 
 ## License
 
