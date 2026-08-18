@@ -32,9 +32,22 @@ function checksumHex(checksum: string): string {
   return hex;
 }
 
+async function resolveChecksum(entry: AddOnRegistryEntry): Promise<`sha256:${string}`> {
+  if (entry.checksum) return entry.checksum;
+  if (!entry.checksumUrl) throw new Error(`checksum missing for ${entry.name}`);
+
+  const res = await fetch(entry.checksumUrl);
+  if (!res.ok) throw new Error(`checksum download failed with ${res.status}`);
+
+  const checksum = (await res.text()).trim().split(/\s+/)[0];
+  if (!checksum.match(/^sha256:[a-f0-9]{64}$/i)) throw new Error('invalid checksum file');
+  return checksum as `sha256:${string}`;
+}
+
 export async function installAddOn(entry: AddOnRegistryEntry): Promise<AddOnInstallResult> {
   log.info(`installing ${entry.name} ${entry.version} from ${entry.zipUrl}`);
-  const expectedHash = checksumHex(entry.checksum);
+  const checksum = await resolveChecksum(entry);
+  const expectedHash = checksumHex(checksum);
   const tempDir = await mkdtemp(join(tmpdir(), 'zhago-addon-'));
   const extractDir = join(tempDir, 'extract');
 
@@ -55,12 +68,22 @@ export async function installAddOn(entry: AddOnRegistryEntry): Promise<AddOnInst
         `manifest name "${manifest.name}" does not match registry name "${entry.name}"`,
       );
     }
+    if (manifest.version !== entry.version) {
+      throw new Error(
+        `manifest version "${manifest.version}" does not match registry version "${entry.version}"`,
+      );
+    }
+    if (manifest.type !== entry.type) {
+      throw new Error(
+        `manifest type "${manifest.type}" does not match registry type "${entry.type}"`,
+      );
+    }
 
     rawManifest.source = {
       repo: entry.sourceRepo,
       releasePage: entry.releasePage,
       zipUrl: entry.zipUrl,
-      checksum: entry.checksum,
+      checksum,
     };
     await Bun.write(join(extractDir, 'module.json'), `${JSON.stringify(rawManifest, null, 2)}\n`);
 

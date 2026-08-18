@@ -11,6 +11,15 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 
 ## [Unreleased]
 
+### Changed
+
+- ♻️ Derive add-on release URLs from a compact registry with repo and pinned version fields.
+- ♻️ Publish the root registry file directly without GitHub API resolution.
+
+### Fixed
+
+- 🐛 Updated The King of Fighters XV display name in the registry.
+
 ## [0.1.6] - 2026-08-18
 
 ### Fixed

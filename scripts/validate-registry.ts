@@ -3,9 +3,9 @@ import { readFile } from 'node:fs/promises';
 type RegistryEntry = {
   name?: unknown;
   displayName?: unknown;
+  version?: unknown;
   type?: unknown;
-  sourceRepo?: unknown;
-  assetPattern?: unknown;
+  repo?: unknown;
   official?: unknown;
   recommended?: unknown;
   tags?: unknown;
@@ -15,6 +15,16 @@ type RegistryEntry = {
 
 const allowedTypes = new Set(['module', 'plugin', 'overlay']);
 const registry = JSON.parse(await readFile('registry.json', 'utf8')) as unknown;
+
+function isUrl(value: unknown): value is string {
+  if (typeof value !== 'string') return false;
+  try {
+    new URL(value);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 if (!Array.isArray(registry)) throw new Error('registry must be an array');
 
@@ -29,14 +39,13 @@ for (const [index, entry] of registry.entries()) {
 
   if (typeof addon.displayName !== 'string' || !addon.displayName)
     throw new Error(`${prefix}.displayName is required`);
+  if (typeof addon.version !== 'string' || !addon.version)
+    throw new Error(`${prefix}.version is required`);
   if (typeof addon.type !== 'string' || !allowedTypes.has(addon.type))
     throw new Error(`${prefix}.type must be module, plugin, or overlay`);
-  if (typeof addon.sourceRepo !== 'string' || !addon.sourceRepo.startsWith('https://github.com/'))
-    throw new Error(`${prefix}.sourceRepo must be a GitHub URL`);
-  if (typeof addon.assetPattern !== 'string' || !addon.assetPattern.includes('{version}'))
-    throw new Error(`${prefix}.assetPattern must include {version}`);
-  if (addon.type !== 'overlay' && typeof addon.entry !== 'string')
-    throw new Error(`${prefix}.entry is required for runnable add-ons`);
+  if (!isUrl(addon.repo)) throw new Error(`${prefix}.repo must be a URL`);
+  if (addon.entry !== undefined) throw new Error(`${prefix}.entry belongs in module.json`);
+  if (addon.ui !== undefined) throw new Error(`${prefix}.ui belongs in module.json`);
   if (addon.tags !== undefined && !Array.isArray(addon.tags))
     throw new Error(`${prefix}.tags must be an array`);
 }
