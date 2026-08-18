@@ -4,6 +4,7 @@
     <p align="center">
         <a href="./LICENSE"><img src="https://img.shields.io/github/license/zhago-fgc/zhago?style=for-the-badge&color=white&labelColor=333333" alt="License"></a>
         <a href="https://github.com/zhago-fgc/zhago/releases"><img src="https://img.shields.io/github/v/release/zhago-fgc/zhago?include_prereleases&style=for-the-badge&color=white&labelColor=333333" alt="Latest release"></a>
+        <a href="https://github.com/zhago-fgc/zhago/actions/workflows/release.yml"><img src="https://img.shields.io/github/actions/workflow/status/4thena-io/abyss/release.yml?style=for-the-badge&labelColor=333333" alt="Build status"></a>
     </p>
 </div>
 
