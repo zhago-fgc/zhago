@@ -39,7 +39,7 @@ export default defineConfigWithVueTs(
     // payload boundary — modules define their own message shapes, the core
     // can't know them ahead of time. `unknown` would just push a required
     // cast into every module instead of the one place that owns the bus.
-    files: ['src/core/bus.ts', 'src/core/storage.ts', 'src/server.ts', 'src/types/index.ts'],
+    files: ['src/bus/index.ts', 'src/storage/index.ts', 'src/server.ts', 'src/types/index.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
     },

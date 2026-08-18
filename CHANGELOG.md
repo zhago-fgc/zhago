@@ -13,6 +13,7 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 
 ### Added
 
+- 👷 GitHub Actions CI for pull requests and releases, including binary artifacts and GHCR images.
 - ✨ Live-swappable overlay pack system with a shipped default pack.
 - ✨ start.gg module for tournament and event lookup.
 - ✨ Reworked match — overlay packs, per-player teams, cockpit fixes.

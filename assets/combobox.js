@@ -3,7 +3,7 @@
 // up instead of each hand-rolling the same mousedown/blur/render logic.
 // `getCandidates(query)` returns `{ label, meta, ...data }[]`; `onSelect`
 // receives the chosen candidate. Caller owns the actual <input> value.
-function zhagoCombobox(input, suggestionsEl, { getCandidates, onSelect }) {
+window.zhagoCombobox = function zhagoCombobox(input, suggestionsEl, { getCandidates, onSelect }) {
   function close() {
     suggestionsEl.classList.add('hidden');
     suggestionsEl.innerHTML = '';
@@ -42,4 +42,4 @@ function zhagoCombobox(input, suggestionsEl, { getCandidates, onSelect }) {
   });
 
   return { show, close };
-}
+};
