@@ -91,7 +91,13 @@ export default function init(ctx: ModuleContext) {
   // a slug instead of a form submit.
   ctx.on('startgg', 'set-slug', async ({ slug }: { slug: string }) => {
     if (!token) {
-      current = { ...current, slug, status: 'error', tournament: null, error: 'No API token saved.' };
+      current = {
+        ...current,
+        slug,
+        status: 'error',
+        tournament: null,
+        error: 'No API token saved.',
+      };
       publish();
       return;
     }

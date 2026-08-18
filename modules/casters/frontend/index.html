@@ -9,52 +9,89 @@
     <script src="/assets/combobox.js"></script>
   </head>
   <body>
-    <div class="container py-4">
+    <div class="cockpit-page">
       <h1>Casters</h1>
 
-      <h2 class="h5 mt-4">Preview</h2>
+      <h2 class="mt-4">Preview</h2>
       <div class="preview-frame mb-2">
         <iframe id="overlay-preview"></iframe>
       </div>
-      <h3 class="h6">Embed</h3>
+      <h3>Embed</h3>
       <select id="skin-select" class="form-select mb-3">
         <option value="">Default overlay</option>
       </select>
-      <input id="embed-url" class="form-control font-monospace mb-4" readonly onclick="this.select()" />
+      <input
+        id="embed-url"
+        class="form-control font-monospace mb-4"
+        readonly
+        onclick="this.select()"
+      />
 
-      <h2 class="h5">On commentary now</h2>
+      <h2>On commentary now</h2>
       <form id="form">
         <div class="sides mb-3">
           <fieldset>
             <legend>Commentator 1</legend>
             <div class="field-label">Name</div>
             <div class="combobox mb-2">
-              <input type="text" id="c1-name" class="form-control" placeholder="Name" autocomplete="off" />
+              <input
+                type="text"
+                id="c1-name"
+                class="form-control"
+                placeholder="Name"
+                autocomplete="off"
+              />
               <ul id="c1-suggestions" class="combobox-suggestions hidden"></ul>
             </div>
             <div class="field-row">
-              <input type="text" id="c1-handle" class="form-control" placeholder="Handle (optional)" />
-              <input type="text" id="c1-pronouns" class="form-control" placeholder="Pronouns (optional)" />
+              <input
+                type="text"
+                id="c1-handle"
+                class="form-control"
+                placeholder="Handle (optional)"
+              />
+              <input
+                type="text"
+                id="c1-pronouns"
+                class="form-control"
+                placeholder="Pronouns (optional)"
+              />
             </div>
           </fieldset>
           <fieldset>
             <legend>Commentator 2</legend>
             <div class="field-label">Name</div>
             <div class="combobox mb-2">
-              <input type="text" id="c2-name" class="form-control" placeholder="Name" autocomplete="off" />
+              <input
+                type="text"
+                id="c2-name"
+                class="form-control"
+                placeholder="Name"
+                autocomplete="off"
+              />
               <ul id="c2-suggestions" class="combobox-suggestions hidden"></ul>
             </div>
             <div class="field-row">
-              <input type="text" id="c2-handle" class="form-control" placeholder="Handle (optional)" />
-              <input type="text" id="c2-pronouns" class="form-control" placeholder="Pronouns (optional)" />
+              <input
+                type="text"
+                id="c2-handle"
+                class="form-control"
+                placeholder="Handle (optional)"
+              />
+              <input
+                type="text"
+                id="c2-pronouns"
+                class="form-control"
+                placeholder="Pronouns (optional)"
+              />
             </div>
           </fieldset>
         </div>
         <button type="submit" class="btn btn-primary">Update overlay</button>
       </form>
       <p id="empty-roster-hint" class="text-body-secondary small mt-3" style="display: none">
-        No saved casters yet — typing a new name here saves it to the Caster Directory automatically,
-        so it's there next time.
+        No saved casters yet — typing a new name here saves it to the Caster Directory
+        automatically, so it's there next time.
       </p>
     </div>
 

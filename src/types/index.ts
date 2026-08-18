@@ -7,6 +7,11 @@
 
 export interface ModuleManifest {
   name: string;
+  // What the admin console's nav shows instead of `name` — e.g. "start.gg"
+  // instead of "startgg", or "Caster Directory" instead of "caster-directory".
+  // Optional: a module with none gets `name` title-cased client-side instead
+  // (see app/src/composables/moduleLabel.ts).
+  displayName?: string;
   version: string;
   // 'overlay' is a presentation-only pack (e.g. an event's Cluster Fight
   // skin) — no entry, no bus logic. It ships `overlay/<target-module>/`

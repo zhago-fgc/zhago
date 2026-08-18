@@ -11,24 +11,32 @@ const log = createLogger('core');
 export const BUILTIN_MODULES_DIR =
   config.modulesDir ??
   (import.meta.dir.startsWith('/$bunfs')
-    ? join(dirname(process.execPath), 'modules')
+    ? join(dirname(process.argv[0] ?? process.execPath), 'modules')
     : join(import.meta.dir, '..', '..', 'modules'));
 
 export const INSTALLED_MODULES_DIR = zhagoPath('modules');
 
-// Shared static assets (vendored CSS, the logo) any module's cockpit can
-// link to — served read-only, never scanned as modules.
-export const ASSETS_DIR = import.meta.dir.startsWith('/$bunfs')
-  ? join(dirname(process.execPath), 'assets')
-  : join(import.meta.dir, '..', '..', 'assets');
+// Shared static assets for module cockpits. Production serves the embedded map;
+// this filesystem path is a dev override for live local assets.
+export const ASSETS_DIR = config.assetsDir;
 
 export const modules = new Map<string, string>(); // name -> module root dir
 export const manifests = new Map<string, ModuleManifest>(); // name -> manifest
 
-async function loadModulesFrom(baseDir: string) {
-  await mkdir(baseDir, { recursive: true });
-  for (const name of await readdir(baseDir)) {
-    const dir = join(baseDir, name);
+export async function loadModulesFrom(baseDir: string, create = false) {
+  if (create) await mkdir(baseDir, { recursive: true });
+
+  let entries;
+  try {
+    entries = await readdir(baseDir, { withFileTypes: true });
+  } catch (err) {
+    log.warn(`skipping modules directory ${baseDir}:`, err);
+    return;
+  }
+
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    const dir = join(baseDir, entry.name);
     try {
       const manifest = await loadModule(dir);
       modules.set(manifest.name, dir);
@@ -42,25 +50,5 @@ async function loadModulesFrom(baseDir: string) {
 
 export async function loadAllModules() {
   await loadModulesFrom(BUILTIN_MODULES_DIR);
-  await loadModulesFrom(INSTALLED_MODULES_DIR);
-}
-
-// Resolves which directory an overlay's index.html should come from for a
-// given module + skin choice, and the <base> href to serve alongside it.
-export function resolveOverlayDir(
-  moduleName: string,
-  skin: string,
-): { dir: string; baseHref: string } | null {
-  if (skin) {
-    return {
-      dir: join(INSTALLED_MODULES_DIR, skin, 'overlay', moduleName),
-      baseHref: `/overlays/${moduleName}/${skin}/`,
-    };
-  }
-  const defaultDir = modules.get('default');
-  if (!defaultDir) return null;
-  return {
-    dir: join(defaultDir, 'overlay', moduleName),
-    baseHref: `/modules/default/overlay/${moduleName}/`,
-  };
+  await loadModulesFrom(INSTALLED_MODULES_DIR, true);
 }

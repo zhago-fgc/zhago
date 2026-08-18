@@ -1,13 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, provide } from 'vue';
-import logo from './assets/zhago-logo-white.svg';
-
-interface ModuleManifest {
-  name: string;
-  version: string;
-  type: 'plugin' | 'module' | 'theme';
-  ui?: { cockpit?: string; overlay?: string[] };
-}
+import logo from '../assets/zhago-logo-white.svg';
+import { listInstalledAddOns } from '../features/addons/api';
+import { moduleLabel } from '../shared/composables/moduleLabel';
+import type { ModuleManifest } from '../shared/types/module';
 
 const modules = ref<ModuleManifest[]>([]);
 provide('modules', modules);
@@ -17,8 +13,7 @@ provide('modules', modules);
 const withCockpit = computed(() => modules.value.filter((m) => m.ui?.cockpit));
 
 onMounted(async () => {
-  const res = await fetch('/api/modules');
-  modules.value = await res.json();
+  modules.value = await listInstalledAddOns();
 });
 </script>
 
@@ -39,11 +34,25 @@ onMounted(async () => {
         >
           Home
         </RouterLink>
+        <RouterLink
+          to="/addons"
+          class="px-3 py-1.5 rounded text-sm transition-colors flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
+          active-class="!bg-zinc-100 dark:!bg-zinc-800 !text-zinc-900 dark:!text-white"
+        >
+          Add-ons
+        </RouterLink>
+        <RouterLink
+          to="/logs"
+          class="px-3 py-1.5 rounded text-sm transition-colors flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
+          active-class="!bg-zinc-100 dark:!bg-zinc-800 !text-zinc-900 dark:!text-white"
+        >
+          Logs
+        </RouterLink>
 
         <div
           class="mt-3 mb-1 px-3 text-[10px] text-zinc-400 dark:text-zinc-600 uppercase tracking-widest font-medium"
         >
-          Modules
+          Installed
         </div>
         <RouterLink
           v-for="m in withCockpit"
@@ -52,7 +61,7 @@ onMounted(async () => {
           class="px-3 py-1.5 rounded text-sm transition-colors flex items-center justify-between gap-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
           active-class="!bg-zinc-100 dark:!bg-zinc-800 !text-zinc-900 dark:!text-white"
         >
-          <span class="capitalize">{{ m.name }}</span>
+          <span>{{ moduleLabel(m) }}</span>
           <span class="text-[10px] text-zinc-400 dark:text-zinc-600 uppercase">{{ m.type }}</span>
         </RouterLink>
         <p v-if="!withCockpit.length" class="px-3 text-sm text-zinc-400 dark:text-zinc-600">
@@ -74,7 +83,7 @@ onMounted(async () => {
       </div>
     </aside>
 
-    <main class="flex-1 bg-white dark:bg-zinc-950">
+    <main class="flex-1 min-w-0 overflow-y-auto bg-white dark:bg-zinc-950">
       <RouterView />
     </main>
   </div>

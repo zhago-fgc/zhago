@@ -14,6 +14,10 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 ### Added
 
 - 👷 GitHub Actions CI for pull requests and releases, including binary artifacts and GHCR images.
+- ✨ Native Add-ons and Logs pages in the admin console.
+- ✅ Bun tests for overlay helpers, log parsing, registry loading, and embedded assets.
+- ✨ Game data modules for 2XKO, SF6, KOF XV, and Fatal Fury: City of the Wolves.
+- ✨ Neon Grid example overlay pack.
 - ✨ Live-swappable overlay pack system with a shipped default pack.
 - ✨ start.gg module for tournament and event lookup.
 - ✨ Reworked match — overlay packs, per-player teams, cockpit fixes.
@@ -24,6 +28,10 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 
 ### Changed
 
+- 📦 Embedded core runtime assets into the compiled binary and moved module cockpit shared assets to `/assets/*`.
+- 🏗️ Reorganized the native Vue admin app around feature folders and shared API/type layers.
+- 🏗️ Split overlay registry helpers out of route handlers.
+- 🛠️ Switched local dev data to repo-local `.zhago/` and added `just lint`, `just test`, `just format`, and `just format-check`.
 - 🏗️ Split core into `bus`/`loader`/`logger`/`paths`/`storage`, plus a
   typed `config` and `registry`.
 - 🏗️ Replaced the Wails v2 desktop app with a Bun server and a module/plugin

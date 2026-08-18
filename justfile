@@ -1,9 +1,10 @@
 app := "app"
-# Dev/test runs never touch the real ~/.zhago (predates this rewrite, holds
-# real data from the Wails app) — everything here lands in a throwaway,
-# gitignored dir instead. Unset in a real install/build, where it correctly
-# falls back to ~/.zhago.
-dev_data := justfile_directory() + "/.dev-data"
+# Dev/test runs never touch the real ~/.zhago. Everything here lands in a
+# repo-local, gitignored .zhago dir. Local modules/assets are wired explicitly
+# so dev never depends on binary-adjacent release folders.
+dev_data := justfile_directory() + "/.zhago"
+dev_modules := justfile_directory() + "/modules"
+dev_assets := justfile_directory() + "/assets"
 
 watch:
     #!/usr/bin/env sh
@@ -21,7 +22,7 @@ watch:
     done
 
 watch-backend: generate-ui-embed
-    ZHAGO_DIR={{dev_data}} bun run --watch src/server.ts
+    ZHAGO_DIR={{dev_data}} ZHAGO_MODULES_DIR={{dev_modules}} ZHAGO_ASSETS_DIR={{dev_assets}} bun run --watch src/server.ts
 
 watch-frontend:
     cd {{app}} && bun run vite
@@ -32,6 +33,11 @@ build-backend:
     bun build --compile src/server.ts --outfile build/zhago
     # Modules go through dynamic import() (needed for hot-load), which --compile
     # can't embed — they ship as a real directory next to the binary instead.
+    # rm first: `cp -r modules build/modules` is only correct when build/modules
+    # doesn't exist yet — on a second build it nests modules/ inside the old
+    # copy instead of replacing it (build/modules/modules/), which the loader
+    # then chokes on trying to load as if it were itself a module.
+    rm -rf build/modules
     cp -r modules build/modules
 
 # musl target so the binary runs on Alpine (the container's base image) without
@@ -58,13 +64,25 @@ typecheck-core:
 typecheck-app:
     cd {{app}} && bun run vue-tsc -b
 
+lint:
+    bun run lint
+
+test:
+    bun run test
+
+format:
+    bun run format
+
+format-check:
+    bun run format:check
+
 install:
     bun install
 
-# Run the compiled binary against the same throwaway dev data as `just watch`
-# — for testing the build itself without ever touching the real ~/.zhago.
+# Run the compiled binary against the same repo-local dev data as `just watch`
+# for testing the build itself without ever touching the real ~/.zhago.
 run-built:
-    ZHAGO_DIR={{dev_data}} ./build/zhago
+    ZHAGO_DIR={{dev_data}} ZHAGO_MODULES_DIR={{dev_modules}} ./build/zhago
 
 clean:
-    rm -rf build app/dist .gen .dev-data
+    rm -rf build app/dist .gen .zhago

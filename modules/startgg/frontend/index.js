@@ -50,7 +50,7 @@ function renderResult(state) {
   }
   const t = state.tournament;
   result.innerHTML =
-    '<h3 class="h6">' +
+    '<h3>' +
     t.name +
     (t.city ? ' — ' + t.city : '') +
     '</h3>' +
