@@ -1,3 +1,4 @@
+import registry from './registry.json' with { type: 'json' };
 import type { ModuleManifest } from '../types';
 
 export interface AddOnRegistryEntry extends ModuleManifest {
@@ -9,6 +10,4 @@ export interface AddOnRegistryEntry extends ModuleManifest {
   recommended?: boolean;
 }
 
-export const addonRegistry = (await Bun.file(
-  new URL('./registry.json', import.meta.url),
-).json()) as AddOnRegistryEntry[];
+export const addonRegistry = registry as AddOnRegistryEntry[];

@@ -54,6 +54,10 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 - 🔥 Removed leftover Wails build output (`bin/`) and empty pre-rewrite
   directories (`internal/`, `templates/`).
 
+### Fixed
+
+- 🐛 Embedded the static add-on registry in compiled binaries.
+
 ## [Wails v2] - 2025-09-07 to 2026-04-09
 
 Retrospective summary of the original desktop app, before the Bun rewrite.
