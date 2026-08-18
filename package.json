@@ -8,7 +8,8 @@
     "dev": "bun run --watch src/server.ts",
     "lint": "eslint . --max-warnings 0",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test": "bun test"
   },
   "dependencies": {
     "bootstrap": "^5.3.8",

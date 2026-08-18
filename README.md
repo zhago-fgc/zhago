@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="./assets/logo/zhago-logo.svg" alt="" width="100px" align="center" />
+    <img src="./img/logo.svg" alt="" width="100px" align="center" />
     <h1 align="center">Zhago</h1>
     <p align="center">
         <a href="./LICENSE"><img src="https://img.shields.io/github/license/zhago-fgc/zhago?style=for-the-badge&color=white&labelColor=333333" alt="License"></a>

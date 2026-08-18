@@ -3,6 +3,7 @@ app/dist
 build
 .gen
 .dev-data
+.zhago
 .env
 .env.*
 

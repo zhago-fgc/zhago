@@ -1,21 +1,93 @@
+/* Retheme Bootstrap's own variables to the admin console's actual brand
+   (see app/src/style.css's --color-brand-* and the zinc neutrals used
+   throughout app/src/views/*.vue) instead of Bootstrap's stock blue/gray —
+   every .btn/.form-control/etc. picks this up automatically since Bootstrap
+   is built on these custom properties. Light values on :root, dark values
+   re-declared under [data-bs-theme="dark"] — cockpits set that attribute
+   explicitly (see /assets/theme.js), never relying on a media query here. */
+:root {
+  --bs-primary: #4d6f87; /* brand-700 */
+  --bs-primary-rgb: 77, 111, 135;
+  --bs-link-color: var(--bs-primary);
+  --bs-link-hover-color: #3e5a6f; /* brand-800 */
+  --bs-body-bg: #ffffff;
+  --bs-body-color: #18181b; /* zinc-900 */
+  --bs-border-color: #e4e4e7; /* zinc-200 */
+  --bs-secondary-bg: #f4f4f5; /* zinc-100 */
+  --bs-secondary-color: #71717a; /* zinc-500 */
+  --bs-border-radius: 0.45rem;
+  --bs-border-radius-sm: 0.35rem;
+  --bs-body-font-size: 0.875rem;
+}
+:root[data-bs-theme='dark'] {
+  --bs-body-bg: #09090b; /* zinc-950 */
+  --bs-body-color: #ffffff;
+  --bs-border-color: #27272a; /* zinc-800 */
+  --bs-secondary-bg: #27272a; /* zinc-800 */
+  --bs-secondary-color: #a1a1aa; /* zinc-400 */
+}
+
+/* Keep module cockpits visually aligned with the native admin shell. */
+body {
+  font-size: 0.875rem;
+}
+
+.cockpit-page {
+  padding: 1.5rem;
+  max-width: 56rem;
+}
+
+h1 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+h2 {
+  font-size: 0.95rem;
+  line-height: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+h3 {
+  font-size: 0.85rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.form-control,
+.form-select,
+.btn {
+  font-size: 0.875rem;
+}
+
+.form-control,
+.form-select {
+  padding: 0.4rem 0.65rem;
+}
+
+.btn {
+  padding: 0.4rem 0.65rem;
+}
+
 /* Shared cockpit conventions, linked after bootstrap.min.css — covers
    structure Bootstrap doesn't own (fieldset borders, its own reboot strips
    them) and the combobox/typeahead widget used by any cockpit that needs
-   type-to-filter suggestions. Colors reference Bootstrap's own CSS
-   variables so this still works under data-bs-theme="dark". */
+   type-to-filter suggestions. */
 fieldset {
   border: 1px solid var(--bs-border-color);
-  border-radius: 6px;
-  padding: 1rem;
+  border-radius: var(--bs-border-radius);
+  padding: 0.875rem;
 }
 legend {
   font-weight: 600;
-  font-size: 1rem;
-  padding: 0 0.4rem;
+  font-size: 0.9rem;
+  padding: 0 0.35rem;
 }
 .sides {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 .sides fieldset {
   flex: 1;
@@ -29,10 +101,10 @@ legend {
   flex: 0 0 80px;
 }
 .field-label {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--bs-secondary-color);
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.3rem;
 }
 .hidden {
   display: none;
@@ -42,7 +114,7 @@ legend {
   height: 216px;
   overflow: hidden;
   border: 1px solid var(--bs-border-color);
-  border-radius: 6px;
+  border-radius: var(--bs-border-radius);
 }
 .preview-frame iframe {
   width: 1920px;
@@ -69,17 +141,17 @@ legend {
   margin-top: 0.25rem;
   background: var(--bs-body-bg);
   border: 1px solid var(--bs-border-color);
-  border-radius: 6px;
+  border-radius: var(--bs-border-radius);
   max-height: 12rem;
   overflow-y: auto;
   list-style: none;
   padding: 0.25rem;
 }
 .combobox-suggestions li {
-  padding: 0.4rem 0.6rem;
-  border-radius: 4px;
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--bs-border-radius-sm);
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 .combobox-suggestions li:hover,
 .combobox-suggestions li.active {

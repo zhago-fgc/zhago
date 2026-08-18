@@ -1,7 +1,7 @@
 import { createApp } from 'vue';
-import './composables/theme'; // side-effect import — applies the .dark class before first paint
+import './shared/composables/theme'; // side-effect import applies dark mode before first paint
 import './style.css';
-import App from './App.vue';
-import { router } from './router';
+import App from './app/App.vue';
+import { router } from './app/router';
 
 createApp(App).use(router).mount('#app');

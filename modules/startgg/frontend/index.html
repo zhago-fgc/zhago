@@ -9,10 +9,10 @@
     <script src="/assets/theme.js"></script>
   </head>
   <body>
-    <div class="container py-4">
+    <div class="cockpit-page">
       <h1>Start.gg</h1>
 
-      <h2 class="h5 mt-4">API token</h2>
+      <h2 class="mt-4">API token</h2>
       <fieldset>
         <div class="field-row mb-2">
           <input
@@ -34,10 +34,14 @@
         </p>
       </fieldset>
 
-      <h2 class="h5 mt-4">Tournament</h2>
+      <h2 class="mt-4">Tournament</h2>
       <fieldset>
         <div class="field-row mb-2">
-          <input id="slug-input" class="form-control" placeholder="Tournament slug or start.gg URL" />
+          <input
+            id="slug-input"
+            class="form-control"
+            placeholder="Tournament slug or start.gg URL"
+          />
           <button id="fetch-tournament" class="btn btn-primary text-nowrap">Fetch</button>
         </div>
         <div id="result"></div>

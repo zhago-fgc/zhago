@@ -116,7 +116,8 @@ function clampToRanges(i) {
 
   let remaining = charRange().max;
   for (const p of participants[i]) {
-    if (p.characters.length > remaining) p.characters = p.characters.slice(0, Math.max(remaining, 0));
+    if (p.characters.length > remaining)
+      p.characters = p.characters.slice(0, Math.max(remaining, 0));
     remaining -= p.characters.length;
   }
 }
@@ -179,7 +180,10 @@ function renderParticipantChips(i, pIdx, container) {
   const combobox = zhagoCombobox(input, suggestions, {
     getCandidates: (q) =>
       (gameData?.characters ?? [])
-        .filter((c) => !participant.characters.includes(c.name) && (!q || c.name.toLowerCase().includes(q)))
+        .filter(
+          (c) =>
+            !participant.characters.includes(c.name) && (!q || c.name.toLowerCase().includes(q)),
+        )
         .map((c) => ({ label: c.name, name: c.name })),
     onSelect: (c) => commit(c.name),
   });

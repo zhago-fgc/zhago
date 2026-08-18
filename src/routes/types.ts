@@ -5,5 +5,9 @@ export interface RouteContext {
 export interface Route {
   method: string; // '*' matches any method
   pattern: RegExp;
-  handler: (req: Request, match: RegExpMatchArray, ctx: RouteContext) => Response | Promise<Response>;
+  handler: (
+    req: Request,
+    match: RegExpMatchArray,
+    ctx: RouteContext,
+  ) => Response | Promise<Response>;
 }

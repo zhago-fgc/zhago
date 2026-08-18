@@ -4,6 +4,7 @@ import { loadAllModules } from './registry';
 import { assetRoutes } from './routes/assets';
 import { busRoutes } from './routes/bus';
 import { consoleRoutes } from './routes/console';
+import { logRoutes } from './routes/logs';
 import { moduleRoutes } from './routes/modules';
 import { overlayRoutes } from './routes/overlays';
 import type { Route } from './routes/types';
@@ -18,6 +19,7 @@ const routes: Route[] = [
   ...busRoutes,
   ...overlayRoutes,
   ...assetRoutes,
+  ...logRoutes,
   ...consoleRoutes,
 ];
 
