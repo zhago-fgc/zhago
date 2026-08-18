@@ -110,7 +110,10 @@ async function install(addon: AddOnRegistryEntry) {
       <p v-if="registryError" class="text-sm text-red-600 dark:text-red-400">
         {{ registryError }}
       </p>
-      <p v-if="!available.length && !registryError" class="text-sm text-zinc-500 dark:text-zinc-600">
+      <p
+        v-if="!available.length && !registryError"
+        class="text-sm text-zinc-500 dark:text-zinc-600"
+      >
         No registry add-ons available yet.
       </p>
     </section>

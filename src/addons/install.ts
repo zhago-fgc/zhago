@@ -40,7 +40,9 @@ export async function installAddOn(entry: AddOnRegistryEntry): Promise<AddOnInst
     const rawManifest = JSON.parse(await readFile(join(extractDir, 'module.json'), 'utf8'));
     const manifest = rawManifest as ModuleManifest;
     if (manifest.name !== entry.name) {
-      throw new Error(`manifest name "${manifest.name}" does not match registry name "${entry.name}"`);
+      throw new Error(
+        `manifest name "${manifest.name}" does not match registry name "${entry.name}"`,
+      );
     }
 
     rawManifest.source = {

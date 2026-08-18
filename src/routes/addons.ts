@@ -17,7 +17,8 @@ export const addonRoutes: Route[] = [
       try {
         const body = (await req.json()) as { name?: string };
         const entry = addonRegistry.find((addon) => addon.name === body.name);
-        if (!entry) return Response.json({ error: 'add-on not found' }, { status: 404, headers: cors });
+        if (!entry)
+          return Response.json({ error: 'add-on not found' }, { status: 404, headers: cors });
         return Response.json(await installAddOn(entry), { headers: cors });
       } catch (err) {
         const error = err instanceof Error ? err.message : 'install failed';
