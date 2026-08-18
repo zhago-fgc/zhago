@@ -1,17 +1,19 @@
 import { describe, expect, test } from 'bun:test';
 import { addonRoutes } from '../src/routes/addons';
+import type { RouteContext } from '../src/routes/types';
+
+const routeContext: RouteContext = { server: {} as Bun.Server<undefined> };
 
 describe('add-on registry routes', () => {
   test('serves the static registry', async () => {
     const route = addonRoutes.find(
       (r) => r.method === 'GET' && r.pattern.test('/api/addons/registry'),
     )!;
+    const match = '/api/addons/registry'.match(route.pattern)!;
     const res = await route.handler(
       new Request('http://localhost/api/addons/registry'),
-      [] as any,
-      {
-        server: undefined as any,
-      },
+      match,
+      routeContext,
     );
     const body = await res.json();
 
@@ -32,13 +34,14 @@ describe('add-on registry routes', () => {
     const route = addonRoutes.find(
       (r) => r.method === 'POST' && r.pattern.test('/api/addons/install'),
     )!;
+    const match = '/api/addons/install'.match(route.pattern)!;
     const res = await route.handler(
       new Request('http://localhost/api/addons/install', {
         method: 'POST',
         body: JSON.stringify({ name: 'missing' }),
       }),
-      [] as any,
-      { server: undefined as any },
+      match,
+      routeContext,
     );
     const body = await res.json();
 
