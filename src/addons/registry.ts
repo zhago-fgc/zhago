@@ -60,17 +60,25 @@ async function getJson<T>(url: string): Promise<T> {
   return (await res.json()) as T;
 }
 
-async function readCatalog(): Promise<AddOnCatalogEntry[]> {
-  if (config.addonRegistryUrl) return getJson<AddOnCatalogEntry[]>(config.addonRegistryUrl);
+type AddOnRegistrySourceEntry = AddOnCatalogEntry | AddOnRegistryEntry;
+
+function isResolvedEntry(entry: AddOnRegistrySourceEntry): entry is AddOnRegistryEntry {
+  return 'zipUrl' in entry && 'checksum' in entry && 'releasePage' in entry && 'version' in entry;
+}
+
+async function readRegistrySource(): Promise<AddOnRegistrySourceEntry[]> {
+  if (config.addonRegistryUrl) return getJson<AddOnRegistrySourceEntry[]>(config.addonRegistryUrl);
 
   try {
-    return JSON.parse(await readFile(LOCAL_REGISTRY_PATH, 'utf8')) as AddOnCatalogEntry[];
+    return await getJson<AddOnRegistrySourceEntry[]>(DEFAULT_REGISTRY_URL);
   } catch {
-    return getJson<AddOnCatalogEntry[]>(DEFAULT_REGISTRY_URL);
+    return JSON.parse(await readFile(LOCAL_REGISTRY_PATH, 'utf8')) as AddOnRegistrySourceEntry[];
   }
 }
 
-async function resolveCatalogEntry(entry: AddOnCatalogEntry): Promise<AddOnRegistryEntry> {
+async function resolveRegistryEntry(entry: AddOnRegistrySourceEntry): Promise<AddOnRegistryEntry> {
+  if (isResolvedEntry(entry)) return entry;
+
   const release = await getJson<GitHubRelease>(githubApiUrl(entry.sourceRepo));
   const version = versionFromTag(release.tag_name);
   const zipName = patternForVersion(entry.assetPattern, version);
@@ -90,14 +98,14 @@ async function resolveCatalogEntry(entry: AddOnCatalogEntry): Promise<AddOnRegis
 }
 
 export async function listAddOnRegistry(): Promise<AddOnRegistryEntry[]> {
-  const catalog = await readCatalog();
-  return Promise.all(catalog.map(resolveCatalogEntry));
+  const source = await readRegistrySource();
+  return Promise.all(source.map(resolveRegistryEntry));
 }
 
 export async function findAddOnRegistryEntry(
   name: string | undefined,
 ): Promise<AddOnRegistryEntry | undefined> {
   if (!name) return undefined;
-  const entry = (await readCatalog()).find((addon) => addon.name === name);
-  return entry ? resolveCatalogEntry(entry) : undefined;
+  const entry = (await readRegistrySource()).find((addon) => addon.name === name);
+  return entry ? resolveRegistryEntry(entry) : undefined;
 }

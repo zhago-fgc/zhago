@@ -10,7 +10,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "bun test",
-    "validate:registry": "bun run scripts/validate-registry.ts"
+    "validate:registry": "bun run scripts/validate-registry.ts",
+    "build:registry": "bun run scripts/build-registry.ts"
   },
   "dependencies": {
     "bootstrap": "^5.3.8",
