@@ -25,6 +25,34 @@ const installedCards = computed(() =>
   installed.value.map((m) => ({ ...registryByName.value.get(m.name), ...m })),
 );
 
+function compareVersions(left: string, right: string): number {
+  const leftParts = left.split(/[.-]/);
+  const rightParts = right.split(/[.-]/);
+  const length = Math.max(leftParts.length, rightParts.length);
+
+  for (let i = 0; i < length; i += 1) {
+    const leftPart = leftParts[i] ?? '0';
+    const rightPart = rightParts[i] ?? '0';
+    const leftNumber = Number(leftPart);
+    const rightNumber = Number(rightPart);
+
+    if (Number.isInteger(leftNumber) && Number.isInteger(rightNumber)) {
+      if (leftNumber !== rightNumber) return leftNumber - rightNumber;
+      continue;
+    }
+
+    const textCompare = leftPart.localeCompare(rightPart);
+    if (textCompare !== 0) return textCompare;
+  }
+
+  return 0;
+}
+
+function hasUpdate(addon: ModuleManifest): boolean {
+  const registryEntry = registryByName.value.get(addon.name);
+  return registryEntry ? compareVersions(registryEntry.version, addon.version) > 0 : false;
+}
+
 onMounted(async () => {
   try {
     registry.value = await listRegistryAddOns();
@@ -75,7 +103,7 @@ async function remove(addon: ModuleManifest) {
 </script>
 
 <template>
-  <div class="p-6 max-w-5xl">
+  <div class="p-4 sm:p-6 max-w-5xl">
     <div class="mb-6">
       <h1 class="text-xl font-semibold text-zinc-900 dark:text-white mb-1">Add-ons</h1>
       <p class="text-sm text-zinc-500 dark:text-zinc-400">
@@ -86,7 +114,7 @@ async function remove(addon: ModuleManifest) {
     <section
       class="rounded-xl border border-zinc-200 dark:border-zinc-800 p-5 mb-6 bg-zinc-50 dark:bg-zinc-900/40"
     >
-      <div class="flex items-start justify-between gap-4">
+      <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
           <h2 class="text-sm font-medium text-zinc-900 dark:text-white">Recommended setup</h2>
           <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400 max-w-2xl">
@@ -97,7 +125,7 @@ async function remove(addon: ModuleManifest) {
         <button
           type="button"
           disabled
-          class="shrink-0 rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-1.5 text-sm text-zinc-400 dark:text-zinc-600 cursor-not-allowed"
+          class="shrink-0 rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-1.5 text-sm text-zinc-400 dark:text-zinc-600 cursor-not-allowed w-full sm:w-auto"
         >
           Install recommended
         </button>
@@ -105,7 +133,7 @@ async function remove(addon: ModuleManifest) {
     </section>
 
     <section class="mb-8">
-      <div class="flex items-end justify-between gap-4 mb-3">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 sm:gap-4 mb-3">
         <div>
           <h2 class="text-sm font-medium text-zinc-900 dark:text-white">Available</h2>
           <p class="text-sm text-zinc-500 dark:text-zinc-400">
@@ -141,7 +169,7 @@ async function remove(addon: ModuleManifest) {
     </section>
 
     <section class="mb-8">
-      <div class="flex items-end justify-between gap-4 mb-3">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 sm:gap-4 mb-3">
         <div>
           <h2 class="text-sm font-medium text-zinc-900 dark:text-white">Installed</h2>
           <p class="text-sm text-zinc-500 dark:text-zinc-400">
@@ -155,7 +183,13 @@ async function remove(addon: ModuleManifest) {
           v-for="m in installedCards"
           :key="m.name"
           :module="m"
-          :action-label="actioning === actionKey(m.name, 'update') ? 'Updating...' : 'Update'"
+          :action-label="
+            hasUpdate(m)
+              ? actioning === actionKey(m.name, 'update')
+                ? 'Updating...'
+                : 'Update'
+              : undefined
+          "
           :action-disabled="actioning !== null"
           :secondary-action-label="
             actioning === actionKey(m.name, 'remove') ? 'Removing...' : 'Remove'

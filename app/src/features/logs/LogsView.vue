@@ -40,7 +40,7 @@ onUnmounted(() => stream?.close());
 </script>
 
 <template>
-  <div class="p-6 max-w-6xl">
+  <div class="p-4 sm:p-6 max-w-6xl">
     <div class="mb-6">
       <h1 class="text-xl font-semibold text-zinc-900 dark:text-white mb-1">Logs</h1>
       <p class="text-sm text-zinc-500 dark:text-zinc-400">

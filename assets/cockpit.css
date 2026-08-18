@@ -28,11 +28,28 @@
 }
 
 /* Keep module cockpits visually aligned with the native admin shell. */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   font-size: 0.875rem;
+  overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
 }
 
 .cockpit-page {
+  width: 100%;
   padding: 1.5rem;
   max-width: 56rem;
 }
@@ -64,17 +81,24 @@ h3 {
 
 .form-control,
 .form-select {
+  min-width: 0;
   padding: 0.4rem 0.65rem;
 }
 
 .btn {
   padding: 0.4rem 0.65rem;
+  white-space: nowrap;
 }
 
 /* Shared cockpit conventions, linked after bootstrap.min.css — covers
    structure Bootstrap doesn't own (fieldset borders, its own reboot strips
    them) and the combobox/typeahead widget used by any cockpit that needs
    type-to-filter suggestions. */
+fieldset,
+.card,
+.section {
+  min-width: 0;
+}
 fieldset {
   border: 1px solid var(--bs-border-color);
   border-radius: var(--bs-border-radius);
@@ -95,7 +119,17 @@ legend {
 }
 .field-row {
   display: flex;
+  align-items: center;
   gap: 0.5rem;
+  min-width: 0;
+}
+.field-row > * {
+  min-width: 0;
+}
+.field-row input:not([type='checkbox']):not([type='radio']),
+.field-row select,
+.field-row .combobox {
+  flex: 1 1 auto;
 }
 .field-row input[type='number'] {
   flex: 0 0 80px;
@@ -109,19 +143,29 @@ legend {
 .hidden {
   display: none;
 }
+.preview-panel {
+  margin: 0;
+}
+.preview-panel summary {
+  display: none;
+  cursor: pointer;
+  color: var(--bs-secondary-color);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
 .preview-frame {
-  width: 384px;
-  height: 216px;
+  width: min(100%, 384px);
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   border: 1px solid var(--bs-border-color);
   border-radius: var(--bs-border-radius);
+  background: #000;
 }
 .preview-frame iframe {
-  width: 1920px;
-  height: 1080px;
+  width: 100%;
+  height: 100%;
   border: none;
-  transform: scale(0.2);
-  transform-origin: 0 0;
 }
 
 /* Combobox: a positioned wrapper around one input, with a type-to-filter
@@ -161,4 +205,65 @@ legend {
   color: var(--bs-secondary-color);
   font-size: 0.85em;
   margin-left: 0.4em;
+}
+
+@media (max-width: 640px) {
+  .cockpit-page {
+    padding: 1rem;
+    max-width: none;
+  }
+
+  h1 {
+    font-size: 1.1rem;
+    line-height: 1.5rem;
+  }
+
+  fieldset {
+    padding: 0.75rem;
+  }
+
+  .sides,
+  .field-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .field-row input[type='number'],
+  .field-row .btn,
+  .field-row button {
+    flex-basis: auto;
+  }
+
+  .btn,
+  button,
+  .form-control,
+  .form-select {
+    width: 100%;
+  }
+
+  .preview-panel summary {
+    display: block;
+  }
+
+  .preview-frame {
+    display: none;
+  }
+
+  .preview-panel[open] .preview-frame {
+    display: block;
+  }
+
+  .combobox-suggestions {
+    max-height: 10rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .cockpit-page {
+    padding: 0.75rem;
+  }
+
+  fieldset {
+    padding: 0.65rem;
+  }
 }
