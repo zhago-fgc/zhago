@@ -33,18 +33,12 @@ onMounted(async () => {
   }
 });
 
-function hasUpdate(addon: ModuleManifest) {
-  const registryEntry = registryByName.value.get(addon.name);
-  return Boolean(registryEntry && registryEntry.version !== addon.version);
-}
-
-function actionLabel(addon: ModuleManifest) {
-  if (actioning.value === addon.name) return hasUpdate(addon) ? 'Updating...' : 'Removing...';
-  return hasUpdate(addon) ? 'Update' : 'Remove';
+function actionKey(name: string, action: 'install' | 'update' | 'remove') {
+  return `${name}:${action}`;
 }
 
 async function install(addon: AddOnRegistryEntry) {
-  actioning.value = addon.name;
+  actioning.value = actionKey(addon.name, 'install');
   actionError.value = null;
   try {
     await installAddOn(addon.name);
@@ -55,15 +49,25 @@ async function install(addon: AddOnRegistryEntry) {
   }
 }
 
-async function updateOrRemove(addon: ModuleManifest) {
-  actioning.value = addon.name;
+async function update(addon: ModuleManifest) {
+  actioning.value = actionKey(addon.name, 'update');
   actionError.value = null;
   try {
-    const updating = hasUpdate(addon);
-    if (updating) await updateAddOn(addon.name);
-    else await removeAddOn(addon.name);
+    await updateAddOn(addon.name);
   } catch (err) {
-    actionError.value = err instanceof Error ? err.message : 'Action failed';
+    actionError.value = err instanceof Error ? err.message : 'Update failed';
+  } finally {
+    actioning.value = null;
+  }
+}
+
+async function remove(addon: ModuleManifest) {
+  actioning.value = actionKey(addon.name, 'remove');
+  actionError.value = null;
+  try {
+    await removeAddOn(addon.name);
+  } catch (err) {
+    actionError.value = err instanceof Error ? err.message : 'Remove failed';
   } finally {
     actioning.value = null;
   }
@@ -115,7 +119,7 @@ async function updateOrRemove(addon: ModuleManifest) {
           v-for="m in available"
           :key="m.name"
           :module="m"
-          :action-label="actioning === m.name ? 'Installing...' : 'Install'"
+          :action-label="actioning === actionKey(m.name, 'install') ? 'Installing...' : 'Install'"
           :action-disabled="actioning !== null"
           :show-open="false"
           @action="install(m)"
@@ -151,9 +155,14 @@ async function updateOrRemove(addon: ModuleManifest) {
           v-for="m in installedCards"
           :key="m.name"
           :module="m"
-          :action-label="actionLabel(m)"
+          :action-label="actioning === actionKey(m.name, 'update') ? 'Updating...' : 'Update'"
           :action-disabled="actioning !== null"
-          @action="updateOrRemove(m)"
+          :secondary-action-label="
+            actioning === actionKey(m.name, 'remove') ? 'Removing...' : 'Remove'
+          "
+          :secondary-action-disabled="actioning !== null"
+          @action="update(m)"
+          @secondary-action="remove(m)"
         />
       </div>
 

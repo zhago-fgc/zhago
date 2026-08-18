@@ -10,16 +10,20 @@ const props = withDefaults(
     module: AddOnCardModule;
     actionLabel?: string;
     actionDisabled?: boolean;
+    secondaryActionLabel?: string;
+    secondaryActionDisabled?: boolean;
     showOpen?: boolean;
   }>(),
   {
     actionLabel: 'Remove',
     actionDisabled: true,
+    secondaryActionLabel: undefined,
+    secondaryActionDisabled: true,
     showOpen: true,
   },
 );
 
-defineEmits<{ action: [] }>();
+defineEmits<{ action: []; secondaryAction: [] }>();
 
 const shortChecksum = computed(() => props.module.checksum?.replace('sha256:', '').slice(0, 12));
 </script>
@@ -106,6 +110,15 @@ const shortChecksum = computed(() => props.module.checksum?.replace('sha256:', '
         @click="$emit('action')"
       >
         {{ actionLabel }}
+      </button>
+      <button
+        v-if="secondaryActionLabel"
+        type="button"
+        :disabled="secondaryActionDisabled"
+        class="rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-1.5 text-sm disabled:text-zinc-400 disabled:dark:text-zinc-600 disabled:cursor-not-allowed text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900"
+        @click="$emit('secondaryAction')"
+      >
+        {{ secondaryActionLabel }}
       </button>
     </div>
   </article>

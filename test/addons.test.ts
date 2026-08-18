@@ -1,50 +1,11 @@
-import { afterEach, describe, expect, mock, test } from 'bun:test';
+import { describe, expect, test } from 'bun:test';
 import { addonRoutes } from '../src/routes/addons';
 import type { RouteContext } from '../src/routes/types';
 
 const routeContext: RouteContext = { server: {} as Bun.Server<undefined> };
-const originalFetch = globalThis.fetch;
-
-const assetNames: Record<string, string> = {
-  'overlay-default': 'overlay-default-9.9.9.zip',
-  'module-match': 'module-match-9.9.9.zip',
-  'module-casters': 'module-casters-9.9.9.zip',
-  'module-caster-directory': 'module-caster-directory-9.9.9.zip',
-  'plugin-startgg': 'plugin-startgg-9.9.9.zip',
-  'game-2xko': 'game-2xko-9.9.9.zip',
-  'game-sf6': 'game-sf6-9.9.9.zip',
-  'game-kofxv': 'game-kofxv-9.9.9.zip',
-  'game-cotw': 'game-fatal-fury-cotw-9.9.9.zip',
-};
-
-function mockGitHubReleases() {
-  globalThis.fetch = mock((input: RequestInfo | URL) => {
-    const url = String(input);
-    const repo = url.match(/repos\/[^/]+\/([^/]+)\/releases\/latest/)?.[1];
-    if (!repo || !assetNames[repo]) return Promise.resolve(new Response(null, { status: 404 }));
-    return Promise.resolve(
-      Response.json({
-        tag_name: 'v9.9.9',
-        html_url: `https://github.com/zhago-fgc/${repo}/releases/tag/v9.9.9`,
-        assets: [
-          {
-            name: assetNames[repo],
-            browser_download_url: `https://github.com/zhago-fgc/${repo}/releases/download/v9.9.9/${assetNames[repo]}`,
-            digest: 'sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-          },
-        ],
-      }),
-    );
-  }) as typeof fetch;
-}
-
-afterEach(() => {
-  globalThis.fetch = originalFetch;
-});
 
 describe('add-on registry routes', () => {
-  test('serves the remote-ready registry', async () => {
-    mockGitHubReleases();
+  test('serves the static registry', async () => {
     const route = addonRoutes.find(
       (r) => r.method === 'GET' && r.pattern.test('/api/addons/registry'),
     )!;
@@ -61,17 +22,20 @@ describe('add-on registry routes', () => {
       expect.objectContaining({
         name: 'default',
         displayName: 'Default Overlay Pack',
+        version: '0.1.0',
         type: 'overlay',
         official: true,
         recommended: true,
-        checksum: 'sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        zipUrl:
+          'https://github.com/zhago-fgc/overlay-default/releases/download/v0.1.0/overlay-default.zip',
+        checksumUrl:
+          'https://github.com/zhago-fgc/overlay-default/releases/download/v0.1.0/overlay-default.sha256',
       }),
     );
     expect(body).toContainEqual(
       expect.objectContaining({
-        name: 'match',
-        version: '9.9.9',
-        tags: expect.arrayContaining(['match', 'official']),
+        name: 'kofxv',
+        displayName: 'The King of Fighters XV',
       }),
     );
   });
@@ -96,7 +60,6 @@ describe('add-on registry routes', () => {
   });
 
   test('returns 404 for unknown add-on installs', async () => {
-    mockGitHubReleases();
     const route = addonRoutes.find(
       (r) => r.method === 'POST' && r.pattern.test('/api/addons/install'),
     )!;

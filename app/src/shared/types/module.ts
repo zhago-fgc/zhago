@@ -11,10 +11,12 @@ export interface ModuleManifest {
 }
 
 export interface AddOnRegistryEntry extends ModuleManifest {
+  repo: string;
   sourceRepo: string;
   releasePage: string;
   zipUrl: string;
-  checksum: `sha256:${string}`;
+  checksum?: `sha256:${string}`;
+  checksumUrl?: string;
   official?: boolean;
   recommended?: boolean;
 }
