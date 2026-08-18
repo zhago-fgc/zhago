@@ -1,6 +1,7 @@
 import { config } from './config';
 import { createLogger, printBanner } from './logger';
 import { loadAllModules } from './registry';
+import { addonRoutes } from './routes/addons';
 import { assetRoutes } from './routes/assets';
 import { busRoutes } from './routes/bus';
 import { consoleRoutes } from './routes/console';
@@ -15,6 +16,7 @@ const log = createLogger('core');
 await loadAllModules();
 
 const routes: Route[] = [
+  ...addonRoutes,
   ...moduleRoutes,
   ...busRoutes,
   ...overlayRoutes,

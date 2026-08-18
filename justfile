@@ -1,9 +1,8 @@
 app := "app"
 # Dev/test runs never touch the real ~/.zhago. Everything here lands in a
-# repo-local, gitignored .zhago dir. Local modules/assets are wired explicitly
-# so dev never depends on binary-adjacent release folders.
+# repo-local, gitignored .zhago dir.
 dev_data := justfile_directory() + "/.zhago"
-dev_modules := justfile_directory() + "/modules"
+dev_modules := dev_data + "/modules"
 dev_assets := justfile_directory() + "/assets"
 
 watch:
@@ -31,20 +30,11 @@ build: build-frontend generate-ui-embed build-backend
 
 build-backend:
     bun build --compile src/server.ts --outfile build/zhago
-    # Modules go through dynamic import() (needed for hot-load), which --compile
-    # can't embed — they ship as a real directory next to the binary instead.
-    # rm first: `cp -r modules build/modules` is only correct when build/modules
-    # doesn't exist yet — on a second build it nests modules/ inside the old
-    # copy instead of replacing it (build/modules/modules/), which the loader
-    # then chokes on trying to load as if it were itself a module.
-    rm -rf build/modules
-    cp -r modules build/modules
 
 # musl target so the binary runs on Alpine (the container's base image) without
 # dragging in glibc. arch is a Bun --compile target suffix: x64 or arm64.
 build-linux-musl arch:
     bun build --compile --target=bun-linux-{{arch}}-musl src/server.ts --outfile build/zhago-linux-{{arch}}-musl
-    cp -r modules build/modules
 
 build-frontend:
     cd {{app}} && bun run vue-tsc -b && bun run vite build

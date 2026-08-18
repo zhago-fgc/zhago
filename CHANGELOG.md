@@ -13,6 +13,8 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 
 ### Added
 
+- ✨ Static add-on registry and installer API for pinned release zip installs with checksum verification.
+- ✨ Add-ons page registry listings with install status and restart guidance.
 - 👷 GitHub Actions CI for pull requests and releases, including binary artifacts and GHCR images.
 - ✨ Native Add-ons and Logs pages in the admin console.
 - ✅ Bun tests for overlay helpers, log parsing, registry loading, and embedded assets.
@@ -28,6 +30,9 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 
 ### Changed
 
+- ♻️ Removed bundled repo modules from core and load add-ons from the Zhago data directory.
+- 🎨 Changed the default admin theme to system.
+- 📝 Updated alpha Getting Started docs and TODO progress tracking.
 - 📦 Embedded core runtime assets into the compiled binary and moved module cockpit shared assets to `/assets/*`.
 - 🏗️ Reorganized the native Vue admin app around feature folders and shared API/type layers.
 - 🏗️ Split overlay registry helpers out of route handlers.

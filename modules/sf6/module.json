@@ -1,7 +1,0 @@
-{
-  "name": "sf6",
-  "version": "0.1.0",
-  "type": "module",
-  "entry": "index.ts",
-  "tags": ["game"]
-}

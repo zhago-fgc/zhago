@@ -14,8 +14,6 @@ RUN case "$TARGETARCH" in \
     esac \
     && chmod +x /app/zhago \
     && rm /tmp/zhago-linux-x64-musl /tmp/zhago-linux-arm64-musl
-COPY build/modules /app/modules
-
 ENV ZHAGO_DIR=/data
 # Verbose by default here — stdout via `docker logs` is the normal way anyone
 # observes a container, unlike the compiled binary's quiet ("warn") default.

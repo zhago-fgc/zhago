@@ -1,5 +1,5 @@
 import { mkdir, readdir } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
 import { config } from '../config';
 import { loadModule } from '../loader';
 import { createLogger } from '../logger';
@@ -8,13 +8,7 @@ import type { ModuleManifest } from '../types';
 
 const log = createLogger('core');
 
-export const BUILTIN_MODULES_DIR =
-  config.modulesDir ??
-  (import.meta.dir.startsWith('/$bunfs')
-    ? join(dirname(process.argv[0] ?? process.execPath), 'modules')
-    : join(import.meta.dir, '..', '..', 'modules'));
-
-export const INSTALLED_MODULES_DIR = zhagoPath('modules');
+export const MODULES_DIR = config.modulesDir ?? zhagoPath('modules');
 
 // Shared static assets for module cockpits. Production serves the embedded map;
 // this filesystem path is a dev override for live local assets.
@@ -49,6 +43,5 @@ export async function loadModulesFrom(baseDir: string, create = false) {
 }
 
 export async function loadAllModules() {
-  await loadModulesFrom(BUILTIN_MODULES_DIR);
-  await loadModulesFrom(INSTALLED_MODULES_DIR, true);
+  await loadModulesFrom(MODULES_DIR, true);
 }
