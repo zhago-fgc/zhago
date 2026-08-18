@@ -1,0 +1,112 @@
+[
+  {
+    "name": "default",
+    "displayName": "Default Overlay Pack",
+    "type": "overlay",
+    "sourceRepo": "https://github.com/zhago-fgc/overlay-default",
+    "assetPattern": "overlay-default-{version}.zip",
+    "official": true,
+    "recommended": true,
+    "tags": ["overlay", "official", "starter"]
+  },
+  {
+    "name": "match",
+    "displayName": "Match",
+    "type": "module",
+    "entry": "index.ts",
+    "ui": {
+      "cockpit": "frontend/index.html"
+    },
+    "sourceRepo": "https://github.com/zhago-fgc/module-match",
+    "assetPattern": "module-match-{version}.zip",
+    "official": true,
+    "recommended": true,
+    "tags": ["match", "cockpit", "official", "starter"]
+  },
+  {
+    "name": "casters",
+    "displayName": "Casters",
+    "type": "module",
+    "entry": "index.ts",
+    "ui": {
+      "cockpit": "frontend/index.html"
+    },
+    "sourceRepo": "https://github.com/zhago-fgc/module-casters",
+    "assetPattern": "module-casters-{version}.zip",
+    "official": true,
+    "recommended": true,
+    "tags": ["casters", "cockpit", "official", "starter"]
+  },
+  {
+    "name": "caster-directory",
+    "displayName": "Caster Directory",
+    "type": "module",
+    "entry": "index.ts",
+    "ui": {
+      "cockpit": "frontend/index.html"
+    },
+    "sourceRepo": "https://github.com/zhago-fgc/module-caster-directory",
+    "assetPattern": "module-caster-directory-{version}.zip",
+    "official": true,
+    "recommended": true,
+    "tags": ["casters", "directory", "cockpit", "official", "starter"]
+  },
+  {
+    "name": "startgg",
+    "displayName": "start.gg",
+    "type": "plugin",
+    "entry": "index.ts",
+    "ui": {
+      "cockpit": "frontend/index.html"
+    },
+    "sourceRepo": "https://github.com/zhago-fgc/plugin-startgg",
+    "assetPattern": "plugin-startgg-{version}.zip",
+    "official": true,
+    "recommended": true,
+    "tags": ["bracket", "startgg", "cockpit", "official", "starter"]
+  },
+  {
+    "name": "2xko",
+    "displayName": "2XKO",
+    "type": "module",
+    "entry": "index.ts",
+    "sourceRepo": "https://github.com/zhago-fgc/game-2xko",
+    "assetPattern": "game-2xko-{version}.zip",
+    "official": true,
+    "recommended": true,
+    "tags": ["game", "official", "starter"]
+  },
+  {
+    "name": "sf6",
+    "displayName": "Street Fighter 6",
+    "type": "module",
+    "entry": "index.ts",
+    "sourceRepo": "https://github.com/zhago-fgc/game-sf6",
+    "assetPattern": "game-sf6-{version}.zip",
+    "official": true,
+    "recommended": true,
+    "tags": ["game", "official", "starter"]
+  },
+  {
+    "name": "kofxv",
+    "displayName": "KOF XV",
+    "type": "module",
+    "entry": "index.ts",
+    "sourceRepo": "https://github.com/zhago-fgc/game-kofxv",
+    "assetPattern": "game-kofxv-{version}.zip",
+    "official": true,
+    "recommended": true,
+    "tags": ["game", "official", "starter"]
+  },
+  {
+    "name": "fatal-fury-cotw",
+    "displayName": "Fatal Fury: City of the Wolves",
+    "type": "module",
+    "entry": "index.ts",
+    "sourceRepo": "https://github.com/zhago-fgc/game-cotw",
+    "assetPattern": "game-fatal-fury-cotw-{version}.zip",
+    "official": true,
+    "recommended": true,
+    "tags": ["game", "official", "starter"]
+  }
+]

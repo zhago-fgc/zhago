@@ -1,5 +1,5 @@
 import { installAddOn } from '../addons/install';
-import { addonRegistry } from '../addons/registry';
+import { findAddOnRegistryEntry, listAddOnRegistry } from '../addons/registry';
 import { removeAddOn } from '../addons/remove';
 import { updateAddOn } from '../addons/update';
 import { createLogger } from '../logger';
@@ -8,15 +8,11 @@ import type { Route } from './types';
 const cors = { 'Access-Control-Allow-Origin': '*' };
 const log = createLogger('addons');
 
-function findRegistryEntry(name: string | undefined) {
-  return addonRegistry.find((addon) => addon.name === name);
-}
-
 export const addonRoutes: Route[] = [
   {
     method: 'GET',
     pattern: /^\/api\/addons\/registry$/,
-    handler: () => Response.json(addonRegistry, { headers: cors }),
+    handler: async () => Response.json(await listAddOnRegistry(), { headers: cors }),
   },
   {
     method: 'POST',
@@ -24,7 +20,7 @@ export const addonRoutes: Route[] = [
     handler: async (req) => {
       try {
         const body = (await req.json()) as { name?: string };
-        const entry = findRegistryEntry(body.name);
+        const entry = await findAddOnRegistryEntry(body.name);
         if (!entry)
           return Response.json({ error: 'add-on not found' }, { status: 404, headers: cors });
         return Response.json(await installAddOn(entry), { headers: cors });
@@ -41,7 +37,7 @@ export const addonRoutes: Route[] = [
     handler: async (req) => {
       try {
         const body = (await req.json()) as { name?: string };
-        const entry = findRegistryEntry(body.name);
+        const entry = await findAddOnRegistryEntry(body.name);
         if (!entry)
           return Response.json({ error: 'add-on not found' }, { status: 404, headers: cors });
         return Response.json(await updateAddOn(entry), { headers: cors });

@@ -6,6 +6,7 @@ export interface Config {
   zhagoDir: string;
   modulesDir: string | undefined;
   assetsDir: string | undefined;
+  addonRegistryUrl: string | undefined;
   logging: {
     level: 'info' | 'warn' | 'error' | undefined;
     format: 'pretty' | 'json';
@@ -20,6 +21,7 @@ export const config: Config = {
   zhagoDir: process.env.ZHAGO_DIR ?? join(homedir(), '.zhago'),
   modulesDir: process.env.ZHAGO_MODULES_DIR,
   assetsDir: process.env.ZHAGO_ASSETS_DIR,
+  addonRegistryUrl: process.env.ZHAGO_REGISTRY_URL,
   logging: {
     level: process.env.ZHAGO_LOG_LEVEL as Config['logging']['level'],
     format: process.env.ZHAGO_LOG_FORMAT === 'json' ? 'json' : 'pretty',
