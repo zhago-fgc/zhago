@@ -42,6 +42,10 @@ export function unloadModule(name: string): void {
   const entry = loaded.get(name);
   if (!entry) return;
   for (const off of entry.unsubs) off();
-  entry.dispose?.();
+  try {
+    entry.dispose?.();
+  } catch (err) {
+    createLogger(name).error('dispose failed:', err);
+  }
   loaded.delete(name);
 }

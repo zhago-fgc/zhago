@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, provide } from 'vue';
+import { ref, onMounted, onUnmounted, computed, provide } from 'vue';
 import logo from '../assets/zhago-logo-white.svg';
 import { listInstalledAddOns } from '../features/addons/api';
 import { moduleLabel } from '../shared/composables/moduleLabel';
 import type { ModuleManifest } from '../shared/types/module';
 
 const modules = ref<ModuleManifest[]>([]);
+let modulesStream: EventSource | undefined;
 provide('modules', modules);
 
 // Only modules with a cockpit page show up in the nav — a plugin with no UI
@@ -14,7 +15,13 @@ const withCockpit = computed(() => modules.value.filter((m) => m.ui?.cockpit));
 
 onMounted(async () => {
   modules.value = await listInstalledAddOns();
+  modulesStream = new EventSource('/api/bus/modules/stream');
+  modulesStream.onmessage = (event) => {
+    modules.value = JSON.parse(event.data) as ModuleManifest[];
+  };
 });
+
+onUnmounted(() => modulesStream?.close());
 </script>
 
 <template>

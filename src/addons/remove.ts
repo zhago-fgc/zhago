@@ -1,6 +1,9 @@
 import { rm } from 'node:fs/promises';
 import { join } from 'node:path';
-import { MODULES_DIR } from '../registry';
+import { createLogger } from '../logger';
+import { INSTALLED_MODULES_DIR, unloadInstalledModule } from '../registry';
+
+const log = createLogger('addons');
 
 export interface AddOnRemoveResult {
   name: string;
@@ -9,7 +12,10 @@ export interface AddOnRemoveResult {
 }
 
 export async function removeAddOn(name: string): Promise<AddOnRemoveResult> {
-  const installDir = join(MODULES_DIR, name);
+  const installDir = join(INSTALLED_MODULES_DIR, name);
+  log.info(`removing ${name} from ${installDir}`);
+  unloadInstalledModule(name);
   await rm(installDir, { recursive: true, force: true });
-  return { name, removedFrom: installDir, restartRequired: true };
+  log.info(`removed ${name} from ${installDir}`);
+  return { name, removedFrom: installDir, restartRequired: false };
 }

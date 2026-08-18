@@ -11,6 +11,11 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 
 ## [Unreleased]
 
+### Added
+
+- ✨ Add live add-on loading after install, update, and remove.
+- ✨ Log add-on install, update, remove, reload, and unload events.
+
 ## [0.1.3] - 2026-08-18
 
 ### Changed

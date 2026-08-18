@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { manifests, modules } from '../registry';
+import { listModuleManifests, modules } from '../registry';
 import type { Route } from './types';
 
 export const moduleRoutes: Route[] = [
@@ -7,7 +7,7 @@ export const moduleRoutes: Route[] = [
     method: 'GET',
     pattern: /^\/api\/modules$/,
     handler: () =>
-      Response.json([...manifests.values()], { headers: { 'Access-Control-Allow-Origin': '*' } }),
+      Response.json(listModuleManifests(), { headers: { 'Access-Control-Allow-Origin': '*' } }),
   },
   {
     // frontend/ (cockpit) and overlay/ are sibling folders inside a module;

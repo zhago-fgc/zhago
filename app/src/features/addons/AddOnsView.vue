@@ -11,16 +11,13 @@ const registry = ref<AddOnRegistryEntry[]>([]);
 const registryError = ref<string | null>(null);
 const actioning = ref<string | null>(null);
 const actionError = ref<string | null>(null);
-const pendingRestart = ref<Set<string>>(new Set());
 const installed = computed(() =>
   [...modules.value].sort((a, b) => moduleLabel(a).localeCompare(moduleLabel(b))),
 );
 const withCockpit = computed(() => installed.value.filter((m) => m.ui?.cockpit));
 const headless = computed(() => installed.value.filter((m) => !m.ui?.cockpit));
 const installedNames = computed(() => new Set(installed.value.map((m) => m.name)));
-const unavailableNames = computed(
-  () => new Set([...installedNames.value, ...pendingRestart.value]),
-);
+const unavailableNames = computed(() => installedNames.value);
 const recommended = computed(() => registry.value.filter((m) => m.recommended));
 const available = computed(() => registry.value.filter((m) => !unavailableNames.value.has(m.name)));
 const registryByName = computed(() => new Map(registry.value.map((m) => [m.name, m])));
@@ -46,16 +43,11 @@ function actionLabel(addon: ModuleManifest) {
   return hasUpdate(addon) ? 'Update' : 'Remove';
 }
 
-function markPendingRestart(name: string) {
-  pendingRestart.value = new Set(pendingRestart.value).add(name);
-}
-
 async function install(addon: AddOnRegistryEntry) {
   actioning.value = addon.name;
   actionError.value = null;
   try {
     await installAddOn(addon.name);
-    markPendingRestart(addon.name);
   } catch (err) {
     actionError.value = err instanceof Error ? err.message : 'Install failed';
   } finally {
@@ -67,9 +59,9 @@ async function updateOrRemove(addon: ModuleManifest) {
   actioning.value = addon.name;
   actionError.value = null;
   try {
-    if (hasUpdate(addon)) await updateAddOn(addon.name);
+    const updating = hasUpdate(addon);
+    if (updating) await updateAddOn(addon.name);
     else await removeAddOn(addon.name);
-    markPendingRestart(addon.name);
   } catch (err) {
     actionError.value = err instanceof Error ? err.message : 'Action failed';
   } finally {
@@ -95,7 +87,7 @@ async function updateOrRemove(addon: ModuleManifest) {
           <h2 class="text-sm font-medium text-zinc-900 dark:text-white">Recommended setup</h2>
           <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400 max-w-2xl">
             {{ recommended.length }} recommended add-ons are listed in the registry. Installed
-            add-ons require a Zhago restart before they are loaded.
+            add-ons load immediately after install, update, or remove.
           </p>
         </div>
         <button
@@ -132,9 +124,6 @@ async function updateOrRemove(addon: ModuleManifest) {
 
       <p v-if="actionError" class="mt-3 text-sm text-red-600 dark:text-red-400">
         {{ actionError }}
-      </p>
-      <p v-if="pendingRestart.size" class="mt-3 text-sm text-amber-600 dark:text-amber-400">
-        Changes saved. Restart Zhago to apply add-on changes.
       </p>
       <p v-if="registryError" class="text-sm text-red-600 dark:text-red-400">
         {{ registryError }}
