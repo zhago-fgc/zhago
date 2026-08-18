@@ -11,6 +11,12 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 
 ## [Unreleased]
 
+## [0.1.6] - 2026-08-18
+
+### Fixed
+
+- 🐛 Publish a fully resolved registry so clients do not hit GitHub API rate limits.
+
 ## [0.1.5] - 2026-08-18
 
 ### Added
