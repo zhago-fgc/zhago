@@ -4,14 +4,14 @@ import { moduleLabel } from '../../shared/composables/moduleLabel';
 import type { AddOnRegistryEntry, ModuleManifest } from '../../shared/types/module';
 import AddOnCard from './AddOnCard.vue';
 import AddOnSummary from './AddOnSummary.vue';
-import { installAddOn, listRegistryAddOns } from './api';
+import { installAddOn, listRegistryAddOns, removeAddOn, updateAddOn } from './api';
 
 const modules = inject<Ref<ModuleManifest[]>>('modules')!;
 const registry = ref<AddOnRegistryEntry[]>([]);
 const registryError = ref<string | null>(null);
-const installing = ref<string | null>(null);
-const installError = ref<string | null>(null);
-const installedPendingRestart = ref<Set<string>>(new Set());
+const actioning = ref<string | null>(null);
+const actionError = ref<string | null>(null);
+const pendingRestart = ref<Set<string>>(new Set());
 const installed = computed(() =>
   [...modules.value].sort((a, b) => moduleLabel(a).localeCompare(moduleLabel(b))),
 );
@@ -19,10 +19,14 @@ const withCockpit = computed(() => installed.value.filter((m) => m.ui?.cockpit))
 const headless = computed(() => installed.value.filter((m) => !m.ui?.cockpit));
 const installedNames = computed(() => new Set(installed.value.map((m) => m.name)));
 const unavailableNames = computed(
-  () => new Set([...installedNames.value, ...installedPendingRestart.value]),
+  () => new Set([...installedNames.value, ...pendingRestart.value]),
 );
 const recommended = computed(() => registry.value.filter((m) => m.recommended));
 const available = computed(() => registry.value.filter((m) => !unavailableNames.value.has(m.name)));
+const registryByName = computed(() => new Map(registry.value.map((m) => [m.name, m])));
+const installedCards = computed(() =>
+  installed.value.map((m) => ({ ...registryByName.value.get(m.name), ...m })),
+);
 
 onMounted(async () => {
   try {
@@ -32,16 +36,44 @@ onMounted(async () => {
   }
 });
 
+function hasUpdate(addon: ModuleManifest) {
+  const registryEntry = registryByName.value.get(addon.name);
+  return Boolean(registryEntry && registryEntry.version !== addon.version);
+}
+
+function actionLabel(addon: ModuleManifest) {
+  if (actioning.value === addon.name) return hasUpdate(addon) ? 'Updating...' : 'Removing...';
+  return hasUpdate(addon) ? 'Update' : 'Remove';
+}
+
+function markPendingRestart(name: string) {
+  pendingRestart.value = new Set(pendingRestart.value).add(name);
+}
+
 async function install(addon: AddOnRegistryEntry) {
-  installing.value = addon.name;
-  installError.value = null;
+  actioning.value = addon.name;
+  actionError.value = null;
   try {
     await installAddOn(addon.name);
-    installedPendingRestart.value = new Set(installedPendingRestart.value).add(addon.name);
+    markPendingRestart(addon.name);
   } catch (err) {
-    installError.value = err instanceof Error ? err.message : 'Install failed';
+    actionError.value = err instanceof Error ? err.message : 'Install failed';
   } finally {
-    installing.value = null;
+    actioning.value = null;
+  }
+}
+
+async function updateOrRemove(addon: ModuleManifest) {
+  actioning.value = addon.name;
+  actionError.value = null;
+  try {
+    if (hasUpdate(addon)) await updateAddOn(addon.name);
+    else await removeAddOn(addon.name);
+    markPendingRestart(addon.name);
+  } catch (err) {
+    actionError.value = err instanceof Error ? err.message : 'Action failed';
+  } finally {
+    actioning.value = null;
   }
 }
 </script>
@@ -91,21 +123,18 @@ async function install(addon: AddOnRegistryEntry) {
           v-for="m in available"
           :key="m.name"
           :module="m"
-          :action-label="installing === m.name ? 'Installing...' : 'Install'"
-          :action-disabled="installing !== null"
+          :action-label="actioning === m.name ? 'Installing...' : 'Install'"
+          :action-disabled="actioning !== null"
           :show-open="false"
           @action="install(m)"
         />
       </div>
 
-      <p v-if="installError" class="mt-3 text-sm text-red-600 dark:text-red-400">
-        {{ installError }}
+      <p v-if="actionError" class="mt-3 text-sm text-red-600 dark:text-red-400">
+        {{ actionError }}
       </p>
-      <p
-        v-if="installedPendingRestart.size"
-        class="mt-3 text-sm text-amber-600 dark:text-amber-400"
-      >
-        Installed. Restart Zhago to load the new add-on.
+      <p v-if="pendingRestart.size" class="mt-3 text-sm text-amber-600 dark:text-amber-400">
+        Changes saved. Restart Zhago to apply add-on changes.
       </p>
       <p v-if="registryError" class="text-sm text-red-600 dark:text-red-400">
         {{ registryError }}
@@ -129,7 +158,14 @@ async function install(addon: AddOnRegistryEntry) {
       </div>
 
       <div v-if="installed.length" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-        <AddOnCard v-for="m in installed" :key="m.name" :module="m" />
+        <AddOnCard
+          v-for="m in installedCards"
+          :key="m.name"
+          :module="m"
+          :action-label="actionLabel(m)"
+          :action-disabled="actioning !== null"
+          @action="updateOrRemove(m)"
+        />
       </div>
 
       <p v-else class="text-sm text-zinc-500 dark:text-zinc-600">No add-ons installed yet.</p>

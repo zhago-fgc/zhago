@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { moduleLabel } from '../../shared/composables/moduleLabel';
-import type { ModuleManifest } from '../../shared/types/module';
+import type { AddOnRegistryEntry, ModuleManifest } from '../../shared/types/module';
 
-withDefaults(
+type AddOnCardModule = ModuleManifest & Partial<AddOnRegistryEntry>;
+
+const props = withDefaults(
   defineProps<{
-    module: ModuleManifest;
+    module: AddOnCardModule;
     actionLabel?: string;
     actionDisabled?: boolean;
     showOpen?: boolean;
@@ -17,6 +20,8 @@ withDefaults(
 );
 
 defineEmits<{ action: [] }>();
+
+const shortChecksum = computed(() => props.module.checksum?.replace('sha256:', '').slice(0, 12));
 </script>
 
 <template>
@@ -30,7 +35,23 @@ defineEmits<{ action: [] }>();
           {{ module.name }} · v{{ module.version }}
         </p>
       </div>
-      <span class="text-[10px] uppercase text-zinc-500 dark:text-zinc-600">{{ module.type }}</span>
+      <div class="flex flex-col items-end gap-1">
+        <span class="text-[10px] uppercase text-zinc-500 dark:text-zinc-600">{{
+          module.type
+        }}</span>
+        <span
+          v-if="module.official"
+          class="rounded-full bg-brand-800/10 px-2 py-0.5 text-[10px] text-brand-700 dark:text-brand-300"
+        >
+          Official
+        </span>
+        <span
+          v-if="module.recommended"
+          class="rounded-full bg-zinc-100 dark:bg-zinc-900 px-2 py-0.5 text-[10px] text-zinc-500 dark:text-zinc-500"
+        >
+          Recommended
+        </span>
+      </div>
     </div>
 
     <div v-if="module.tags?.length" class="mt-3 flex flex-wrap gap-1">
@@ -41,6 +62,33 @@ defineEmits<{ action: [] }>();
       >
         {{ tag }}
       </span>
+    </div>
+
+    <div
+      v-if="module.sourceRepo || module.releasePage || shortChecksum"
+      class="mt-3 space-y-1 text-xs"
+    >
+      <a
+        v-if="module.sourceRepo"
+        :href="module.sourceRepo"
+        target="_blank"
+        rel="noreferrer"
+        class="block text-zinc-500 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
+      >
+        Source repo
+      </a>
+      <a
+        v-if="module.releasePage"
+        :href="module.releasePage"
+        target="_blank"
+        rel="noreferrer"
+        class="block text-zinc-500 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
+      >
+        Release page
+      </a>
+      <p v-if="shortChecksum" class="font-mono text-[10px] text-zinc-400 dark:text-zinc-600">
+        sha256:{{ shortChecksum }}…
+      </p>
     </div>
 
     <div class="mt-4 flex gap-2">

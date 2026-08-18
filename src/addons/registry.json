@@ -1,0 +1,139 @@
+[
+  {
+    "name": "default",
+    "displayName": "Default Overlay Pack",
+    "version": "0.1.0",
+    "type": "overlay",
+    "sourceRepo": "https://github.com/zhago-fgc/overlay-default",
+    "releasePage": "https://github.com/zhago-fgc/overlay-default/releases/tag/v0.1.0",
+    "zipUrl": "https://github.com/zhago-fgc/overlay-default/releases/download/v0.1.0/overlay-default-0.1.0.zip",
+    "checksum": "sha256:8062e41ad9605f73d8bc6e9c5e4e1ee751faaabcbe6823170b6f19e07adf30c1",
+    "official": true,
+    "recommended": true,
+    "tags": ["overlay", "official", "starter"]
+  },
+  {
+    "name": "match",
+    "displayName": "Match",
+    "version": "0.1.1",
+    "type": "module",
+    "entry": "index.ts",
+    "ui": {
+      "cockpit": "frontend/index.html"
+    },
+    "sourceRepo": "https://github.com/zhago-fgc/module-match",
+    "releasePage": "https://github.com/zhago-fgc/module-match/releases/tag/v0.1.1",
+    "zipUrl": "https://github.com/zhago-fgc/module-match/releases/download/v0.1.1/module-match-0.1.1.zip",
+    "checksum": "sha256:4b844d83e41ea2f3f25f69140b0655a1e1c405ac7add4e550d8601a7d5c879c0",
+    "official": true,
+    "recommended": true,
+    "tags": ["match", "cockpit", "official", "starter"]
+  },
+  {
+    "name": "casters",
+    "displayName": "Casters",
+    "version": "0.2.0",
+    "type": "module",
+    "entry": "index.ts",
+    "ui": {
+      "cockpit": "frontend/index.html"
+    },
+    "sourceRepo": "https://github.com/zhago-fgc/module-casters",
+    "releasePage": "https://github.com/zhago-fgc/module-casters/releases/tag/v0.2.0",
+    "zipUrl": "https://github.com/zhago-fgc/module-casters/releases/download/v0.2.0/module-casters-0.2.0.zip",
+    "checksum": "sha256:b45b1353c3ae8ecb69e9d60414673bdc541b8a958b689503924b165e1896c724",
+    "official": true,
+    "recommended": true,
+    "tags": ["casters", "cockpit", "official", "starter"]
+  },
+  {
+    "name": "caster-directory",
+    "displayName": "Caster Directory",
+    "version": "0.1.0",
+    "type": "module",
+    "entry": "index.ts",
+    "ui": {
+      "cockpit": "frontend/index.html"
+    },
+    "sourceRepo": "https://github.com/zhago-fgc/module-caster-directory",
+    "releasePage": "https://github.com/zhago-fgc/module-caster-directory/releases/tag/v0.1.0",
+    "zipUrl": "https://github.com/zhago-fgc/module-caster-directory/releases/download/v0.1.0/module-caster-directory-0.1.0.zip",
+    "checksum": "sha256:cce57ff5924d2d4ffa34ff6b00ce29f2f06ee6945b25985ad4ae6b5f4c96b8e1",
+    "official": true,
+    "recommended": true,
+    "tags": ["casters", "directory", "cockpit", "official", "starter"]
+  },
+  {
+    "name": "startgg",
+    "displayName": "start.gg",
+    "version": "0.1.0",
+    "type": "plugin",
+    "entry": "index.ts",
+    "ui": {
+      "cockpit": "frontend/index.html"
+    },
+    "sourceRepo": "https://github.com/zhago-fgc/plugin-startgg",
+    "releasePage": "https://github.com/zhago-fgc/plugin-startgg/releases/tag/v0.1.0",
+    "zipUrl": "https://github.com/zhago-fgc/plugin-startgg/releases/download/v0.1.0/plugin-startgg-0.1.0.zip",
+    "checksum": "sha256:def6ee3baa95950895b2f0990bd626c009497946d6b9d1e4f69bcce3644804e5",
+    "official": true,
+    "recommended": true,
+    "tags": ["bracket", "startgg", "cockpit", "official", "starter"]
+  },
+  {
+    "name": "2xko",
+    "displayName": "2XKO",
+    "version": "0.1.0",
+    "type": "module",
+    "entry": "index.ts",
+    "sourceRepo": "https://github.com/zhago-fgc/game-2xko",
+    "releasePage": "https://github.com/zhago-fgc/game-2xko/releases/tag/v0.1.0",
+    "zipUrl": "https://github.com/zhago-fgc/game-2xko/releases/download/v0.1.0/game-2xko-0.1.0.zip",
+    "checksum": "sha256:194d28ade55d31702dd5c18a8ef393935449c8c1879e36d40a7502b729fe316e",
+    "official": true,
+    "recommended": true,
+    "tags": ["game", "official", "starter"]
+  },
+  {
+    "name": "sf6",
+    "displayName": "Street Fighter 6",
+    "version": "0.1.0",
+    "type": "module",
+    "entry": "index.ts",
+    "sourceRepo": "https://github.com/zhago-fgc/game-sf6",
+    "releasePage": "https://github.com/zhago-fgc/game-sf6/releases/tag/v0.1.0",
+    "zipUrl": "https://github.com/zhago-fgc/game-sf6/releases/download/v0.1.0/game-sf6-0.1.0.zip",
+    "checksum": "sha256:8d5ea300e94542b50fb92420cd364aeadd291b9a808f4f25b5407b0ab6eb63dc",
+    "official": true,
+    "recommended": true,
+    "tags": ["game", "official", "starter"]
+  },
+  {
+    "name": "kofxv",
+    "displayName": "KOF XV",
+    "version": "0.1.0",
+    "type": "module",
+    "entry": "index.ts",
+    "sourceRepo": "https://github.com/zhago-fgc/game-kofxv",
+    "releasePage": "https://github.com/zhago-fgc/game-kofxv/releases/tag/v0.1.0",
+    "zipUrl": "https://github.com/zhago-fgc/game-kofxv/releases/download/v0.1.0/game-kofxv-0.1.0.zip",
+    "checksum": "sha256:1a9a63234f01e1d7df123204285c667f4e0d8007889bb5061a6a5375a8cfc72b",
+    "official": true,
+    "recommended": true,
+    "tags": ["game", "official", "starter"]
+  },
+  {
+    "name": "fatal-fury-cotw",
+    "displayName": "Fatal Fury: City of the Wolves",
+    "version": "0.1.0",
+    "type": "module",
+    "entry": "index.ts",
+    "sourceRepo": "https://github.com/zhago-fgc/game-cotw",
+    "releasePage": "https://github.com/zhago-fgc/game-cotw/releases/tag/v0.1.0",
+    "zipUrl": "https://github.com/zhago-fgc/game-cotw/releases/download/v0.1.0/game-fatal-fury-cotw-0.1.0.zip",
+    "checksum": "sha256:7adb018e14daa0f3b111a314fe64951a492910d3a98b6205074c8023908d090b",
+    "official": true,
+    "recommended": true,
+    "tags": ["game", "official", "starter"]
+  }
+]

@@ -28,6 +28,32 @@ describe('add-on registry routes', () => {
         checksum: 'sha256:8062e41ad9605f73d8bc6e9c5e4e1ee751faaabcbe6823170b6f19e07adf30c1',
       }),
     );
+    expect(body).toContainEqual(
+      expect.objectContaining({
+        name: 'match',
+        version: '0.1.1',
+        tags: expect.arrayContaining(['match', 'official']),
+      }),
+    );
+  });
+
+  test('returns 400 for remove requests without a name', async () => {
+    const route = addonRoutes.find(
+      (r) => r.method === 'POST' && r.pattern.test('/api/addons/remove'),
+    )!;
+    const match = '/api/addons/remove'.match(route.pattern)!;
+    const res = await route.handler(
+      new Request('http://localhost/api/addons/remove', {
+        method: 'POST',
+        body: JSON.stringify({}),
+      }),
+      match,
+      routeContext,
+    );
+    const body = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(body.error).toBe('add-on name is required');
   });
 
   test('returns 404 for unknown add-on installs', async () => {

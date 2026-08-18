@@ -13,8 +13,8 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 
 ### Added
 
-- ✨ Static add-on registry and installer API for pinned release zip installs with checksum verification.
-- ✨ Add-ons page registry listings with install status and restart guidance.
+- ✨ Static JSON add-on registry with official match, caster, start.gg, overlay, and game add-ons.
+- ✨ Add-ons page registry listings with install, update, remove, trust signals, status, and restart guidance.
 - 👷 GitHub Actions CI for pull requests and releases, including binary artifacts and GHCR images.
 - ✨ Native Add-ons and Logs pages in the admin console.
 - ✅ Bun tests for overlay helpers, log parsing, registry loading, and embedded assets.

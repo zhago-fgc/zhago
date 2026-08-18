@@ -16,6 +16,20 @@ export interface AddOnInstallResult {
   restartRequired: boolean;
 }
 
+export interface AddOnRemoveResult {
+  name: string;
+  removedFrom: string;
+  restartRequired: boolean;
+}
+
 export function installAddOn(name: string): Promise<AddOnInstallResult> {
   return postJson<AddOnInstallResult>('/api/addons/install', { name });
+}
+
+export function updateAddOn(name: string): Promise<AddOnInstallResult> {
+  return postJson<AddOnInstallResult>('/api/addons/update', { name });
+}
+
+export function removeAddOn(name: string): Promise<AddOnRemoveResult> {
+  return postJson<AddOnRemoveResult>('/api/addons/remove', { name });
 }
