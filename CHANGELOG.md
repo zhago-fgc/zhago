@@ -11,6 +11,11 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 
 ## [Unreleased]
 
+### Fixed
+
+- 🐛 Fixed add-on installs across filesystem devices in containers.
+- 🐛 Log add-on install, update, and remove failures.
+
 ## [0.1.2] - 2026-08-18
 
 ### Fixed

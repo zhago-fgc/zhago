@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, rm, rename, readFile } from 'node:fs/promises';
+import { cp, mkdir, mkdtemp, rm, rename, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { MODULES_DIR } from '../registry';
@@ -11,6 +11,16 @@ export interface AddOnInstallResult {
   version: string;
   installedTo: string;
   restartRequired: boolean;
+}
+
+async function moveDirectory(from: string, to: string) {
+  try {
+    await rename(from, to);
+  } catch (err) {
+    if (!(err instanceof Error) || !('code' in err) || err.code !== 'EXDEV') throw err;
+    await cp(from, to, { recursive: true });
+    await rm(from, { recursive: true, force: true });
+  }
 }
 
 function checksumHex(checksum: string): string {
@@ -53,7 +63,7 @@ export async function installAddOn(entry: AddOnRegistryEntry): Promise<AddOnInst
     await mkdir(MODULES_DIR, { recursive: true });
     const installDir = join(MODULES_DIR, entry.name);
     await rm(installDir, { recursive: true, force: true });
-    await rename(extractDir, installDir);
+    await moveDirectory(extractDir, installDir);
 
     return {
       name: manifest.name,
