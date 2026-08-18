@@ -1,10 +1,13 @@
 import { cp, mkdir, mkdtemp, rm, rename, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { MODULES_DIR } from '../registry';
+import { createLogger } from '../logger';
+import { INSTALLED_MODULES_DIR, reloadInstalledModule } from '../registry';
 import type { ModuleManifest } from '../types';
 import type { AddOnRegistryEntry } from './registry';
 import { extractZip } from './zip';
+
+const log = createLogger('addons');
 
 export interface AddOnInstallResult {
   name: string;
@@ -30,6 +33,7 @@ function checksumHex(checksum: string): string {
 }
 
 export async function installAddOn(entry: AddOnRegistryEntry): Promise<AddOnInstallResult> {
+  log.info(`installing ${entry.name} ${entry.version} from ${entry.zipUrl}`);
   const expectedHash = checksumHex(entry.checksum);
   const tempDir = await mkdtemp(join(tmpdir(), 'zhago-addon-'));
   const extractDir = join(tempDir, 'extract');
@@ -60,16 +64,18 @@ export async function installAddOn(entry: AddOnRegistryEntry): Promise<AddOnInst
     };
     await Bun.write(join(extractDir, 'module.json'), `${JSON.stringify(rawManifest, null, 2)}\n`);
 
-    await mkdir(MODULES_DIR, { recursive: true });
-    const installDir = join(MODULES_DIR, entry.name);
+    await mkdir(INSTALLED_MODULES_DIR, { recursive: true });
+    const installDir = join(INSTALLED_MODULES_DIR, entry.name);
     await rm(installDir, { recursive: true, force: true });
     await moveDirectory(extractDir, installDir);
+    const loadedManifest = await reloadInstalledModule(entry.name);
+    log.info(`installed ${loadedManifest.name} ${loadedManifest.version} to ${installDir}`);
 
     return {
-      name: manifest.name,
-      version: manifest.version,
+      name: loadedManifest.name,
+      version: loadedManifest.version,
       installedTo: installDir,
-      restartRequired: true,
+      restartRequired: false,
     };
   } finally {
     await rm(tempDir, { recursive: true, force: true });

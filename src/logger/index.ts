@@ -17,13 +17,8 @@ interface LogEntry {
 
 const LEVELS: Level[] = ['info', 'warn', 'error'];
 
-// Quiet by default: a TO running the compiled binary directly gets the
-// startup banner and anything that actually needs attention, not a wall of
-// "loaded module x" on every launch. The Containerfile overrides this to
-// "info", since stdout via `docker logs` is the normal way anyone observes
-// a container — there's no terminal to flood.
 const configuredLevel = config.logging.level as Level | undefined;
-const MIN_LEVEL = LEVELS.includes(configuredLevel!) ? configuredLevel! : 'warn';
+const MIN_LEVEL = LEVELS.includes(configuredLevel!) ? configuredLevel! : 'info';
 
 // "pretty" is the colored/human line used everywhere in this file; "json"
 // prints the same structured entry that already goes to the file, so a
