@@ -4,8 +4,6 @@
     <p align="center">
         <a href="./LICENSE"><img src="https://img.shields.io/github/license/zhago-fgc/zhago?style=for-the-badge&color=white&labelColor=333333" alt="License"></a>
         <a href="https://github.com/zhago-fgc/zhago/releases"><img src="https://img.shields.io/github/v/release/zhago-fgc/zhago?include_prereleases&style=for-the-badge&color=white&labelColor=333333" alt="Latest release"></a>
-        <a href="https://bun.sh"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fzhago-fgc%2Fzhago%2Fmain%2Fpackage.json&query=%24.packageManager&style=for-the-badge&logo=bun&logoColor=white&label=Bun&color=white&labelColor=333333" alt="Bun version"></a>
-        <a href="https://vuejs.org"><img src="https://img.shields.io/badge/Vue-3-4FC08D?style=for-the-badge&labelColor=333333" alt="Vue"></a>
     </p>
 </div>
 

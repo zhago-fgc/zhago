@@ -90,23 +90,8 @@ jobs:
           name: ${{ matrix.artifact }}
           path: build/${{ matrix.artifact }}
 
-  modules:
-    needs: check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Package modules
-        run: zip -r zhago-modules.zip modules -x "*/.DS_Store"
-
-      - name: Upload modules artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: zhago-modules
-          path: zhago-modules.zip
-
   build-docker:
-    needs: [build, modules]
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -120,9 +105,6 @@ jobs:
         with:
           name: zhago-linux-arm64-musl
           path: build
-
-      - name: Copy modules
-        run: cp -r modules build/modules
 
       - uses: docker/setup-qemu-action@v3
 
@@ -145,7 +127,7 @@ jobs:
             ghcr.io/${{ github.repository }}:latest
 
   publish:
-    needs: [build, modules, build-docker]
+    needs: [build, build-docker]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
