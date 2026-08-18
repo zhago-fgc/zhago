@@ -1,16 +1,49 @@
 <script setup lang="ts">
-import { computed, inject, type Ref } from 'vue';
+import { computed, inject, onMounted, ref, type Ref } from 'vue';
 import { moduleLabel } from '../../shared/composables/moduleLabel';
-import type { ModuleManifest } from '../../shared/types/module';
+import type { AddOnRegistryEntry, ModuleManifest } from '../../shared/types/module';
 import AddOnCard from './AddOnCard.vue';
 import AddOnSummary from './AddOnSummary.vue';
+import { installAddOn, listRegistryAddOns } from './api';
 
 const modules = inject<Ref<ModuleManifest[]>>('modules')!;
+const registry = ref<AddOnRegistryEntry[]>([]);
+const registryError = ref<string | null>(null);
+const installing = ref<string | null>(null);
+const installError = ref<string | null>(null);
+const installedPendingRestart = ref<Set<string>>(new Set());
 const installed = computed(() =>
   [...modules.value].sort((a, b) => moduleLabel(a).localeCompare(moduleLabel(b))),
 );
 const withCockpit = computed(() => installed.value.filter((m) => m.ui?.cockpit));
 const headless = computed(() => installed.value.filter((m) => !m.ui?.cockpit));
+const installedNames = computed(() => new Set(installed.value.map((m) => m.name)));
+const unavailableNames = computed(
+  () => new Set([...installedNames.value, ...installedPendingRestart.value]),
+);
+const recommended = computed(() => registry.value.filter((m) => m.recommended));
+const available = computed(() => registry.value.filter((m) => !unavailableNames.value.has(m.name)));
+
+onMounted(async () => {
+  try {
+    registry.value = await listRegistryAddOns();
+  } catch (err) {
+    registryError.value = err instanceof Error ? err.message : 'Failed to load registry';
+  }
+});
+
+async function install(addon: AddOnRegistryEntry) {
+  installing.value = addon.name;
+  installError.value = null;
+  try {
+    await installAddOn(addon.name);
+    installedPendingRestart.value = new Set(installedPendingRestart.value).add(addon.name);
+  } catch (err) {
+    installError.value = err instanceof Error ? err.message : 'Install failed';
+  } finally {
+    installing.value = null;
+  }
+}
 </script>
 
 <template>
@@ -29,8 +62,8 @@ const headless = computed(() => installed.value.filter((m) => !m.ui?.cockpit));
         <div>
           <h2 class="text-sm font-medium text-zinc-900 dark:text-white">Recommended setup</h2>
           <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400 max-w-2xl">
-            The registry installer is not wired yet. For now, installed add-ons are loaded from your
-            configured modules directory.
+            {{ recommended.length }} recommended add-ons are listed in the registry. Installed
+            add-ons require a Zhago restart before they are loaded.
           </p>
         </div>
         <button
@@ -41,6 +74,45 @@ const headless = computed(() => installed.value.filter((m) => !m.ui?.cockpit));
           Install recommended
         </button>
       </div>
+    </section>
+
+    <section class="mb-8">
+      <div class="flex items-end justify-between gap-4 mb-3">
+        <div>
+          <h2 class="text-sm font-medium text-zinc-900 dark:text-white">Available</h2>
+          <p class="text-sm text-zinc-500 dark:text-zinc-400">
+            {{ available.length }} add-ons available from the registry
+          </p>
+        </div>
+      </div>
+
+      <div v-if="available.length" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+        <AddOnCard
+          v-for="m in available"
+          :key="m.name"
+          :module="m"
+          :action-label="installing === m.name ? 'Installing...' : 'Install'"
+          :action-disabled="installing !== null"
+          :show-open="false"
+          @action="install(m)"
+        />
+      </div>
+
+      <p v-if="installError" class="mt-3 text-sm text-red-600 dark:text-red-400">
+        {{ installError }}
+      </p>
+      <p
+        v-if="installedPendingRestart.size"
+        class="mt-3 text-sm text-amber-600 dark:text-amber-400"
+      >
+        Installed. Restart Zhago to load the new add-on.
+      </p>
+      <p v-if="registryError" class="text-sm text-red-600 dark:text-red-400">
+        {{ registryError }}
+      </p>
+      <p v-if="!available.length && !registryError" class="text-sm text-zinc-500 dark:text-zinc-600">
+        No registry add-ons available yet.
+      </p>
     </section>
 
     <section class="mb-8">

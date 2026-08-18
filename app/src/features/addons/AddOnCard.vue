@@ -2,7 +2,21 @@
 import { moduleLabel } from '../../shared/composables/moduleLabel';
 import type { ModuleManifest } from '../../shared/types/module';
 
-defineProps<{ module: ModuleManifest }>();
+withDefaults(
+  defineProps<{
+    module: ModuleManifest;
+    actionLabel?: string;
+    actionDisabled?: boolean;
+    showOpen?: boolean;
+  }>(),
+  {
+    actionLabel: 'Remove',
+    actionDisabled: true,
+    showOpen: true,
+  },
+);
+
+defineEmits<{ action: [] }>();
 </script>
 
 <template>
@@ -31,7 +45,7 @@ defineProps<{ module: ModuleManifest }>();
 
     <div class="mt-4 flex gap-2">
       <RouterLink
-        v-if="module.ui?.cockpit"
+        v-if="showOpen && module.ui?.cockpit"
         :to="`/m/${module.name}`"
         class="rounded-md bg-zinc-900 dark:bg-white px-3 py-1.5 text-sm text-white dark:text-zinc-950"
       >
@@ -39,10 +53,11 @@ defineProps<{ module: ModuleManifest }>();
       </RouterLink>
       <button
         type="button"
-        disabled
-        class="rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-1.5 text-sm text-zinc-400 dark:text-zinc-600 cursor-not-allowed"
+        :disabled="actionDisabled"
+        class="rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-1.5 text-sm disabled:text-zinc-400 disabled:dark:text-zinc-600 disabled:cursor-not-allowed text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900"
+        @click="$emit('action')"
       >
-        Remove
+        {{ actionLabel }}
       </button>
     </div>
   </article>
