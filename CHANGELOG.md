@@ -57,6 +57,7 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 ### Fixed
 
 - 🐛 Embedded the static add-on registry in compiled binaries.
+- 🐛 Removed the installer dependency on a system `unzip` command.
 
 ## [Wails v2] - 2025-09-07 to 2026-04-09
 

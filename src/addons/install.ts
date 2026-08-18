@@ -1,10 +1,10 @@
 import { mkdir, mkdtemp, rm, rename, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { basename, join } from 'node:path';
-import { $ } from 'bun';
+import { join } from 'node:path';
 import { MODULES_DIR } from '../registry';
 import type { ModuleManifest } from '../types';
 import type { AddOnRegistryEntry } from './registry';
+import { extractZip } from './zip';
 
 export interface AddOnInstallResult {
   name: string;
@@ -22,7 +22,6 @@ function checksumHex(checksum: string): string {
 export async function installAddOn(entry: AddOnRegistryEntry): Promise<AddOnInstallResult> {
   const expectedHash = checksumHex(entry.checksum);
   const tempDir = await mkdtemp(join(tmpdir(), 'zhago-addon-'));
-  const zipPath = join(tempDir, basename(new URL(entry.zipUrl).pathname));
   const extractDir = join(tempDir, 'extract');
 
   try {
@@ -33,9 +32,7 @@ export async function installAddOn(entry: AddOnRegistryEntry): Promise<AddOnInst
     const actualHash = new Bun.CryptoHasher('sha256').update(bytes).digest('hex');
     if (actualHash !== expectedHash) throw new Error('checksum mismatch');
 
-    await Bun.write(zipPath, bytes);
-    await mkdir(extractDir, { recursive: true });
-    await $`unzip -q ${zipPath} -d ${extractDir}`;
+    await extractZip(bytes, extractDir);
 
     const rawManifest = JSON.parse(await readFile(join(extractDir, 'module.json'), 'utf8'));
     const manifest = rawManifest as ModuleManifest;
