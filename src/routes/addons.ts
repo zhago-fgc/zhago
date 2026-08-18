@@ -2,9 +2,11 @@ import { installAddOn } from '../addons/install';
 import { addonRegistry } from '../addons/registry';
 import { removeAddOn } from '../addons/remove';
 import { updateAddOn } from '../addons/update';
+import { createLogger } from '../logger';
 import type { Route } from './types';
 
 const cors = { 'Access-Control-Allow-Origin': '*' };
+const log = createLogger('addons');
 
 function findRegistryEntry(name: string | undefined) {
   return addonRegistry.find((addon) => addon.name === name);
@@ -28,6 +30,7 @@ export const addonRoutes: Route[] = [
         return Response.json(await installAddOn(entry), { headers: cors });
       } catch (err) {
         const error = err instanceof Error ? err.message : 'install failed';
+        log.error('install failed:', error);
         return Response.json({ error }, { status: 400, headers: cors });
       }
     },
@@ -44,6 +47,7 @@ export const addonRoutes: Route[] = [
         return Response.json(await updateAddOn(entry), { headers: cors });
       } catch (err) {
         const error = err instanceof Error ? err.message : 'update failed';
+        log.error('update failed:', error);
         return Response.json({ error }, { status: 400, headers: cors });
       }
     },
@@ -62,6 +66,7 @@ export const addonRoutes: Route[] = [
         return Response.json(await removeAddOn(body.name), { headers: cors });
       } catch (err) {
         const error = err instanceof Error ? err.message : 'remove failed';
+        log.error('remove failed:', error);
         return Response.json({ error }, { status: 400, headers: cors });
       }
     },
