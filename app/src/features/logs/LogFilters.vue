@@ -24,7 +24,7 @@ const emit = defineEmits<{
     />
     <select
       :value="level"
-      class="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-2 text-sm text-zinc-900 dark:text-white outline-none focus:border-zinc-400 dark:focus:border-zinc-600"
+      class="w-full sm:w-auto rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-2 text-sm text-zinc-900 dark:text-white outline-none focus:border-zinc-400 dark:focus:border-zinc-600"
       @change="
         emit(
           'update:level',
@@ -39,7 +39,7 @@ const emit = defineEmits<{
     </select>
     <button
       type="button"
-      class="rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900"
+      class="w-full sm:w-auto rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900"
       @click="emit('refresh')"
     >
       Refresh

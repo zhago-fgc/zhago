@@ -15,9 +15,9 @@ function levelClass(entry: LogEntry): string {
 </script>
 
 <template>
-  <div class="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+  <div class="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-x-auto">
     <div
-      class="grid grid-cols-[11rem_5rem_8rem_1fr] gap-3 px-4 py-2 text-[10px] uppercase tracking-widest text-zinc-400 dark:text-zinc-600 bg-zinc-50 dark:bg-zinc-900/50"
+      class="grid min-w-[42rem] grid-cols-[11rem_5rem_8rem_1fr] gap-3 px-4 py-2 text-[10px] uppercase tracking-widest text-zinc-400 dark:text-zinc-600 bg-zinc-50 dark:bg-zinc-900/50"
     >
       <div>Time</div>
       <div>Level</div>
@@ -29,7 +29,7 @@ function levelClass(entry: LogEntry): string {
       <div
         v-for="(entry, index) in entries"
         :key="`${entry.time}-${index}`"
-        class="grid grid-cols-[11rem_5rem_8rem_1fr] gap-3 px-4 py-2 text-sm"
+        class="grid min-w-[42rem] grid-cols-[11rem_5rem_8rem_1fr] gap-3 px-4 py-2 text-sm"
       >
         <div class="text-zinc-500 dark:text-zinc-500 whitespace-nowrap">
           {{ timeLabel(entry.time) }}

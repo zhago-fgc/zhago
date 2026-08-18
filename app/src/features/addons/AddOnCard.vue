@@ -15,7 +15,7 @@ const props = withDefaults(
     showOpen?: boolean;
   }>(),
   {
-    actionLabel: 'Remove',
+    actionLabel: undefined,
     actionDisabled: true,
     secondaryActionLabel: undefined,
     secondaryActionDisabled: true,
@@ -32,14 +32,14 @@ const shortChecksum = computed(() => props.module.checksum?.replace('sha256:', '
   <article
     class="rounded-lg border border-zinc-200 dark:border-zinc-800 p-4 bg-white dark:bg-zinc-950"
   >
-    <div class="flex items-start justify-between gap-3">
+    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
       <div>
         <h3 class="text-sm font-medium text-zinc-900 dark:text-white">{{ moduleLabel(module) }}</h3>
         <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
           {{ module.name }} · v{{ module.version }}
         </p>
       </div>
-      <div class="flex flex-col items-end gap-1">
+      <div class="flex flex-row flex-wrap sm:flex-col sm:items-end gap-1">
         <span class="text-[10px] uppercase text-zinc-500 dark:text-zinc-600">{{
           module.type
         }}</span>
@@ -95,15 +95,16 @@ const shortChecksum = computed(() => props.module.checksum?.replace('sha256:', '
       </p>
     </div>
 
-    <div class="mt-4 flex gap-2">
+    <div class="mt-4 flex flex-col sm:flex-row gap-2">
       <RouterLink
         v-if="showOpen && module.ui?.cockpit"
         :to="`/m/${module.name}`"
-        class="rounded-md bg-zinc-900 dark:bg-white px-3 py-1.5 text-sm text-white dark:text-zinc-950"
+        class="rounded-md bg-zinc-900 dark:bg-white px-3 py-1.5 text-sm text-white dark:text-zinc-950 text-center"
       >
         Open
       </RouterLink>
       <button
+        v-if="actionLabel"
         type="button"
         :disabled="actionDisabled"
         class="rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-1.5 text-sm disabled:text-zinc-400 disabled:dark:text-zinc-600 disabled:cursor-not-allowed text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900"

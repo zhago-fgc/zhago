@@ -9,7 +9,7 @@ const options: { value: Theme; label: string }[] = [
 </script>
 
 <template>
-  <div class="p-6 max-w-md">
+  <div class="p-4 sm:p-6 max-w-md">
     <h1 class="text-xl font-semibold text-zinc-900 dark:text-white mb-6">Settings</h1>
 
     <section>
@@ -17,7 +17,7 @@ const options: { value: Theme; label: string }[] = [
       <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-3">
         Applies to the admin console. Module cockpits keep their own dark skin for now.
       </p>
-      <div class="flex gap-2">
+      <div class="grid grid-cols-1 sm:flex gap-2">
         <button
           v-for="opt in options"
           :key="opt.value"

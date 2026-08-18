@@ -6,6 +6,7 @@ import { moduleLabel } from '../shared/composables/moduleLabel';
 import type { ModuleManifest } from '../shared/types/module';
 
 const modules = ref<ModuleManifest[]>([]);
+const navOpen = ref(false);
 let modulesStream: EventSource | undefined;
 provide('modules', modules);
 
@@ -21,13 +22,94 @@ onMounted(async () => {
   };
 });
 
+function closeNav() {
+  navOpen.value = false;
+}
+
 onUnmounted(() => modulesStream?.close());
 </script>
 
 <template>
-  <div class="flex h-screen">
+  <div class="flex h-dvh flex-col md:flex-row overflow-hidden">
+    <header
+      class="relative md:hidden shrink-0 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 select-none z-20"
+    >
+      <div class="flex items-center justify-between gap-3 px-3 py-3">
+        <img :src="logo" alt="Zhago" class="h-7 w-auto invert dark:invert-0" />
+        <button
+          type="button"
+          class="rounded border border-zinc-200 dark:border-zinc-800 px-3 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
+          :aria-expanded="navOpen"
+          aria-controls="mobile-nav"
+          @click="navOpen = !navOpen"
+        >
+          Menu
+        </button>
+      </div>
+
+      <nav
+        v-if="navOpen"
+        id="mobile-nav"
+        class="absolute inset-x-0 top-full max-h-[calc(100dvh-3.25rem)] overflow-y-auto border-b border-zinc-200 bg-white p-3 shadow-lg dark:border-zinc-800 dark:bg-zinc-950"
+      >
+        <div class="flex flex-col gap-0.5">
+          <RouterLink
+            to="/"
+            class="rounded px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
+            active-class="!bg-zinc-100 dark:!bg-zinc-800 !text-zinc-900 dark:!text-white"
+            @click="closeNav"
+          >
+            Home
+          </RouterLink>
+          <RouterLink
+            to="/addons"
+            class="rounded px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
+            active-class="!bg-zinc-100 dark:!bg-zinc-800 !text-zinc-900 dark:!text-white"
+            @click="closeNav"
+          >
+            Add-ons
+          </RouterLink>
+          <RouterLink
+            to="/logs"
+            class="rounded px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
+            active-class="!bg-zinc-100 dark:!bg-zinc-800 !text-zinc-900 dark:!text-white"
+            @click="closeNav"
+          >
+            Logs
+          </RouterLink>
+          <RouterLink
+            to="/settings"
+            class="rounded px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
+            active-class="!bg-zinc-100 dark:!bg-zinc-800 !text-zinc-900 dark:!text-white"
+            @click="closeNav"
+          >
+            Settings
+          </RouterLink>
+
+          <div
+            class="mt-3 mb-1 px-3 text-[10px] text-zinc-400 dark:text-zinc-600 uppercase tracking-widest font-medium"
+          >
+            Installed
+          </div>
+          <RouterLink
+            v-for="m in withCockpit"
+            :key="m.name"
+            :to="`/m/${m.name}`"
+            class="rounded px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
+            active-class="!bg-zinc-100 dark:!bg-zinc-800 !text-zinc-900 dark:!text-white"
+            @click="closeNav"
+          >
+            <span class="block truncate">{{ moduleLabel(m) }}</span>
+          </RouterLink>
+          <p v-if="!withCockpit.length" class="px-3 text-sm text-zinc-400 dark:text-zinc-600">
+            No modules with a UI yet.
+          </p>
+        </div>
+      </nav>
+    </header>
+
     <aside
-      class="w-52 shrink-0 bg-white dark:bg-zinc-950 flex flex-col border-r border-zinc-200 dark:border-zinc-800 select-none"
+      class="hidden md:flex w-52 shrink-0 bg-white dark:bg-zinc-950 flex-col border-r border-zinc-200 dark:border-zinc-800 select-none"
     >
       <div class="px-4 pt-5 pb-4 border-b border-zinc-200 dark:border-zinc-800 flex justify-center">
         <img :src="logo" alt="Zhago" class="h-8 w-auto invert dark:invert-0" />
@@ -68,8 +150,10 @@ onUnmounted(() => modulesStream?.close());
           class="px-3 py-1.5 rounded text-sm transition-colors flex items-center justify-between gap-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
           active-class="!bg-zinc-100 dark:!bg-zinc-800 !text-zinc-900 dark:!text-white"
         >
-          <span>{{ moduleLabel(m) }}</span>
-          <span class="text-[10px] text-zinc-400 dark:text-zinc-600 uppercase">{{ m.type }}</span>
+          <span class="truncate">{{ moduleLabel(m) }}</span>
+          <span class="shrink-0 text-[10px] text-zinc-400 dark:text-zinc-600 uppercase">{{
+            m.type
+          }}</span>
         </RouterLink>
         <p v-if="!withCockpit.length" class="px-3 text-sm text-zinc-400 dark:text-zinc-600">
           No modules with a UI yet.
@@ -90,7 +174,7 @@ onUnmounted(() => modulesStream?.close());
       </div>
     </aside>
 
-    <main class="flex-1 min-w-0 overflow-y-auto bg-white dark:bg-zinc-950">
+    <main class="flex-1 min-h-0 min-w-0 overflow-y-auto bg-white dark:bg-zinc-950">
       <RouterView />
     </main>
   </div>

@@ -11,11 +11,11 @@ const withCockpit = computed(() => modules.value.filter((m) => m.ui?.cockpit));
 </script>
 
 <template>
-  <div class="p-6 max-w-3xl">
+  <div class="p-4 sm:p-6 max-w-3xl">
     <h1 class="text-xl font-semibold text-zinc-900 dark:text-white mb-1">Zhago</h1>
     <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-6">Pick a module to get started.</p>
 
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
       <RouterLink
         v-for="m in withCockpit"
         :key="m.name"
