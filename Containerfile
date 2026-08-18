@@ -1,14 +1,19 @@
-# Expects the musl-target binary to already be built on the host via
-# `just build-linux-musl <x64|arm64>` — see justfile. Keeps the container
-# build from duplicating what the release job already produces per-arch.
-ARG ARCH=arm64
-
+# Expects musl-target binaries to already be built on the host or in release CI.
+# The image chooses the right binary from Docker's target platform.
 FROM alpine:3.20
 RUN apk add --no-cache ca-certificates libstdc++ libgcc
 
-ARG ARCH
+ARG TARGETARCH
 WORKDIR /app
-COPY build/zhago-linux-${ARCH}-musl /app/zhago
+COPY build/zhago-linux-x64-musl /tmp/zhago-linux-x64-musl
+COPY build/zhago-linux-arm64-musl /tmp/zhago-linux-arm64-musl
+RUN case "$TARGETARCH" in \
+      amd64) cp /tmp/zhago-linux-x64-musl /app/zhago ;; \
+      arm64) cp /tmp/zhago-linux-arm64-musl /app/zhago ;; \
+      *) echo "unsupported architecture: $TARGETARCH" >&2; exit 1 ;; \
+    esac \
+    && chmod +x /app/zhago \
+    && rm /tmp/zhago-linux-x64-musl /tmp/zhago-linux-arm64-musl
 COPY build/modules /app/modules
 
 ENV ZHAGO_DIR=/data
