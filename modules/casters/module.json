@@ -1,9 +1,0 @@
-{
-  "name": "casters",
-  "version": "0.2.0",
-  "type": "module",
-  "entry": "index.ts",
-  "ui": {
-    "cockpit": "frontend/index.html"
-  }
-}

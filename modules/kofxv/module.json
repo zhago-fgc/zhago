@@ -1,7 +1,0 @@
-{
-  "name": "kofxv",
-  "version": "0.1.0",
-  "type": "module",
-  "entry": "index.ts",
-  "tags": ["game"]
-}
