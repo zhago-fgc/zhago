@@ -26,6 +26,9 @@ jobs:
       - name: Lint
         run: bun run lint
 
+      - name: Validate registry
+        run: bun run validate:registry
+
       - name: Generate embedded asset module
         run: bun run scripts/generate-ui-embed.ts
 

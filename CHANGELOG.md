@@ -11,6 +11,18 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 
 ## [Unreleased]
 
+## [0.1.5] - 2026-08-18
+
+### Added
+
+- ✨ Publish the add-on registry to GitHub Pages.
+
+### Changed
+
+- ♻️ Move the add-on registry to the repo root and resolve add-on versions from GitHub releases.
+
+## [0.1.4] - 2026-08-18
+
 ### Added
 
 - ✨ Add live add-on loading after install, update, and remove.
