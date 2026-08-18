@@ -11,6 +11,20 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-08-18
+
+### Fixed
+
+- 🐛 Removed the installer dependency on a system `unzip` command.
+
+## [0.1.1] - 2026-08-18
+
+### Fixed
+
+- 🐛 Embedded the static add-on registry in compiled binaries.
+
+## [0.1.0] - 2026-08-18
+
 ### Added
 
 - ✨ Static JSON add-on registry with official match, caster, start.gg, overlay, and game add-ons.
@@ -22,9 +36,8 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 - ✨ Neon Grid example overlay pack.
 - ✨ Live-swappable overlay pack system with a shipped default pack.
 - ✨ start.gg module for tournament and event lookup.
-- ✨ Reworked match — overlay packs, per-player teams, cockpit fixes.
-- ✨ Reworked casters — overlay packs, full commentator profiles, directory
-  sync.
+- ✨ Reworked match, including overlay packs, per-player teams, and cockpit fixes.
+- ✨ Reworked casters, including overlay packs, full commentator profiles, and directory sync.
 - ✨ Inline editing in the caster directory cockpit.
 - 💄 Shared Bootstrap-based cockpit design system.
 
@@ -32,32 +45,20 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 
 - ♻️ Removed bundled repo modules from core and load add-ons from the Zhago data directory.
 - 🎨 Changed the default admin theme to system.
-- 📝 Updated alpha Getting Started docs and TODO progress tracking.
+- 📝 Updated alpha Getting Started docs.
 - 📦 Embedded core runtime assets into the compiled binary and moved module cockpit shared assets to `/assets/*`.
 - 🏗️ Reorganized the native Vue admin app around feature folders and shared API/type layers.
 - 🏗️ Split overlay registry helpers out of route handlers.
 - 🛠️ Switched local dev data to repo-local `.zhago/` and added `just lint`, `just test`, `just format`, and `just format-check`.
-- 🏗️ Split core into `bus`/`loader`/`logger`/`paths`/`storage`, plus a
-  typed `config` and `registry`.
-- 🏗️ Replaced the Wails v2 desktop app with a Bun server and a module/plugin
-  architecture: each feature (match state, casters, caster directory) is a
-  module with its own backend logic and its own cockpit/overlay UI, loaded
-  from a `modules/` directory next to the binary rather than baked into it.
+- 🏗️ Split core into `bus`/`loader`/`logger`/`paths`/`storage`, plus a typed `config` and `registry`.
+- 🏗️ Replaced the Wails v2 desktop app with a Bun server and module/plugin architecture.
 - ✨ Added app theming, a cockpit skin system, and a Settings view.
 - 📝 Rewrote the README to match the project's current early/prototype state.
 - 🎨 Restored the logo asset the Bun rewrite had dropped.
-- 🎨 Added ESLint, Prettier, and EditorConfig, and reformatted the existing
-  codebase to match.
-- 🐳 Added a Containerfile (Alpine-based) and a musl build target
-  (`just build-linux-musl <x64|arm64>`) for it.
-- 📦 Added a devcontainer (bun + just on a bookworm base).
-- 🔥 Removed leftover Wails build output (`bin/`) and empty pre-rewrite
-  directories (`internal/`, `templates/`).
-
-### Fixed
-
-- 🐛 Embedded the static add-on registry in compiled binaries.
-- 🐛 Removed the installer dependency on a system `unzip` command.
+- 🎨 Added ESLint, Prettier, and EditorConfig, and reformatted the existing codebase to match.
+- 🐳 Added a Containerfile and a musl build target (`just build-linux-musl <x64|arm64>`).
+- 📦 Added a devcontainer.
+- 🔥 Removed leftover Wails build output (`bin/`) and empty pre-rewrite directories (`internal/`, `templates/`).
 
 ## [Wails v2] - 2025-09-07 to 2026-04-09
 
