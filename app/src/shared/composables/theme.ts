@@ -4,9 +4,7 @@ export type Theme = 'light' | 'dark' | 'system';
 
 const STORAGE_KEY = 'zhago-theme';
 
-// Defaults to 'dark' (not 'system') so existing users see no change on
-// upgrade — the whole app was hardcoded dark before Settings existed.
-export const theme = ref<Theme>((localStorage.getItem(STORAGE_KEY) as Theme | null) ?? 'dark');
+export const theme = ref<Theme>((localStorage.getItem(STORAGE_KEY) as Theme | null) ?? 'system');
 
 function prefersDark() {
   return window.matchMedia('(prefers-color-scheme: dark)').matches;
