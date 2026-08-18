@@ -11,6 +11,13 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-08-18
+
+### Changed
+
+- 🔧 Enabled auto-generated GitHub release notes.
+- 📄 Added a README CI badge for pull request build state.
+
 ### Fixed
 
 - 🐛 Fixed add-on installs across filesystem devices in containers.
