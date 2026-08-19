@@ -11,15 +11,6 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 
 ## [Unreleased]
 
-### Changed
-
-- ♻️ Derive add-on release URLs from a compact registry with repo and pinned version fields.
-- ♻️ Publish the root registry file directly without GitHub API resolution.
-
-### Fixed
-
-- 🐛 Updated The King of Fighters XV display name in the registry.
-
 ## [0.1.8] - 2026-08-19
 
 ### Fixed
@@ -37,6 +28,14 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 - 📱 Added a small-screen admin menu in place of the horizontal nav.
 - 📱 Improved responsive layouts for the home, add-ons, logs, and settings views.
 - ✨ Only show add-on updates when the registry version is newer than the installed one.
+
+### Changed
+
+- ♻️ Derive add-on release URLs from a compact registry with repo and pinned version fields.
+
+### Fixed
+
+- 🐛 Updated The King of Fighters XV display name in the registry.
 
 ## [0.1.6] - 2026-08-18
 
