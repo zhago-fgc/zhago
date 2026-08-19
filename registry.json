@@ -16,7 +16,7 @@
     "official": true,
     "recommended": true,
     "tags": ["match", "cockpit", "official", "starter"],
-    "version": "0.1.2",
+    "version": "0.2.0",
     "repo": "https://github.com/zhago-fgc/module-match"
   },
   {
@@ -38,6 +38,16 @@
     "tags": ["casters", "directory", "cockpit", "official", "starter"],
     "version": "0.1.0",
     "repo": "https://github.com/zhago-fgc/module-caster-directory"
+  },
+  {
+    "name": "countries",
+    "displayName": "Countries",
+    "type": "module",
+    "official": true,
+    "recommended": true,
+    "tags": ["data", "countries", "official", "starter"],
+    "version": "0.1.0",
+    "repo": "https://github.com/zhago-fgc/module-countries"
   },
   {
     "name": "startgg",
@@ -80,7 +90,7 @@
     "repo": "https://github.com/zhago-fgc/game-kofxv"
   },
   {
-    "name": "fatal-fury-cotw",
+    "name": "cotw",
     "displayName": "Fatal Fury: City of the Wolves",
     "type": "module",
     "official": true,
