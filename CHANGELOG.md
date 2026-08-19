@@ -20,6 +20,24 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 
 - 🐛 Updated The King of Fighters XV display name in the registry.
 
+## [0.1.8] - 2026-08-19
+
+### Fixed
+
+- 🐛 Fixed the cotw registry entry using the repo slug instead of the module's actual name, which broke install.
+- 🐛 Restored native-resolution preview iframe scaling in module cockpits, fixing broken overlay layout in previews.
+- 🐛 Wrapped the match and casters module previews in a collapsible panel so the mobile "Show preview" toggle works.
+- 🐛 Bumped match, casters, and the default overlay pack in the registry to their fixed releases (0.2.1, 0.2.1, 0.2.0).
+
+## [0.1.7] - 2026-08-18
+
+### Added
+
+- 📱 Made shared cockpit CSS responsive for narrow panes and preview frames.
+- 📱 Added a small-screen admin menu in place of the horizontal nav.
+- 📱 Improved responsive layouts for the home, add-ons, logs, and settings views.
+- ✨ Only show add-on updates when the registry version is newer than the installed one.
+
 ## [0.1.6] - 2026-08-18
 
 ### Fixed
