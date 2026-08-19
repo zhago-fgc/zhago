@@ -22,14 +22,14 @@ describe('add-on registry routes', () => {
       expect.objectContaining({
         name: 'default',
         displayName: 'Default Overlay Pack',
-        version: '0.1.0',
+        version: '0.2.0',
         type: 'overlay',
         official: true,
         recommended: true,
         zipUrl:
-          'https://github.com/zhago-fgc/overlay-default/releases/download/v0.1.0/overlay-default.zip',
+          'https://github.com/zhago-fgc/overlay-default/releases/download/v0.2.0/overlay-default.zip',
         checksumUrl:
-          'https://github.com/zhago-fgc/overlay-default/releases/download/v0.1.0/overlay-default.sha256',
+          'https://github.com/zhago-fgc/overlay-default/releases/download/v0.2.0/overlay-default.sha256',
       }),
     );
     expect(body).toContainEqual(
