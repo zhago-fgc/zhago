@@ -16,7 +16,7 @@
     "official": true,
     "recommended": true,
     "tags": ["match", "cockpit", "official", "starter"],
-    "version": "0.2.0",
+    "version": "0.2.1",
     "repo": "https://github.com/zhago-fgc/module-match"
   },
   {
@@ -26,7 +26,7 @@
     "official": true,
     "recommended": true,
     "tags": ["casters", "cockpit", "official", "starter"],
-    "version": "0.2.0",
+    "version": "0.2.1",
     "repo": "https://github.com/zhago-fgc/module-casters"
   },
   {
