@@ -29,6 +29,15 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 - 🐛 Wrapped the match and casters module previews in a collapsible panel so the mobile "Show preview" toggle works.
 - 🐛 Bumped match, casters, and the default overlay pack in the registry to their fixed releases (0.2.1, 0.2.1, 0.2.0).
 
+## [0.1.7] - 2026-08-18
+
+### Added
+
+- 📱 Made shared cockpit CSS responsive for narrow panes and preview frames.
+- 📱 Added a small-screen admin menu in place of the horizontal nav.
+- 📱 Improved responsive layouts for the home, add-ons, logs, and settings views.
+- ✨ Only show add-on updates when the registry version is newer than the installed one.
+
 ## [0.1.6] - 2026-08-18
 
 ### Fixed
