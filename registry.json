@@ -16,7 +16,7 @@
     "official": true,
     "recommended": true,
     "tags": ["match", "cockpit", "official", "starter"],
-    "version": "0.3.1",
+    "version": "0.3.2",
     "repo": "https://github.com/zhago-fgc/module-match"
   },
   {
