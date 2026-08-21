@@ -26,7 +26,7 @@
     "official": true,
     "recommended": true,
     "tags": ["match", "history", "official"],
-    "version": "0.1.0",
+    "version": "0.1.1",
     "repo": "https://github.com/zhago-fgc/module-match-history"
   },
   {

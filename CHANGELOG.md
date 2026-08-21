@@ -13,7 +13,7 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 
 ### Added
 
-- ✨ Added the match-history module (0.1.0) — records an immutable per-game/per-match log automatically when Match declares a winner.
+- ✨ Added the match-history module (0.1.1) — records an immutable per-game/per-match log automatically when Match declares a winner. Cockpit supports multi-select and bulk delete.
 - ✨ Added the players module (0.1.0) — player roster with a profile computed live from match-history (win/loss, character usage per game).
 
 ### Changed
