@@ -24,6 +24,7 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 ### Fixed
 
 - 🐛 Fixed shared cockpit `.field-row` buttons shrinking below their own text in crowded rows (e.g. Caster Directory's Add button).
+- 🐛 Fixed a relative `ZHAGO_DIR` (e.g. `.zhago`) breaking module loading entirely — the loader's dynamic `import()` needs an absolute path regardless of run mode.
 
 ## [0.1.8] - 2026-08-19
 
