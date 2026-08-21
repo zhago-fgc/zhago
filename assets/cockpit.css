@@ -131,6 +131,10 @@ legend {
 .field-row .combobox {
   flex: 1 1 auto;
 }
+.field-row .btn,
+.field-row button {
+  flex-shrink: 0;
+}
 .field-row input[type='number'] {
   flex: 0 0 80px;
 }

@@ -6,7 +6,7 @@
     "official": true,
     "recommended": true,
     "tags": ["overlay", "official", "starter"],
-    "version": "0.2.0",
+    "version": "0.3.0",
     "repo": "https://github.com/zhago-fgc/overlay-default"
   },
   {
@@ -16,8 +16,28 @@
     "official": true,
     "recommended": true,
     "tags": ["match", "cockpit", "official", "starter"],
-    "version": "0.2.1",
+    "version": "0.3.0",
     "repo": "https://github.com/zhago-fgc/module-match"
+  },
+  {
+    "name": "match-history",
+    "displayName": "Match History",
+    "type": "module",
+    "official": true,
+    "recommended": true,
+    "tags": ["match", "history", "official"],
+    "version": "0.1.0",
+    "repo": "https://github.com/zhago-fgc/module-match-history"
+  },
+  {
+    "name": "players",
+    "displayName": "Players",
+    "type": "module",
+    "official": true,
+    "recommended": true,
+    "tags": ["players", "directory", "cockpit", "official"],
+    "version": "0.1.0",
+    "repo": "https://github.com/zhago-fgc/module-players"
   },
   {
     "name": "casters",

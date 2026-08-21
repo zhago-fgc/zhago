@@ -11,6 +11,20 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 
 ## [Unreleased]
 
+### Added
+
+- ✨ Added the match-history module (0.1.0) — records an immutable per-game/per-match log automatically when Match declares a winner.
+- ✨ Added the players module (0.1.0) — player roster with a profile computed live from match-history (win/loss, character usage per game).
+
+### Changed
+
+- 🎨 Redesigned the default overlay pack's match skin (0.3.0) with a pixel-accurate chevron layout.
+- ✨ Bumped match to 0.3.0 — per-game score tracking, manual winner declaration, swap/clear, and players integration.
+
+### Fixed
+
+- 🐛 Fixed shared cockpit `.field-row` buttons shrinking below their own text in crowded rows (e.g. Caster Directory's Add button).
+
 ## [0.1.8] - 2026-08-19
 
 ### Fixed
