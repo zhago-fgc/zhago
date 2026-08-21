@@ -18,20 +18,22 @@ describe('add-on registry routes', () => {
     const body = await res.json();
 
     expect(res.status).toBe(200);
-    expect(body).toContainEqual(
-      expect.objectContaining({
-        name: 'default',
-        displayName: 'Default Overlay Pack',
-        version: '0.2.0',
-        type: 'overlay',
-        official: true,
-        recommended: true,
-        zipUrl:
-          'https://github.com/zhago-fgc/overlay-default/releases/download/v0.2.0/overlay-default.zip',
-        checksumUrl:
-          'https://github.com/zhago-fgc/overlay-default/releases/download/v0.2.0/overlay-default.sha256',
-      }),
-    );
+    expect(body.length).toBeGreaterThan(0);
+
+    // Checks the expansion logic (catalog entry -> zipUrl/checksumUrl/
+    // releasePage) is self-consistent against whatever registry.json
+    // currently says, rather than pinning one entry's version — a real
+    // release bump should never fail this test, a broken URL derivation
+    // always should.
+    for (const entry of body) {
+      const tag = entry.version.startsWith('v') ? entry.version : `v${entry.version}`;
+      const assetBase = new URL(entry.repo).pathname.split('/').filter(Boolean).pop();
+      expect(entry.sourceRepo).toBe(entry.repo);
+      expect(entry.releasePage).toBe(`${entry.repo}/releases/tag/${tag}`);
+      expect(entry.zipUrl).toBe(`${entry.repo}/releases/download/${tag}/${assetBase}.zip`);
+      expect(entry.checksumUrl).toBe(`${entry.repo}/releases/download/${tag}/${assetBase}.sha256`);
+    }
+
     expect(body).toContainEqual(
       expect.objectContaining({
         name: 'kofxv',
