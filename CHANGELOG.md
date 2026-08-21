@@ -19,12 +19,13 @@ From here on, new changes should be added under `[Unreleased]` as they land.
 ### Changed
 
 - 🎨 Redesigned the default overlay pack's match skin (0.3.0) with a pixel-accurate chevron layout.
-- ✨ Bumped match to 0.3.0 — per-game score tracking, manual winner declaration, swap/clear, and players integration.
+- ✨ Bumped match to 0.3.1 — per-game score tracking, manual winner declaration, swap/clear, and players integration.
 
 ### Fixed
 
 - 🐛 Fixed shared cockpit `.field-row` buttons shrinking below their own text in crowded rows (e.g. Caster Directory's Add button).
 - 🐛 Fixed a relative `ZHAGO_DIR` (e.g. `.zhago`) breaking module loading entirely — the loader's dynamic `import()` needs an absolute path regardless of run mode.
+- 📱 Fixed match's score stepper/winner/loser row breaking in narrow panes and OBS custom browser docks (match 0.3.1).
 
 ## [0.1.8] - 2026-08-19
 
